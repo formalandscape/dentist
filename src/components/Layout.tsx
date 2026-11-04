@@ -271,51 +271,51 @@ export function Footer() {
     <>
       <footer className="site-footer">
         <div className="container">
-          <div className="footer-top">
-            <Brand footer />
-            <p>
-              Ваша посмішка.
-              <br />
-              <span>Моя професійна турбота.</span>
-            </p>
-            <div className="footer-socials">
+          <div className="footer-grid">
+            <div className="footer-column footer-identity">
+              <Link to="/" className="footer-to-top">
+                <span className="footer-up-icon">
+                  <ArrowUp size={28} strokeWidth={1.3} aria-hidden="true" />
+                </span>
+                <span>
+                  На початок сайту<small>До першого знайомства</small>
+                </span>
+              </Link>
+              <p className="footer-doctor-name">Зоряна Тепла</p>
+              <span className="footer-doctor-role">Лікар стоматолог-ортодонт</span>
+              <span className="footer-doctor-detail">24 роки досвіду · Київ</span>
+            </div>
+            <div className="footer-column footer-voices">
+              <span className="footer-kicker">Слова, у яких — турбота</span>
+              <blockquote className="footer-quote">
+                «Ваша посмішка. Моя професійна турбота.»
+              </blockquote>
+              <blockquote className="footer-quote">
+                «Кожна посмішка заслуговує на індивідуальний підхід.»
+              </blockquote>
+            </div>
+            <div className="footer-column footer-contact">
+              <span className="footer-kicker">Залишаймося на зв’язку</span>
+              {site.contacts.phone && (
+                <a href={`tel:${site.contacts.phone}`} className="footer-contact-link">
+                  <Phone size={17} strokeWidth={1.3} aria-hidden="true" />
+                  <span>{site.contacts.phoneDisplay}</span>
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </a>
+              )}
               {site.contacts.instagram && (
                 <a
                   href={site.contacts.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="round-button"
-                  aria-label="Instagram Зоряни Теплої"
+                  className="footer-contact-link"
                 >
-                  <Instagram size={19} />
+                  <Instagram size={18} strokeWidth={1.3} aria-hidden="true" />
+                  <span>@dr.zoryana.tepla</span>
+                  <ArrowUpRight size={15} aria-hidden="true" />
                 </a>
               )}
-              {site.contacts.phone && (
-                <a
-                  href={`tel:${site.contacts.phone}`}
-                  className="round-button"
-                  aria-label="Зателефонувати Зоряні Теплій"
-                >
-                  <Phone size={18} />
-                </a>
-              )}
-              <a
-                href="#main-content"
-                className="round-button"
-                aria-label="Повернутися нагору"
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.scrollTo({
-                    top: 0,
-                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-                      ? 'instant'
-                      : 'smooth',
-                  })
-                  document.getElementById('main-content')?.focus({ preventScroll: true })
-                }}
-              >
-                <ArrowUp size={18} />
-              </a>
+              <span className="footer-visit-note">Прийом у Києві за попереднім записом.</span>
             </div>
           </div>
           <div className="footer-bottom">

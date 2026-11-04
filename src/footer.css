@@ -1,0 +1,267 @@
+.contacts-section {
+  padding-bottom: 64px;
+}
+.site-footer {
+  position: relative;
+  isolation: isolate;
+  padding-block: 46px 28px;
+  background: linear-gradient(110deg, #e7ebdc, #f0ecdf 55%, #e4e9d8);
+  border-top: 1px solid #c2cfb0;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 0.95fr 1.45fr 1fr;
+  gap: 32px;
+  padding-bottom: 35px;
+  align-items: start;
+}
+.footer-column {
+  min-width: 0;
+}
+.footer-column + .footer-column {
+  border-left: 1px solid #c7d2b9;
+  padding-left: 32px;
+}
+.footer-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 56px;
+  color: #2d573c;
+  font-size: 13px;
+  font-weight: 500;
+}
+.footer-up-icon {
+  width: 53px;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #2d6046;
+  color: #fffbed;
+  border: 1px solid #457a54;
+  box-shadow: 0 5px 17px #31563114;
+  transition:
+    background-color 280ms,
+    box-shadow 350ms;
+}
+.footer-up-icon svg {
+  transition: transform 350ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.footer-to-top:hover .footer-up-icon,
+.footer-to-top:focus-visible .footer-up-icon {
+  background: #214e37;
+  box-shadow: 0 7px 23px #31563124;
+}
+.footer-to-top:hover svg,
+.footer-to-top:focus-visible svg {
+  transform: translateY(-4px);
+}
+.footer-to-top small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #57684d;
+  margin-top: 7px;
+}
+.footer-doctor-name {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-top: 24px;
+  color: #2d4634;
+  letter-spacing: -0.03em;
+}
+.footer-doctor-role {
+  display: block;
+  font-size: 11px;
+  color: #4e6045;
+  margin-top: 7px;
+  line-height: 1.75;
+}
+.footer-doctor-detail {
+  display: block;
+  font-size: 10px;
+  color: #526447;
+  margin-top: 11px;
+  line-height: 1.7;
+}
+.footer-kicker {
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #4c6440;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+.footer-quote {
+  margin: 0;
+  font:
+    italic 26px/1.35 'Cormorant Garamond',
+    Georgia,
+    serif;
+  color: #365539;
+  max-width: 380px;
+}
+.footer-quote + .footer-quote {
+  margin-top: 20px;
+  padding-top: 19px;
+  border-top: 1px solid #cbd4bc;
+}
+.footer-contact-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding-block: 10px;
+  font-size: 12px;
+  color: #324f37;
+  border-bottom: 1px solid #cbd4bc;
+  transition:
+    color 260ms,
+    padding 320ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.footer-contact-link > span {
+  overflow-wrap: anywhere;
+}
+.footer-contact-link > svg {
+  flex-shrink: 0;
+  color: #4e7143;
+}
+.footer-contact-link > svg:last-child {
+  margin-left: auto;
+  transition: transform 260ms;
+}
+.footer-contact-link:hover {
+  color: #1d4e32;
+  padding-inline: 3px;
+}
+.footer-contact-link:hover > svg:last-child {
+  transform: translate(2px, -2px);
+}
+.footer-visit-note {
+  display: block;
+  font-size: 10px;
+  line-height: 1.9;
+  color: #526447;
+  margin-top: 17px;
+  max-width: 230px;
+}
+.site-footer .footer-bottom {
+  border-top-color: #c2cfb0;
+  font-size: 10px;
+  gap: 15px 25px;
+  padding-top: 22px;
+}
+.site-footer .medical-note {
+  max-width: 910px;
+  font-size: 10px;
+  margin-top: 18px;
+  color: #526047;
+}
+@media (max-width: 1050px) {
+  .footer-grid {
+    grid-template-columns: 0.9fr 1.3fr;
+    gap: 30px;
+  }
+  .footer-contact {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 32px;
+  }
+  .footer-column.footer-contact {
+    border-left: 0;
+    padding: 24px 0 0;
+    border-top: 1px solid #c7d2b9;
+  }
+  .footer-contact .footer-kicker,
+  .footer-contact .footer-visit-note {
+    grid-column: 1 / -1;
+  }
+  .footer-contact .footer-kicker {
+    margin-bottom: 10px;
+  }
+  .footer-visit-note {
+    max-width: none;
+    margin-top: 12px;
+  }
+}
+@media (max-width: 700px) {
+  .contacts-section {
+    padding-bottom: 42px;
+  }
+  .site-footer {
+    padding-block: 35px 96px;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding-bottom: 27px;
+  }
+  .footer-column + .footer-column {
+    border-left: 0;
+    padding-left: 0;
+    padding-top: 24px;
+    border-top: 1px solid #c7d2b9;
+  }
+  .footer-contact {
+    display: block;
+    grid-column: auto;
+  }
+  .footer-up-icon {
+    width: 54px;
+    height: 54px;
+  }
+  .footer-to-top {
+    font-size: 14px;
+    gap: 15px;
+  }
+  .footer-to-top small {
+    font-size: 11px;
+  }
+  .footer-doctor-name {
+    font-size: 22px;
+    margin-top: 23px;
+  }
+  .footer-doctor-role {
+    font-size: 12px;
+  }
+  .footer-doctor-detail,
+  .footer-visit-note {
+    font-size: 11px;
+  }
+  .footer-kicker {
+    font-size: 9px;
+    margin-bottom: 17px;
+  }
+  .footer-quote {
+    font-size: 28px;
+    max-width: 400px;
+  }
+  .footer-quote + .footer-quote {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .footer-contact-link {
+    min-height: 49px;
+    font-size: 13px;
+  }
+  .site-footer .footer-bottom {
+    font-size: 11px;
+  }
+  .site-footer .medical-note {
+    font-size: 10px;
+    line-height: 1.9;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-to-top svg,
+  .footer-contact-link svg {
+    transform: none !important;
+  }
+}

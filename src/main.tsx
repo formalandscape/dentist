@@ -4,6 +4,7 @@ import App from './App'
 import './styles.css'
 import './refinements.css'
 import './motion.css'
+import './footer.css'
 
 const root = document.getElementById('root')!
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
