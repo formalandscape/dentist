@@ -272,7 +272,7 @@ export function Header() {
                 closed: {},
               }}
             >
-              {navItems.map((item, i) => (
+              {navItems.map((item) => (
                 <motion.div
                   key={item.to}
                   variants={{
@@ -281,7 +281,6 @@ export function Header() {
                   }}
                 >
                   <Link key={item.to} to={item.to}>
-                    <span className="mobile-nav-number">0{i + 1}</span>
                     {t(item.label)}
                     <ArrowUpRight size={22} />
                   </Link>
