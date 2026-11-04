@@ -4,6 +4,8 @@ import { services, servicePath } from './data/services'
 import { site } from './data/site'
 import { Action, Eyebrow, Photo, Reveal } from './components/ui'
 import { AppointmentSection } from './Home'
+import { Encouragement, Invitation } from './components/Atmosphere'
+import { journeyPath, serviceEncouragement } from './data/journey'
 
 export function ServicePage() {
   const { id } = useParams()
@@ -23,9 +25,12 @@ export function ServicePage() {
               <h1>{service.title}</h1>
               <p className="service-subtitle">{service.subtitle}</p>
               <p className="muted">{service.intro}</p>
+              <Encouragement label="Ваше рішення має значення">
+                {serviceEncouragement[service.id]}
+              </Encouragement>
               <Action to="/#appointment">Записатися на консультацію</Action>
             </Reveal>
-            <Photo kind={service.image} className="service-page-photo" />
+            <Photo kind={service.image} className="service-page-photo" priority />
           </div>
         </div>
       </section>
@@ -60,6 +65,44 @@ export function ServicePage() {
           </div>
         </div>
       </section>
+      <section className="section preparation-section">
+        <div className="container">
+          <Eyebrow>До першої зустрічі</Eyebrow>
+          <h2>
+            Трохи підготовки.
+            <br />
+            <em>Більше спокою.</em>
+          </h2>
+          <div className="preparation-grid">
+            {[
+              {
+                title: 'Розкажіть про важливе',
+                text: 'Що саме ви хотіли б змінити? Які відчуття турбують? Сформулюйте свої очікування — вони допоможуть зробити розмову предметною.',
+              },
+              {
+                title: 'Візьміть те, що вже є',
+                text: 'Наявні знімки та попередні висновки можуть бути корисними. Самостійно проходити нові обстеження до консультації не потрібно.',
+              },
+              {
+                title: 'Залиште місце для запитань',
+                text: 'Запишіть, що хотіли б з’ясувати про методи, догляд, контрольні візити та ретенцію. Розуміти свій план так само важливо, як дотримуватися його.',
+              },
+            ].map((item, i) => (
+              <Reveal key={item.title} delay={i * 0.1} className="preparation-card">
+                <span>0{i + 1}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+      <Invitation
+        title="Спочатку розуміння. Потім — ваш наступний крок."
+        text="Познайомтеся з усіма етапами ортодонтичного лікування, щоб побачити не лише метод, а й цілісний підхід до вашого здоров’я."
+        to={journeyPath}
+        link="Дослідити шлях до посмішки"
+      />
       <section className="section more-services">
         <div className="container">
           <Eyebrow>Дізнайтеся більше</Eyebrow>

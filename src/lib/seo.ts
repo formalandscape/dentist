@@ -2,6 +2,13 @@ import { site } from '../data/site'
 import { services, servicePath } from '../data/services'
 
 export function seoForPath(path: string) {
+  if (path.replace(/\/$/, '') === '/vash-shliakh-do-posmishky')
+    return {
+      title: 'Ваш шлях до посмішки — етапи лікування | Зоряна Тепла',
+      description:
+        'Як проходить ортодонтичне лікування: консультація, діагностика, індивідуальний план, вибір апарата, контроль і ретенція. Ортодонт Зоряна Тепла, Київ.',
+      path: '/vash-shliakh-do-posmishky/',
+    }
   const service = services.find(
     (s) => path.replace(/\/$/, '') === servicePath(s.id).replace(/\/$/, ''),
   )

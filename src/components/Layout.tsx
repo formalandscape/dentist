@@ -5,11 +5,13 @@ import { Link, useLocation } from 'react-router-dom'
 import { site } from '../data/site'
 import { Brand } from './ui'
 import { publicUrl, seoForPath } from '../lib/seo'
+import { journeyPath } from '../data/journey'
 
 const navItems = [
   { label: 'Про лікаря', to: '/#about' },
   { label: 'Напрями лікування', to: '/#services' },
   { label: 'Мій підхід', to: '/#approach' },
+  { label: 'Ваш шлях', to: journeyPath },
   { label: 'Запитання', to: '/#faq' },
   { label: 'Контакти', to: '/#contacts' },
 ]
@@ -48,7 +50,13 @@ export function RouteEffects() {
     }
     const frame = requestAnimationFrame(() => {
       if (hash) {
-        const target = document.getElementById(decodeURIComponent(hash.substring(1)))
+        let id = hash.substring(1)
+        try {
+          id = decodeURIComponent(id)
+        } catch {
+          /* Invalid escapes should not break navigation. */
+        }
+        const target = document.getElementById(id)
         target?.scrollIntoView({
           behavior: reduced || first.current ? 'instant' : 'smooth',
           block: 'start',
@@ -130,7 +138,12 @@ export function Header() {
               <Link
                 key={item.to}
                 to={item.to}
-                className={location.hash === item.to.slice(1) ? 'active' : ''}
+                className={
+                  location.hash === item.to.slice(1) || location.pathname === item.to
+                    ? 'active'
+                    : ''
+                }
+                aria-current={location.pathname === item.to ? 'page' : undefined}
               >
                 {item.label}
               </Link>
@@ -241,9 +254,11 @@ export function Footer() {
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© {new Date().getFullYear()} Зоряна Тепла. Київ, Україна.</span>
+            <span>© 2026 Зоряна Тепла. Київ, Україна.</span>
             <Link to="/polityka-konfidentsiinosti/">Політика конфіденційності</Link>
-            <span>З турботою про вас</span>
+            <Link to={journeyPath}>
+              Ваш шлях до посмішки <ArrowUpRight size={12} aria-hidden="true" />
+            </Link>
           </div>
           <p className="medical-note">
             Інформація на сайті має ознайомчий характер і не замінює особисту консультацію лікаря.

@@ -1,4 +1,5 @@
-import { motion, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { ArrowUpRight, Asterisk } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -15,11 +16,15 @@ export function Reveal({
   const reduced = useReducedMotion()
   return (
     <motion.div
-      className={className}
+      className={`reveal-block ${className}`}
       initial={false}
-      whileInView={reduced ? {} : { opacity: [0.45, 1], y: [18, 0] }}
+      whileInView={reduced ? {} : { opacity: [0.55, 1], y: [22, 0] }}
       viewport={{ once: true, amount: 0.08 }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: reduced ? 0 : 0.9,
+        delay: reduced ? 0 : delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       {children}
     </motion.div>
@@ -74,14 +79,22 @@ export function Photo({
   kind,
   className = '',
   label,
+  priority = false,
 }: {
   kind: string
   className?: string
   label?: string
+  priority?: boolean
 }) {
+  const target = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], [-10, 10])
   return (
-    <div
+    <motion.div
+      ref={target}
       className={`editorial-photo photo-${kind} ${className}`}
+      style={{ y: reduced ? 0 : y }}
       role="img"
       aria-label={
         label ||
@@ -93,7 +106,17 @@ export function Photo({
         }[kind] ||
         'Декоративне зображення'
       }
-    />
+    >
+      <img
+        src={`${import.meta.env.BASE_URL}images/editorial-still-life.webp`}
+        alt=""
+        aria-hidden="true"
+        width="1774"
+        height="887"
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+    </motion.div>
   )
 }
 

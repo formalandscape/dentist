@@ -25,14 +25,31 @@ const escape = (s) =>
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
 try {
-  const { render, seoForPath, schema, services, servicePath } =
+  const { render, seoForPath, schema, services, servicePath, journeyPath } =
     await vite.ssrLoadModule('/entry-server.tsx')
   const template = await fs.readFile('dist/index.html', 'utf8')
-  const paths = ['/', ...services.map((s) => servicePath(s.id)), '/polityka-konfidentsiinosti/']
+  const assetNames = await fs.readdir('dist/assets')
+  const criticalFonts = [
+    'manrope-cyrillic-400-normal-',
+    'cormorant-garamond-cyrillic-400-normal-',
+    'cormorant-garamond-cyrillic-400-italic-',
+  ]
+    .map((prefix) => assetNames.find((name) => name.startsWith(prefix) && name.endsWith('.woff2')))
+    .filter(Boolean)
+  const paths = [
+    '/',
+    ...services.map((s) => servicePath(s.id)),
+    journeyPath,
+    '/polityka-konfidentsiinosti/',
+  ]
   for (const path of [...paths, '/404/']) {
     const seo = seoForPath(path)
     const url = canonical(seo.path)
     const metadata = [
+      ...criticalFonts.map(
+        (font) =>
+          `<link rel="preload" href="${base}assets/${font}" as="font" type="font/woff2" crossorigin />`,
+      ),
       '<meta property="og:type" content="website" />',
       '<meta property="og:locale" content="uk_UA" />',
       '<meta property="og:site_name" content="Зоряна Тепла · Ортодонт" />',

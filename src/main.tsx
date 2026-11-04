@@ -2,11 +2,12 @@ import { hydrateRoot, createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
+import './refinements.css'
 
 const root = document.getElementById('root')!
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 const app = (
-  <BrowserRouter basename={base || '/'}>
+  <BrowserRouter basename={import.meta.env.BASE_URL}>
     <App />
   </BrowserRouter>
 )

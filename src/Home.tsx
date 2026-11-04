@@ -17,6 +17,8 @@ import { AppointmentForm } from './components/AppointmentForm'
 import { FAQ, Results, Reviews } from './components/Interactive'
 import { site } from './data/site'
 import { services, servicePath } from './data/services'
+import { Encouragement, Invitation } from './components/Atmosphere'
+import { journeyPath } from './data/journey'
 
 function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
   if (site.doctor.portrait)
@@ -74,13 +76,14 @@ function Hero() {
         <motion.div
           className="hero-copy"
           initial={false}
-          animate={reduced ? {} : { opacity: [0, 1], y: [16, 0] }}
+          animate={reduced ? {} : { opacity: [0.85, 1], y: [16, 0] }}
           transition={{ duration: reduced ? 0 : 0.8 }}
         >
           <div className="hero-location">
             <span className="status-dot" />
             ПЕРСОНАЛЬНА ОРТОДОНТІЯ <span className="location-divider">/</span> КИЇВ
           </div>
+          <p className="hero-promise">Впевненість починається з усмішки.</p>
           <h1>
             Ваша посмішка.
             <br />
@@ -117,7 +120,7 @@ function Hero() {
           className="hero-visual"
           style={{ y: reduced ? 0 : y }}
           initial={false}
-          animate={reduced ? {} : { opacity: [0, 1] }}
+          animate={reduced ? {} : { opacity: [0.85, 1] }}
           transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : 0.15 }}
         >
           <div className="hero-photo-frame">
@@ -223,6 +226,10 @@ function About() {
             плануванню лікування. Мені важливо, щоб ви розуміли кожен крок і почувалися спокійно на
             цьому шляху.
           </p>
+          <Encouragement label="Кожна людина — особлива">
+            Кожна посмішка заслуговує на індивідуальний підхід. Ваші очікування — важлива частина
+            нашої розмови.
+          </Encouragement>
           <div className="doctor-signature">
             <span>Зоряна Тепла</span>
             <span>З турботою про вашу посмішку</span>
@@ -252,6 +259,10 @@ function Associations() {
             </div>
           ))}
         </div>
+        <p className="association-note">
+          Професійна спільнота об’єднує навколо спільного прагнення: уважної та обґрунтованої
+          допомоги пацієнтам.
+        </p>
       </div>
     </section>
   )
@@ -296,6 +307,10 @@ function Services() {
             </Reveal>
           ))}
         </div>
+        <Encouragement label="Гармонія в деталях">
+          Естетика й здоров’я доповнюють одне одного. Почнімо з розуміння вашого прикусу, а вже
+          потім обиратимемо метод.
+        </Encouragement>
         <p className="image-disclosure">
           Зображення предметів — ілюстративні. Метод лікування визначається після консультації.
         </p>
@@ -338,6 +353,10 @@ function Approach() {
               </li>
             ))}
           </ul>
+          <Encouragement dark label="У центрі уваги — ви">
+            Турбота про посмішку сьогодні — внесок у ваше уважне ставлення до здоров’я в
+            майбутньому.
+          </Encouragement>
           <Action to="/#appointment" secondary>
             Почнімо зі знайомства
           </Action>
@@ -431,6 +450,10 @@ export function AppointmentSection() {
               </a>
             </div>
           )}
+          <Encouragement label="Рішення без поспіху">
+            Дозвольте собі поставити запитання. Перша консультація — простір для ясності та
+            спокійного вибору.
+          </Encouragement>
           <Flower className="appointment-flower" />
         </Reveal>
         <Reveal className="form-card">
@@ -462,6 +485,9 @@ function Contacts() {
               ? ''
               : ' Адресу клініки буде додано пізніше. Уточнити місце прийому можна під час запису.'}
           </p>
+          <Encouragement label="Ми поруч із вашим рішенням">
+            Ваш шлях до гармонійної посмішки може початися з однієї розмови.
+          </Encouragement>
           <div className="contact-details">
             {site.contacts.phone && (
               <a href={`tel:${site.contacts.phone}`}>
@@ -549,6 +575,12 @@ export function Home() {
       <Services />
       <Approach />
       <Consultation />
+      <Invitation
+        title="Побачте свій шлях цілком."
+        text="Від першого знайомства до ретенції: шість етапів, які допоможуть зрозуміти лікування, підготувати запитання й відчути більше впевненості."
+        to={journeyPath}
+        link="Ваш шлях до посмішки"
+      />
       <Results />
       <Reviews />
       <FAQ />

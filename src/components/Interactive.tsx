@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowRight, ChevronsLeftRight, Plus, Quote } from 'lucide-react'
 import { faq, reviews, treatmentResults } from '../data/site'
 import { Eyebrow, Reveal } from './ui'
+import { Encouragement } from './Atmosphere'
 
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0)
@@ -21,6 +22,9 @@ export function FAQ() {
             Усе починається з розмови. Зібрала відповіді на запитання, які найчастіше виникають
             перед першою зустріччю.
           </p>
+          <Encouragement label="Запитувати — природно">
+            Розуміння допомагає приймати зважені рішення. Для важливих запитань завжди є місце.
+          </Encouragement>
         </Reveal>
         <div className="faq-list">
           {faq.map((item, i) => (
@@ -77,6 +81,10 @@ export function Results() {
             Кожен випадок індивідуальний. Тут з’являться реальні історії лікування — з повагою до
             приватності та лише за згодою пацієнтів.
           </p>
+          <Encouragement label="У кожної посмішки — свій ритм">
+            Важливо порівнювати себе із собою та рухатися за власним планом, а не за чужими
+            очікуваннями.
+          </Encouragement>
           <p className="small-note">
             Результати інших пацієнтів не є гарантією аналогічного результату лікування.
           </p>

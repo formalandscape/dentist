@@ -4,6 +4,7 @@ import { loadEnv } from 'vite'
 
 const env = { ...loadEnv('production', process.cwd(), ''), ...process.env }
 const base = env.VITE_BASE_PATH || '/'
+const folder = process.argv.includes('--published') ? '.' : 'dist'
 const origin = env.VITE_SITE_URL?.replace(/\/$/, '')
 const paths = [
   '/',
@@ -11,14 +12,37 @@ const paths = [
   '/poslugy/elainery/',
   '/poslugy/dytiacha-ortodontiia/',
   '/poslugy/hnatolohiia/',
+  '/vash-shliakh-do-posmishky/',
   '/polityka-konfidentsiinosti/',
 ]
 const descriptions = new Set()
 const titles = new Set()
 for (const path of paths) {
-  const html = await fs.readFile(`dist${path}index.html`, 'utf8')
+  const html = await fs.readFile(`${folder}${path}index.html`, 'utf8')
   assert.equal((html.match(/<h1[\s>]/g) || []).length, 1, `${path}: exactly one h1`)
-  assert.ok(!html.includes('<!--app-->'), `${path}: actual prerendered content`)
+  assert.ok(
+    !html.includes('<!--app-->') && html.includes('<main '),
+    `${path}: actual prerendered content`,
+  )
+  assert.ok(!html.includes('%BASE_URL%'), `${path}: no unresolved Vite placeholders`)
+  const resources = [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) => m[1])
+  assert.ok(
+    resources.some((url) => url.endsWith('.js')),
+    `${path}: a compiled script is present`,
+  )
+  for (const url of resources) {
+    assert.ok(url.startsWith(`${base}assets/`), `${path}: compiled assets only`)
+    assert.ok(
+      !url.endsWith('.tsx') && !url.endsWith('.ts'),
+      `${path}: never publish TypeScript entries`,
+    )
+    await fs.access(`${folder}/${url.slice(base.length)}`)
+  }
+  assert.ok(
+    !/<script[^>]+src="[^"]+\.(?:tsx?|jsx)"/.test(html),
+    `${path}: no source-only entrypoint`,
+  )
+
   const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/)?.[1]
   const title = html.match(/<title>([^<]+)<\/title>/)?.[1]
   assert.ok(description && !descriptions.has(description), `${path}: unique description`)
@@ -33,26 +57,30 @@ for (const path of paths) {
     assert.ok(html.includes(`property="og:image" content="${origin}${base}images/social-card.png"`))
   } else assert.ok(!html.includes('rel="canonical"'), 'No invented canonical domain')
 }
-const home = await fs.readFile('dist/index.html', 'utf8')
+const home = await fs.readFile(`${folder}/index.html`, 'utf8')
 assert.ok(home.includes('"@type":"Physician"'))
 assert.ok(home.includes('tel:+380679404225'))
 assert.ok(home.includes(`href="${base}poslugy/brekety/"`), 'Prerendered links respect base path')
-assert.ok((await fs.readFile('dist/404.html', 'utf8')).includes('noindex, follow'))
-const cssFiles = (await fs.readdir('dist/assets')).filter((f) => f.endsWith('.css'))
-const css = (await Promise.all(cssFiles.map((f) => fs.readFile(`dist/assets/${f}`, 'utf8')))).join(
-  '',
+assert.ok(
+  home.includes(`href="${base}#appointment"`),
+  'Root anchors retain the base trailing slash',
 )
+assert.ok((await fs.readFile(`${folder}/404.html`, 'utf8')).includes('noindex, follow'))
+const cssFiles = (await fs.readdir(`${folder}/assets`)).filter((f) => f.endsWith('.css'))
+const css = (
+  await Promise.all(cssFiles.map((f) => fs.readFile(`${folder}/assets/${f}`, 'utf8')))
+).join('')
 assert.ok(css.includes(`${base}images/editorial-still-life.webp`), 'Photo respects base path')
-const robots = await fs.readFile('dist/robots.txt', 'utf8')
+const robots = await fs.readFile(`${folder}/robots.txt`, 'utf8')
 if (origin) {
   assert.ok(robots.includes(`Sitemap: ${origin}${base}sitemap.xml`))
-  const sitemap = await fs.readFile('dist/sitemap.xml', 'utf8')
+  const sitemap = await fs.readFile(`${folder}/sitemap.xml`, 'utf8')
   for (const path of paths)
     assert.ok(sitemap.includes(`<loc>${origin}${base}${path.slice(1)}</loc>`))
 } else {
   assert.ok(!robots.includes('Sitemap:'))
-  await assert.rejects(fs.access('dist/sitemap.xml'))
+  await assert.rejects(fs.access(`${folder}/sitemap.xml`))
 }
 console.log(
-  `Static checks passed: 6 pages, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
+  `Static checks passed: 7 pages, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
 )
