@@ -26,7 +26,7 @@ const escape = (s) =>
     .replaceAll('>', '&gt;')
 try {
   const { render, seoForPath, schema, services, servicePath } =
-    await vite.ssrLoadModule('/src/entry-server.tsx')
+    await vite.ssrLoadModule('/entry-server.tsx')
   const template = await fs.readFile('dist/index.html', 'utf8')
   const paths = ['/', ...services.map((s) => servicePath(s.id)), '/polityka-konfidentsiinosti/']
   for (const path of [...paths, '/404/']) {
