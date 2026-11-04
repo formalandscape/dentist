@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: 'pages.spec.ts',
+  testMatch: ['pages.spec.ts', 'motion.spec.ts'],
   workers: 2,
   fullyParallel: true,
   use: {

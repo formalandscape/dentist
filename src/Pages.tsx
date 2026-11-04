@@ -1,3 +1,4 @@
+import { AnimatedHeading } from './motion/AnimatedHeading'
 import { ArrowLeft, ArrowUpRight, Check, Phone } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import { services, servicePath } from './data/services'
@@ -22,7 +23,7 @@ export function ServicePage() {
           <div className="service-hero-layout">
             <Reveal>
               <Eyebrow>Ортодонтія з увагою до вас · Київ</Eyebrow>
-              <h1>{service.title}</h1>
+              <AnimatedHeading as="h1">{service.title}</AnimatedHeading>
               <p className="service-subtitle">{service.subtitle}</p>
               <p className="muted">{service.intro}</p>
               <Encouragement label="Ваше рішення має значення">
@@ -38,14 +39,14 @@ export function ServicePage() {
         <div className="container service-detail-layout">
           <div>
             <Eyebrow>Індивідуальний підхід</Eyebrow>
-            <h2>
+            <AnimatedHeading as="h2">
               Рішення починається
               <br />
               <em>з діагностики.</em>
-            </h2>
+            </AnimatedHeading>
           </div>
           <div>
-            <h3>Що варто знати</h3>
+            <AnimatedHeading as="h3">Що варто знати</AnimatedHeading>
             <ul>
               {service.details.map((detail) => (
                 <li key={detail}>
@@ -55,7 +56,7 @@ export function ServicePage() {
               ))}
             </ul>
             <div className="service-note">
-              <h3>Важливі деталі</h3>
+              <AnimatedHeading as="h3">Важливі деталі</AnimatedHeading>
               <p>{service.note}</p>
             </div>
             <p className="muted">
@@ -68,11 +69,11 @@ export function ServicePage() {
       <section className="section preparation-section">
         <div className="container">
           <Eyebrow>До першої зустрічі</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Трохи підготовки.
             <br />
             <em>Більше спокою.</em>
-          </h2>
+          </AnimatedHeading>
           <div className="preparation-grid">
             {[
               {
@@ -90,7 +91,7 @@ export function ServicePage() {
             ].map((item, i) => (
               <Reveal key={item.title} delay={i * 0.1} className="preparation-card">
                 <span>0{i + 1}</span>
-                <h3>{item.title}</h3>
+                <AnimatedHeading as="h3">{item.title}</AnimatedHeading>
                 <p>{item.text}</p>
               </Reveal>
             ))}
@@ -106,9 +107,9 @@ export function ServicePage() {
       <section className="section more-services">
         <div className="container">
           <Eyebrow>Дізнайтеся більше</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Інші <em>напрями.</em>
-          </h2>
+          </AnimatedHeading>
           <div className="more-service-links">
             {services
               .filter((s) => s.id !== service.id)
@@ -136,18 +137,18 @@ export function PrivacyPage() {
           На головну
         </Link>
         <Eyebrow>З повагою до вашої приватності</Eyebrow>
-        <h1>
+        <AnimatedHeading as="h1">
           Політика
           <br />
           <em>конфіденційності.</em>
-        </h1>
+        </AnimatedHeading>
         <p className="muted">Оновлено 4 листопада 2026 року</p>
         <div className="legal-content">
           <p>
             Цей сайт представляє лікаря стоматолога-ортодонта Теплу Зоряну Миколаївну у Києві.
             Політика пояснює, як сайт працює з контактними даними відвідувачів.
           </p>
-          <h2>Які дані запитуємо</h2>
+          <AnimatedHeading as="h2">Які дані запитуємо</AnimatedHeading>
           <p>
             Форма консультації запитує ім’я, номер телефону, для кого потрібна консультація (дитина
             або дорослий), напрям звернення, необов’язковий короткий коментар та згоду на обробку
@@ -155,13 +156,13 @@ export function PrivacyPage() {
             персональні дані дитини. Для запису дитини контактні дані залишає її законний
             представник.
           </p>
-          <h2>Для чого потрібні дані</h2>
+          <AnimatedHeading as="h2">Для чого потрібні дані</AnimatedHeading>
           <p>
             Дані використовуються для відповіді на ваше звернення та узгодження консультації.
             Підстава — ваша добровільна згода, яку ви надаєте окремою позначкою у формі. Дані не
             призначені для рекламних розсилок.
           </p>
-          <h2>Як надсилається звернення</h2>
+          <AnimatedHeading as="h2">Як надсилається звернення</AnimatedHeading>
           <p>
             {site.formEndpoint
               ? 'Для доставки заявок використовується сервіс Formspree. Після натискання кнопки надсилання контактні дані передаються цьому сервісу через HTTPS і далі одержувачу форми.'
@@ -180,7 +181,7 @@ export function PrivacyPage() {
             </a>
             . Сайт не показує повідомлення про успіх без підтвердження приймання сервісом.
           </p>
-          <h2>Зберігання і захист</h2>
+          <AnimatedHeading as="h2">Зберігання і захист</AnimatedHeading>
           <p>
             Сайт не записує вміст форми в URL, localStorage, cookies чи публічні файли. Дані
             введення існують у пам’яті сторінки до її закриття або перезавантаження. Після
@@ -188,7 +189,7 @@ export function PrivacyPage() {
             них має бути обмежений, а дані видалятимуться, щойно потреба у відповіді та узгодженні
             консультації відпаде, з урахуванням законних вимог зберігання.
           </p>
-          <h2>Cookies та зовнішні сервіси</h2>
+          <AnimatedHeading as="h2">Cookies та зовнішні сервіси</AnimatedHeading>
           <p>
             На сайті немає рекламних трекерів і аналітичних cookies. Шрифти та ілюстрації
             завантажуються разом із сайтом. Хостинг може вести технічні журнали запитів відповідно
@@ -202,7 +203,7 @@ export function PrivacyPage() {
               Google.
             </p>
           )}
-          <h2>Ваші права і зв’язок</h2>
+          <AnimatedHeading as="h2">Ваші права і зв’язок</AnimatedHeading>
           <p>
             Ви можете запросити інформацію про обробку свого звернення, уточнення чи видалення
             даних, а також відкликати згоду. Це не впливає на правомірність попередньої обробки. Для
@@ -215,7 +216,7 @@ export function PrivacyPage() {
               {site.contacts.phoneDisplay}
             </a>
           )}
-          <h2>Медична інформація</h2>
+          <AnimatedHeading as="h2">Медична інформація</AnimatedHeading>
           <p>
             Матеріали сайту мають інформаційний характер і не є дистанційною діагностикою або
             індивідуальною медичною рекомендацією. Для визначення діагнозу й плану лікування
@@ -232,11 +233,11 @@ export function NotFound() {
     <section className="not-found section">
       <div className="container">
         <Eyebrow>404 · Сторінку не знайдено</Eyebrow>
-        <h1>
+        <AnimatedHeading as="h1">
           Повернімося
           <br />
           <em>до знайомства.</em>
-        </h1>
+        </AnimatedHeading>
         <p className="muted">
           Можливо, адреса змінилася. Головна сторінка допоможе знайти потрібну інформацію.
         </p>

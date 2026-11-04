@@ -1,3 +1,4 @@
+import { AnimatedHeading } from '../motion/AnimatedHeading'
 import { useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowRight, ChevronsLeftRight, Plus, Quote } from 'lucide-react'
@@ -13,11 +14,11 @@ export function FAQ() {
       <div className="container faq-layout">
         <Reveal>
           <Eyebrow>Відповіді на ваші запитання</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Більше ясності.
             <br />
             <em>Менше хвилювань.</em>
-          </h2>
+          </AnimatedHeading>
           <p className="muted faq-intro">
             Усе починається з розмови. Зібрала відповіді на запитання, які найчастіше виникають
             перед першою зустріччю.
@@ -29,7 +30,7 @@ export function FAQ() {
         <div className="faq-list">
           {faq.map((item, i) => (
             <div className={`faq-item ${open === i ? 'is-open' : ''}`} key={item.question}>
-              <h3>
+              <AnimatedHeading as="h3">
                 <button
                   id={`faq-button-${i}`}
                   aria-expanded={open === i}
@@ -39,7 +40,7 @@ export function FAQ() {
                   <span>{item.question}</span>
                   <Plus size={18} aria-hidden="true" />
                 </button>
-              </h3>
+              </AnimatedHeading>
               <motion.div
                 id={`faq-panel-${i}`}
                 role="region"
@@ -73,10 +74,10 @@ export function Results() {
       <div className="container results-layout">
         <Reveal>
           <Eyebrow>Результати лікування</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             За кожною посмішкою —<br />
             <em>особиста історія.</em>
-          </h2>
+          </AnimatedHeading>
           <p className="muted">
             Кожен випадок індивідуальний. Тут з’являться реальні історії лікування — з повагою до
             приватності та лише за згодою пацієнтів.
@@ -187,10 +188,10 @@ export function Reviews() {
       <div className="container">
         <Eyebrow>Відгуки пацієнтів</Eyebrow>
         <div className="reviews-layout">
-          <h2>
+          <AnimatedHeading as="h2">
             Найцінніше —<br />
             <em>ваша довіра.</em>
-          </h2>
+          </AnimatedHeading>
           <div className="review-content">
             <Quote className="quote-icon" size={38} strokeWidth={1} aria-hidden="true" />
             <AnimatePresence mode="wait" initial={false}>

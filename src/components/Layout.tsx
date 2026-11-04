@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowUp, ArrowUpRight, Instagram, Menu, Phone, X } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigationType } from 'react-router-dom'
 import { site } from '../data/site'
 import { Brand } from './ui'
 import { publicUrl, seoForPath } from '../lib/seo'
 import { journeyPath } from '../data/journey'
+import { silk } from '../motion/presets'
 
 const navItems = [
   { label: 'Про лікаря', to: '/#about' },
@@ -20,55 +21,95 @@ export function RouteEffects() {
   const { pathname, hash, key } = useLocation()
   const reduced = useReducedMotion()
   const first = useRef(true)
+  const navigation = useNavigationType()
+  const previous = useRef<{ key: string; pathname: string } | null>(null)
+  const positions = useRef(new Map<string, number>())
+  const applied = useRef('')
   useEffect(() => {
-    const seo = seoForPath(pathname)
-    document.title = seo.title
-    const meta = (name: string, content: string, property = false) => {
-      const attr = property ? 'property' : 'name'
-      let element = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`)
-      if (!element) {
-        element = document.createElement('meta')
-        element.setAttribute(attr, name)
-        document.head.appendChild(element)
-      }
-      element.content = content
+    const original = history.scrollRestoration
+    history.scrollRestoration = 'manual'
+    return () => {
+      history.scrollRestoration = original
     }
-    meta('description', seo.description)
-    meta('og:title', seo.title, true)
-    meta('og:description', seo.description, true)
-    meta('robots', seo.noindex ? 'noindex, follow' : 'index, follow')
-    const canonical = publicUrl(seo.path)
-    if (canonical) {
-      let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
-      if (!link) {
-        link = document.createElement('link')
-        link.rel = 'canonical'
-        document.head.appendChild(link)
-      }
-      link.href = canonical
-      meta('og:url', canonical, true)
-    }
-    const frame = requestAnimationFrame(() => {
-      if (hash) {
-        let id = hash.substring(1)
-        try {
-          id = decodeURIComponent(id)
-        } catch {
-          /* Invalid escapes should not break navigation. */
+  }, [])
+  useEffect(() => {
+    if (previous.current && previous.current.key !== key)
+      positions.current.set(previous.current.key, window.scrollY)
+    const changedPage = !!previous.current && previous.current.pathname !== pathname
+    previous.current = { key, pathname }
+    let frame = 0
+    let arrival: Animation | undefined
+    function apply() {
+      const scene = document.querySelector<HTMLElement>('.page-content[data-page]')
+      if (scene?.dataset.page !== pathname || applied.current === key) return
+      applied.current = key
+      const seo = seoForPath(pathname)
+      document.title = seo.title
+      const meta = (name: string, content: string, property = false) => {
+        const attr = property ? 'property' : 'name'
+        let element = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`)
+        if (!element) {
+          element = document.createElement('meta')
+          element.setAttribute(attr, name)
+          document.head.appendChild(element)
         }
-        const target = document.getElementById(id)
-        target?.scrollIntoView({
-          behavior: reduced || first.current ? 'instant' : 'smooth',
-          block: 'start',
-        })
-      } else {
-        window.scrollTo({ top: 0, behavior: 'instant' })
-        if (!first.current) document.getElementById('main-content')?.focus({ preventScroll: true })
+        element.content = content
       }
-      first.current = false
-    })
-    return () => cancelAnimationFrame(frame)
-  }, [pathname, hash, key, reduced])
+      meta('description', seo.description)
+      meta('og:title', seo.title, true)
+      meta('og:description', seo.description, true)
+      meta('robots', seo.noindex ? 'noindex, follow' : 'index, follow')
+      const canonical = publicUrl(seo.path)
+      if (canonical) {
+        let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+        if (!link) {
+          link = document.createElement('link')
+          link.rel = 'canonical'
+          document.head.appendChild(link)
+        }
+        link.href = canonical
+        meta('og:url', canonical, true)
+      }
+      frame = requestAnimationFrame(() => {
+        if (navigation === 'POP' && positions.current.has(key)) {
+          window.scrollTo({ top: positions.current.get(key)!, behavior: 'instant' })
+        } else if (hash) {
+          let id = hash.substring(1)
+          try {
+            id = decodeURIComponent(id)
+          } catch {
+            /* Invalid escapes should not break navigation. */
+          }
+          const target = document.getElementById(id)
+          target?.scrollIntoView({
+            behavior: reduced || first.current || changedPage ? 'instant' : 'smooth',
+            block: 'start',
+          })
+          if (target && !reduced && !first.current && !changedPage) {
+            arrival = target.animate([{ opacity: 0.72 }, { opacity: 1 }], {
+              duration: 780,
+              easing: silk.cssEase,
+            })
+          }
+        } else {
+          window.scrollTo({
+            top: 0,
+            behavior: reduced || first.current || changedPage ? 'instant' : 'smooth',
+          })
+          if (!first.current)
+            document.getElementById('main-content')?.focus({ preventScroll: true })
+        }
+        first.current = false
+      })
+    }
+    apply()
+    document.addEventListener('site:scene-ready', apply)
+    return () => {
+      cancelAnimationFrame(frame)
+      arrival?.cancel()
+      document.removeEventListener('site:scene-ready', apply)
+    }
+  }, [pathname, hash, key, reduced, navigation])
   return null
 }
 
@@ -146,6 +187,14 @@ export function Header() {
                 aria-current={location.pathname === item.to ? 'page' : undefined}
               >
                 {item.label}
+                {(location.hash === item.to.slice(1) || location.pathname === item.to) && (
+                  <motion.span
+                    className="nav-active-line"
+                    layoutId="nav-active"
+                    aria-hidden="true"
+                    transition={{ duration: reduced ? 0 : 0.32, ease: silk.ease }}
+                  />
+                )}
               </Link>
             ))}
           </nav>
@@ -176,15 +225,31 @@ export function Header() {
             transition={{ duration: reduced ? 0 : 0.25 }}
           >
             <span className="tiny-caps">Ваша посмішка. Моя турбота.</span>
-            <nav aria-label="Мобільна навігація">
+            <motion.nav
+              aria-label="Мобільна навігація"
+              initial="closed"
+              animate="open"
+              variants={{
+                open: { transition: { staggerChildren: 0.045, delayChildren: 0.08 } },
+                closed: {},
+              }}
+            >
               {navItems.map((item, i) => (
-                <Link key={item.to} to={item.to}>
-                  <span className="mobile-nav-number">0{i + 1}</span>
-                  {item.label}
-                  <ArrowUpRight size={22} />
-                </Link>
+                <motion.div
+                  key={item.to}
+                  variants={{
+                    closed: { opacity: reduced ? 1 : 0.3, y: reduced ? 0 : 12 },
+                    open: { opacity: 1, y: 0, transition: { duration: 0.48, ease: silk.ease } },
+                  }}
+                >
+                  <Link key={item.to} to={item.to}>
+                    <span className="mobile-nav-number">0{i + 1}</span>
+                    {item.label}
+                    <ArrowUpRight size={22} />
+                  </Link>
+                </motion.div>
               ))}
-            </nav>
+            </motion.nav>
             <Link className="button button-primary" to="/#appointment">
               Записатися на консультацію
               <ArrowUpRight size={18} />

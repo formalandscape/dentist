@@ -26,7 +26,10 @@ test('home, real contacts, navigation and route-specific static HTML', async ({
   ]) {
     const path = `/poslugy/${slug}/`
     const html = await (await request.get(path)).text()
-    expect(html).toContain(`<h1>${title}</h1>`)
+    const prerenderedHeading = html
+      .match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1]
+      .replace(/<[^>]*>/g, '')
+    expect(prerenderedHeading).toBe(title)
     expect(html).not.toContain('<!--app-->')
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(title)

@@ -1,3 +1,4 @@
+import { AnimatedHeading } from './motion/AnimatedHeading'
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import {
@@ -84,14 +85,14 @@ function Hero() {
             ПЕРСОНАЛЬНА ОРТОДОНТІЯ <span className="location-divider">/</span> КИЇВ
           </div>
           <p className="hero-promise">Впевненість починається з усмішки.</p>
-          <h1>
+          <AnimatedHeading as="h1">
             Ваша посмішка.
             <br />
             <span className="hero-indent">Моя професійна</span>
             <br />
             <em>турбота.</em>
             <Flower />
-          </h1>
+          </AnimatedHeading>
           <div className="hero-description">
             <span className="hero-description-line" />
             <p>
@@ -209,11 +210,11 @@ function About() {
         </Reveal>
         <Reveal className="about-copy">
           <Eyebrow>Давайте познайомимося</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Досвід, якому
             <br />
             <em>можна довіряти.</em>
-          </h2>
+          </AnimatedHeading>
           <p className="lead">
             За красивою посмішкою я завжди бачу людину. Її історію, очікування та індивідуальність.
           </p>
@@ -275,11 +276,11 @@ function Services() {
         <Reveal className="section-heading">
           <div>
             <Eyebrow>Напрями лікування</Eyebrow>
-            <h2>
+            <AnimatedHeading as="h2">
               Різні шляхи.
               <br />
               <em>Одна увага до вас.</em>
-            </h2>
+            </AnimatedHeading>
           </div>
           <p className="muted">
             Обираємо метод, який відповідає вашій клінічній ситуації, потребам і ритму життя.
@@ -297,7 +298,7 @@ function Services() {
                   </span>
                 </div>
                 <div className="service-card-copy">
-                  <h3>{s.title}</h3>
+                  <AnimatedHeading as="h3">{s.title}</AnimatedHeading>
                   <p>{s.description}</p>
                   <span className="text-link">
                     Дізнатися більше <ArrowUpRight size={15} aria-hidden="true" />
@@ -332,7 +333,7 @@ function Approach() {
       <div className="container approach-layout">
         <Reveal className="approach-copy">
           <Eyebrow light>Чому пацієнти обирають мене</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Не просто рівні зуби.
             <br />
             <em>
@@ -340,7 +341,7 @@ function Approach() {
               <br />
               значення.
             </em>
-          </h2>
+          </AnimatedHeading>
           <p>
             Я дивлюся ширше за естетику посмішки — на здоров’я, функцію та ваше самопочуття. Кожне
             рішення має бути обґрунтованим, а кожен крок — зрозумілим.
@@ -392,11 +393,11 @@ function Consultation() {
         <Reveal className="section-heading">
           <div>
             <Eyebrow>Як проходить консультація</Eyebrow>
-            <h2>
+            <AnimatedHeading as="h2">
               Спокійно. Зрозуміло.
               <br />
               <em>У вашому темпі.</em>
-            </h2>
+            </AnimatedHeading>
           </div>
           <p className="muted">
             Перша зустріч — це можливість познайомитися, отримати відповіді та побачити свій
@@ -410,7 +411,7 @@ function Consultation() {
                 <span>0{i + 1}</span>
                 <span className="step-dot" />
               </div>
-              <h3>{step.title}</h3>
+              <AnimatedHeading as="h3">{step.title}</AnimatedHeading>
               <p>{step.text}</p>
             </Reveal>
           ))}
@@ -426,7 +427,7 @@ export function AppointmentSection() {
       <div className="container appointment-layout">
         <Reveal className="appointment-copy">
           <Eyebrow>Ваш новий початок</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Перший крок
             <br />
             до здорової
@@ -436,7 +437,7 @@ export function AppointmentSection() {
               <br />
               посмішки.
             </em>
-          </h2>
+          </AnimatedHeading>
           <p className="muted">
             Почнімо з розмови. Я допоможу розібратися у вашій ситуації та зрозуміти, з чого варто
             почати.
@@ -458,7 +459,7 @@ export function AppointmentSection() {
         </Reveal>
         <Reveal className="form-card">
           <div className="form-heading">
-            <h3>Запис на консультацію</h3>
+            <AnimatedHeading as="h3">Запис на консультацію</AnimatedHeading>
             <span>Знайдемо зручний час для знайомства</span>
           </div>
           <AppointmentForm />
@@ -474,11 +475,11 @@ function Contacts() {
       <div className="container contacts-layout">
         <Reveal>
           <Eyebrow>Будьмо на зв’язку</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             До зустрічі
             <br />
             <em>у Києві.</em>
-          </h2>
+          </AnimatedHeading>
           <p className="muted">
             Прийом проводиться на базі клініки.
             {site.contacts.address

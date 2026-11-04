@@ -1,0 +1,443 @@
+/* The silk system: small, coordinated movements over a continuously visible page. */
+#main-content {
+  position: relative;
+  isolation: isolate;
+  min-height: 65vh;
+}
+.skip-link {
+  transition: transform var(--motion-micro, 260ms)
+    var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.step-line[data-silk-line='true']::after {
+  animation: silk-rule 900ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)) both;
+}
+@keyframes silk-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.page-content {
+  position: relative;
+  transform-origin: center top;
+}
+.scene-ambience {
+  position: fixed;
+  inset: 94px 0 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+  background: #f3f2e6;
+}
+.scene-ambience > span {
+  position: absolute;
+  inset: -8%;
+  background: radial-gradient(ellipse at 15% 35%, #d3dec2aa, transparent 60%);
+  opacity: 0.6;
+  animation: silk-light-drift 26s ease-in-out infinite alternate;
+}
+.scene-ambience > span + span {
+  background: radial-gradient(ellipse at 85% 65%, #e4d9bc99, transparent 58%);
+  animation-duration: 31s;
+  animation-direction: alternate-reverse;
+}
+@keyframes silk-light-drift {
+  from {
+    transform: translate3d(-1%, -1%, 0) scale(1);
+    opacity: 0.42;
+  }
+  to {
+    transform: translate3d(1.5%, 1.5%, 0) scale(1.035);
+    opacity: 0.65;
+  }
+}
+.motion-word-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: bottom;
+  padding: 0.02em 0.035em 0.14em;
+  margin: -0.02em -0.035em -0.14em;
+}
+.motion-word {
+  display: inline-block;
+}
+[data-motion-heading] {
+  text-wrap: pretty;
+}
+.hero [data-motion-heading] {
+  text-wrap: initial;
+}
+.eyebrow-line,
+.hero-description-line,
+.step-line {
+  transform-origin: left center;
+}
+.hero-description-line {
+  transform-origin: center top;
+}
+.page-content section {
+  position: relative;
+}
+.page-content .section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 95% 0%, #e5dfc31c, transparent 58%);
+  opacity: 0.6;
+}
+.page-content .section > * {
+  position: relative;
+}
+.button,
+.round-button,
+.text-link,
+.header-appointment,
+.mobile-booking {
+  transition-timing-function: var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.button,
+.header-appointment,
+.mobile-booking {
+  transition-duration: var(--motion-micro, 260ms);
+}
+.button > svg,
+.round-button > svg,
+.text-link > svg,
+.header-appointment > svg,
+.mobile-booking > svg {
+  transition:
+    transform var(--motion-micro, 260ms) var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    opacity var(--motion-micro, 260ms);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.button:focus-visible > svg,
+.header-appointment:hover > svg,
+.mobile-booking:hover > svg {
+  transform: translate(3px, -3px);
+}
+.round-button:active {
+  transform: scale(0.95);
+}
+.button:active,
+.header-appointment:active,
+.mobile-booking:active {
+  scale: 0.985;
+}
+.service-card,
+.preparation-card,
+.journey-summary,
+.association,
+.form-card {
+  position: relative;
+  transition:
+    transform 420ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow 420ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--motion-micro, 260ms),
+    background-color 400ms;
+}
+.preparation-card:hover,
+.journey-summary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px #37523213;
+  border-color: #8fa977;
+}
+.service-card::after,
+.preparation-card::after,
+.journey-summary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid #9db37e;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.985;
+  transition:
+    opacity 450ms,
+    scale 550ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.service-card:hover::after,
+.service-card:focus-visible::after,
+.preparation-card:hover::after,
+.journey-summary:hover::after {
+  opacity: 0.65;
+  scale: 1;
+}
+.desktop-nav a {
+  position: relative;
+}
+.nav-active-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--sage);
+  transform-origin: left;
+}
+.desktop-nav a.active::after {
+  opacity: 0;
+}
+.desktop-nav a,
+.footer-bottom a {
+  transition: color var(--motion-micro, 260ms);
+}
+.desktop-nav a:hover,
+.footer-bottom a:hover {
+  color: #376e48;
+}
+.mobile-menu {
+  transform-origin: top;
+}
+.mobile-menu nav > div {
+  position: relative;
+}
+.mobile-menu nav a {
+  transition:
+    background-color var(--motion-micro, 260ms),
+    color var(--motion-micro, 260ms),
+    padding var(--motion-micro, 260ms);
+}
+.mobile-menu nav a:hover {
+  background: #e8eddb;
+  color: #285c40;
+  padding-inline: 10px;
+}
+.field {
+  position: relative;
+}
+.field label {
+  transition:
+    color var(--motion-micro, 260ms),
+    transform var(--motion-micro, 260ms);
+  transform-origin: left;
+}
+.field:focus-within label {
+  color: #2e6947;
+  transform: translateX(2px);
+}
+.field input,
+.field select,
+.field textarea {
+  transition:
+    border-color var(--motion-micro, 260ms),
+    box-shadow var(--motion-micro, 260ms),
+    background-color var(--motion-micro, 260ms);
+}
+.field input[aria-invalid='true'],
+.field select[aria-invalid='true'],
+.field textarea[aria-invalid='true'] {
+  box-shadow: 0 1px #a3473926;
+}
+.patient-option,
+.radio-circle,
+.consent input {
+  transition:
+    background-color var(--motion-micro, 260ms),
+    border-color var(--motion-micro, 260ms),
+    box-shadow var(--motion-micro, 260ms);
+}
+.patient-option:hover {
+  background: #e9eedc;
+  border-color: #8ea87a;
+}
+.radio-circle > span {
+  animation: silk-choice 240ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+@keyframes silk-choice {
+  from {
+    scale: 0.6;
+    opacity: 0.5;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+.form-success {
+  animation: silk-confirm 720ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+@keyframes silk-confirm {
+  from {
+    opacity: 0.45;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.form-success .success-icon {
+  animation: silk-choice 650ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.form-success .success-icon svg {
+  stroke-dasharray: 60;
+  animation: silk-check 700ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+@keyframes silk-check {
+  from {
+    stroke-dashoffset: 60;
+    opacity: 0.3;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+.appointment-form[aria-busy='true'] .submit-button {
+  box-shadow: 0 0 0 3px #a6ba8830;
+}
+.journey-tabs {
+  position: relative;
+}
+.journey-rail {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: -14px;
+  width: 2px;
+  background: #dce3ce;
+  pointer-events: none;
+  border-radius: 2px;
+}
+.journey-rail > span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#a7bb81, #346947);
+  transform-origin: top;
+  border-radius: inherit;
+}
+.journey-tabs button {
+  position: relative;
+}
+.journey-tabs button::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 1px;
+  background: #759556;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 480ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.journey-tabs button[aria-selected='true']::after {
+  transform: scaleX(1);
+}
+.journey-tabs button[aria-selected='true'] .journey-tab-number {
+  color: #2c6741;
+}
+.journey-tab-number {
+  transition: color 350ms;
+}
+.journey-roles svg,
+.journey-summary > svg,
+.encouragement-icon svg {
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.journey-summary:hover > svg,
+.encouragement:hover .encouragement-icon svg {
+  transform: rotate(-8deg) translateY(-2px);
+  transition: transform 450ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.journey-panels {
+  transform-origin: top;
+}
+.journey-panel[hidden] {
+  display: none;
+}
+.faq-item h3 button {
+  transition-duration: var(--motion-micro, 260ms);
+}
+.comparison-divider > span {
+  transition:
+    box-shadow 300ms,
+    scale 300ms;
+}
+.comparison:focus-within .comparison-divider > span,
+.comparison:hover .comparison-divider > span {
+  box-shadow:
+    0 0 0 5px #f6f7e868,
+    0 5px 15px #304c3020;
+  scale: 1.05;
+}
+.contact-details > a {
+  transition:
+    background-color 350ms,
+    color 300ms,
+    padding 350ms var(--motion-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+.contact-details > a:hover {
+  background: #e9eddc77;
+  padding-inline: 8px;
+}
+.portrait-light {
+  filter: none;
+  animation: silk-portrait-light 24s ease-in-out infinite alternate;
+}
+.brand-symbol,
+.brand-type {
+  transition: color var(--motion-micro, 260ms);
+}
+.brand:hover .brand-symbol,
+.brand:hover .brand-type {
+  color: #376e48;
+}
+@keyframes silk-portrait-light {
+  from {
+    transform: translate(-1%, 0) rotate(5deg);
+    opacity: 0.7;
+  }
+  to {
+    transform: translate(2%, 1%) rotate(7deg);
+    opacity: 1;
+  }
+}
+@media (max-width: 700px) {
+  .scene-ambience {
+    inset-block-start: 78px;
+  }
+  .journey-rail {
+    left: -9px;
+  }
+  .scene-ambience > span {
+    animation-duration: 34s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .motion-word,
+  .motion-word-mask {
+    transform: none !important;
+    filter: none !important;
+  }
+  .button:active,
+  .header-appointment:active,
+  .mobile-booking:active,
+  .service-card:hover::after,
+  .preparation-card:hover::after,
+  .journey-summary:hover::after,
+  .comparison:hover .comparison-divider > span {
+    scale: 1;
+  }
+  .service-card:hover,
+  .preparation-card:hover,
+  .journey-summary:hover,
+  .encouragement:hover .encouragement-icon svg,
+  .journey-summary:hover > svg,
+  .round-button:active {
+    transform: none;
+  }
+}

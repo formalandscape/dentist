@@ -1,8 +1,9 @@
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useTransform, useSpring } from 'motion/react'
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { ArrowUpRight, Asterisk } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { imageReveal, silk } from '../motion/presets'
 
 export function Reveal({
   children,
@@ -13,21 +14,10 @@ export function Reveal({
   className?: string
   delay?: number
 }) {
-  const reduced = useReducedMotion()
   return (
-    <motion.div
-      className={`reveal-block ${className}`}
-      initial={false}
-      whileInView={reduced ? {} : { opacity: [0.55, 1], y: [22, 0] }}
-      viewport={{ once: true, amount: 0.08 }}
-      transition={{
-        duration: reduced ? 0 : 0.9,
-        delay: reduced ? 0 : delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
+    <div className={`reveal-block ${className}`} data-motion-reveal="true" data-delay={delay}>
       {children}
-    </motion.div>
+    </div>
   )
 }
 
@@ -89,12 +79,28 @@ export function Photo({
   const target = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({ target, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [-10, 10])
+  const y = useTransform(scrollYProgress, [0, 1], [0, -12])
+  const smoothY = useSpring(y, { stiffness: 70, damping: 24, mass: 0.4 })
   return (
     <motion.div
       ref={target}
       className={`editorial-photo photo-${kind} ${className}`}
-      style={{ y: reduced ? 0 : y }}
+      style={{ y: reduced ? 0 : smoothY }}
+      initial={false}
+      inherit={false}
+      animate={
+        reduced
+          ? {
+              opacity: 1,
+              clipPath: 'inset(0% 0 0 0 round 4px)',
+              scale: 1,
+              transition: { duration: 0 },
+            }
+          : undefined
+      }
+      whileInView={reduced ? {} : imageReveal}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: reduced ? 0 : silk.section, ease: silk.ease }}
       role="img"
       aria-label={
         label ||

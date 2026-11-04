@@ -1,16 +1,25 @@
+import { AnimatedHeading } from './motion/AnimatedHeading'
 import { useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
 import { ArrowDown, ArrowLeft, ArrowRight, Check, Heart, ListChecks, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { journeySteps } from './data/journey'
 import { Action, Eyebrow, Photo, Reveal } from './components/ui'
 import { Encouragement, Invitation } from './components/Atmosphere'
 import { AppointmentSection } from './Home'
+import { usePanelTransition } from './motion/usePanelTransition'
 
 export function JourneyPage() {
   const [selected, setSelected] = useState(0)
   const tabs = useRef<Array<HTMLButtonElement | null>>([])
+  const timeline = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: timeline,
+    offset: ['start center', 'end center'],
+  })
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 80, damping: 28 })
+  const { shown, controls, switching } = usePanelTransition(selected)
   const reduced = useReducedMotion()
   const step = journeySteps[selected]
   function keyboard(event: KeyboardEvent, index: number) {
@@ -39,11 +48,11 @@ export function JourneyPage() {
           <div className="journey-hero-layout">
             <Reveal>
               <Eyebrow>Ваш шлях до посмішки</Eyebrow>
-              <h1>
+              <AnimatedHeading as="h1">
                 Крок за кроком.
                 <br />
                 <em>З турботою про вас.</em>
-              </h1>
+              </AnimatedHeading>
               <p className="journey-lead">
                 Впевненість починається з розуміння. Дізнайтеся, як може проходити ортодонтичне
                 лікування — від першої розмови до підтримки досягнутих змін.
@@ -78,16 +87,16 @@ export function JourneyPage() {
           </div>
         </div>
       </section>
-      <section id="journey-stages" className="section journey-stages">
+      <section ref={timeline} id="journey-stages" className="section journey-stages">
         <div className="container">
           <Reveal className="section-heading">
             <div>
               <Eyebrow>Зрозумілий маршрут</Eyebrow>
-              <h2>
+              <AnimatedHeading as="h2">
                 Ваше лікування.
                 <br />
                 <em>Ваші усвідомлені рішення.</em>
-              </h2>
+              </AnimatedHeading>
             </div>
             <p className="muted">
               Оберіть етап, щоб дізнатися про його мету, роль лікаря й те, що можете зробити ви.
@@ -107,6 +116,9 @@ export function JourneyPage() {
               aria-label="Етапи ортодонтичного лікування"
               aria-orientation="vertical"
             >
+              <span className="journey-rail" aria-hidden="true">
+                <motion.span style={{ scaleY: reduced ? scrollYProgress : smoothProgress }} />
+              </span>
               {journeySteps.map((s, i) => (
                 <button
                   key={s.title}
@@ -127,38 +139,36 @@ export function JourneyPage() {
                 </button>
               ))}
             </div>
-            <div className="journey-panels">
+            <motion.div
+              className="journey-panels"
+              initial={false}
+              animate={controls}
+              aria-busy={switching}
+            >
               {journeySteps.map((s, i) => (
-                <motion.div
+                <div
                   key={s.title}
                   role="tabpanel"
                   id={`journey-panel-${i}`}
                   aria-labelledby={`journey-tab-${i}`}
                   tabIndex={0}
-                  hidden={selected !== i}
+                  hidden={shown !== i}
                   className="journey-panel"
-                  initial={false}
-                  animate={
-                    selected === i && !reduced
-                      ? { opacity: [0.7, 1], y: [10, 0] }
-                      : { opacity: 1, y: 0 }
-                  }
-                  transition={{ duration: 0.45 }}
                 >
                   <span className="tiny-caps">
                     Етап 0{i + 1} · {s.short}
                   </span>
-                  <h3>{s.title}</h3>
+                  <AnimatedHeading as="h3">{s.title}</AnimatedHeading>
                   <p className="journey-panel-intro">{s.text}</p>
                   <div className="journey-roles">
                     <div>
                       <ListChecks size={20} aria-hidden="true" />
-                      <h4>Разом із лікарем</h4>
+                      <AnimatedHeading as="h4">Разом із лікарем</AnimatedHeading>
                       <p>{s.doctor}</p>
                     </div>
                     <div>
                       <Heart size={20} aria-hidden="true" />
-                      <h4>Ваша участь</h4>
+                      <AnimatedHeading as="h4">Ваша участь</AnimatedHeading>
                       <p>{s.patient}</p>
                     </div>
                   </div>
@@ -180,9 +190,9 @@ export function JourneyPage() {
                       <ArrowRight size={18} />
                     </button>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </div>
+            </motion.div>
           </div>
           <p className="journey-disclaimer">
             Це загальна схема для знайомства. Послідовність, обсяг діагностики, методи та тривалість
@@ -200,10 +210,10 @@ export function JourneyPage() {
       <section className="section journey-support">
         <div className="container">
           <Eyebrow>Турбота між зустрічами</Eyebrow>
-          <h2>
+          <AnimatedHeading as="h2">
             Ваша посмішка —<br />
             <em>наша спільна увага.</em>
-          </h2>
+          </AnimatedHeading>
           <div className="journey-summary-grid">
             {[
               {
@@ -224,7 +234,7 @@ export function JourneyPage() {
             ].map(({ icon: Icon, title, text }, i) => (
               <Reveal className="journey-summary" delay={i * 0.1} key={title}>
                 <Icon size={25} strokeWidth={1.2} aria-hidden="true" />
-                <h3>{title}</h3>
+                <AnimatedHeading as="h3">{title}</AnimatedHeading>
                 <p>{text}</p>
               </Reveal>
             ))}

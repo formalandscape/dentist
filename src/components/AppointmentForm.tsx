@@ -1,8 +1,11 @@
+import { AnimatedHeading } from '../motion/AnimatedHeading'
 import { useRef, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { ArrowUpRight, Check, LoaderCircle, Phone, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { site } from '../data/site'
+import { motion, useReducedMotion } from 'motion/react'
+import { silk } from '../motion/presets'
 import { services } from '../data/services'
 import { submitAppointment, validateAppointment } from '../lib/form'
 import type { Appointment, FieldErrors } from '../lib/form'
@@ -18,6 +21,7 @@ const initial: Appointment = {
 }
 
 export function AppointmentForm() {
+  const reduced = useReducedMotion()
   const [values, setValues] = useState(initial)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -70,9 +74,15 @@ export function AppointmentForm() {
   }
   const error = (key: keyof Appointment) =>
     errors[key] ? (
-      <span className="field-error" id={`error-${key}`}>
+      <motion.span
+        className="field-error"
+        id={`error-${key}`}
+        initial={false}
+        animate={reduced ? { opacity: 1, y: 0 } : { opacity: [0.6, 1], y: [5, 0] }}
+        transition={{ duration: reduced ? 0 : silk.micro, ease: silk.ease }}
+      >
         {errors[key]}
-      </span>
+      </motion.span>
     ) : null
   const attrs = (key: keyof Appointment) => ({
     'aria-invalid': !!errors[key],
@@ -85,7 +95,7 @@ export function AppointmentForm() {
         <span className="success-icon">
           <Check size={30} />
         </span>
-        <h3>Дякую за вашу довіру.</h3>
+        <AnimatedHeading as="h3">Дякую за вашу довіру.</AnimatedHeading>
         <p>Сервіс прийняв вашу заявку. Зв’яжемося з вами, щоб узгодити зручний час консультації.</p>
         <button className="text-link" onClick={() => setStatus('idle')}>
           Повернутися до форми <ArrowUpRight size={16} />
@@ -268,9 +278,15 @@ export function AppointmentForm() {
       </fieldset>
       <div className="form-status" aria-live="polite" aria-atomic="true">
         {status === 'error' && (
-          <p role="alert" className="form-error">
+          <motion.p
+            role="alert"
+            className="form-error"
+            initial={false}
+            animate={reduced ? { opacity: 1, y: 0 } : { opacity: [0.6, 1], y: [7, 0] }}
+            transition={{ duration: reduced ? 0 : 0.36, ease: silk.ease }}
+          >
             {message}
-          </p>
+          </motion.p>
         )}
       </div>
       <p className="form-safety">
