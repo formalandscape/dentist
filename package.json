@@ -1,0 +1,38 @@
+{
+  "name": "zoryana-tepla",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build && node scripts/prerender.mjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "playwright test",
+    "check": "tsc -b",
+    "format": "prettier --write src scripts tests *.ts *.json *.html README.md",
+    "verify:static": "node scripts/verify-static.mjs",
+    "build:pages": "VITE_BASE_PATH=/dentist/ VITE_SITE_URL=https://formalandscape.github.io npm run build && VITE_BASE_PATH=/dentist/ VITE_SITE_URL=https://formalandscape.github.io npm run verify:static"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
+    "lucide-react": "^0.552.0",
+    "motion": "^12.23.24",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.56.1",
+    "@tailwindcss/vite": "^4.1.17",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "prettier": "^3.9.10",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.1.17",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.2"
+  }
+}
