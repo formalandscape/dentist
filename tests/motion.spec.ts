@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './fixtures'
 
 async function steady(page: import('@playwright/test').Page, path: string) {
   await expect(page.locator('.page-content')).toHaveAttribute('data-page', path)

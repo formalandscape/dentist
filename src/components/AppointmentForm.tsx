@@ -1,8 +1,9 @@
+import { useI18n } from '../i18n/I18n'
 import { AnimatedHeading } from '../motion/AnimatedHeading'
 import { useRef, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { ArrowUpRight, Check, LoaderCircle, Phone, ShieldCheck } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from '../i18n/I18n'
 import { site } from '../data/site'
 import { motion, useReducedMotion } from 'motion/react'
 import { silk } from '../motion/presets'
@@ -21,6 +22,8 @@ const initial: Appointment = {
 }
 
 export function AppointmentForm() {
+  const { t } = useI18n()
+
   const reduced = useReducedMotion()
   const [values, setValues] = useState(initial)
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -65,7 +68,9 @@ export function AppointmentForm() {
       setMessage(
         error instanceof Error && error.name !== 'AbortError' && error.name !== 'TypeError'
           ? error.message
-          : 'Не вдалося підтвердити приймання заявки через проблему зі з’єднанням. Будь ласка, зв’яжіться телефоном.',
+          : t(
+              'Не вдалося підтвердити приймання заявки через проблему зі з’єднанням. Будь ласка, зв’яжіться телефоном.',
+            ),
       )
     } finally {
       clearTimeout(timeout)
@@ -81,7 +86,7 @@ export function AppointmentForm() {
         animate={reduced ? { opacity: 1, y: 0 } : { opacity: [0.6, 1], y: [5, 0] }}
         transition={{ duration: reduced ? 0 : silk.micro, ease: silk.ease }}
       >
-        {errors[key]}
+        {t(errors[key]!)}
       </motion.span>
     ) : null
   const attrs = (key: keyof Appointment) => ({
@@ -95,10 +100,15 @@ export function AppointmentForm() {
         <span className="success-icon">
           <Check size={30} />
         </span>
-        <AnimatedHeading as="h3">Дякую за вашу довіру.</AnimatedHeading>
-        <p>Сервіс прийняв вашу заявку. Зв’яжемося з вами, щоб узгодити зручний час консультації.</p>
+        <AnimatedHeading as="h3">{t('Дякую за вашу довіру.')}</AnimatedHeading>
+        <p>
+          {t(
+            'Сервіс прийняв вашу заявку. Зв’яжемося з вами, щоб узгодити зручний час консультації.',
+          )}
+        </p>
         <button className="text-link" onClick={() => setStatus('idle')}>
-          Повернутися до форми <ArrowUpRight size={16} />
+          {t('Повернутися до форми ')}
+          <ArrowUpRight size={16} />
         </button>
       </div>
     )
@@ -110,18 +120,19 @@ export function AppointmentForm() {
       className="appointment-form"
       onSubmit={submit}
       noValidate
-      aria-label="Форма запису на консультацію"
+      aria-label={t('Форма запису на консультацію')}
       aria-busy={status === 'sending'}
     >
       {!site.formEndpoint && (
         <p className="form-availability">
-          Онлайн-запис готується до відкриття.
+          {t('Онлайн-запис готується до відкриття.')}
           {site.contacts.phone && (
             <>
               {' '}
-              Зараз можна{' '}
+              {t('Зараз можна')}{' '}
               <a href={`tel:${site.contacts.phone}`}>
-                записатися телефоном <Phone size={13} aria-hidden="true" />
+                {t('записатися телефоном ')}
+                <Phone size={13} aria-hidden="true" />
               </a>
               .
             </>
@@ -130,15 +141,18 @@ export function AppointmentForm() {
       )}
       <noscript>
         <p className="form-availability">
-          Для роботи форми потрібен JavaScript. Будь ласка, скористайтеся телефоном для запису.
+          {t(
+            'Для роботи форми потрібен JavaScript. Будь ласка, скористайтеся телефоном для запису.',
+          )}
         </p>
       </noscript>
       <fieldset disabled={!ready || status === 'sending'} className="form-fields">
-        <legend className="sr-only">Ваші контактні дані</legend>
+        <legend className="sr-only">{t('Ваші контактні дані')}</legend>
         <div className="form-row">
           <div className="field">
             <label htmlFor="name">
-              Ваше ім’я <span>*</span>
+              {t('Ваше ім’я ')}
+              <span>*</span>
             </label>
             <input
               id="name"
@@ -146,7 +160,7 @@ export function AppointmentForm() {
               autoComplete="given-name"
               maxLength={80}
               required
-              placeholder="Як до вас звертатися?"
+              placeholder={t('Як до вас звертатися?')}
               value={values.name}
               onChange={(e) => update('name', e.target.value)}
               {...attrs('name')}
@@ -155,7 +169,8 @@ export function AppointmentForm() {
           </div>
           <div className="field">
             <label htmlFor="phone">
-              Номер телефону <span>*</span>
+              {t('Номер телефону ')}
+              <span>*</span>
             </label>
             <input
               id="phone"
@@ -174,11 +189,15 @@ export function AppointmentForm() {
         </div>
         <fieldset className="patient-options">
           <legend>
-            Для кого консультація? <span>*</span>
+            {t('Для кого консультація? ')}
+            <span>*</span>
           </legend>
           <div>
             {['Дорослий', 'Дитина'].map((p) => (
-              <label className={`patient-option ${values.patient === p ? 'selected' : ''}`} key={p}>
+              <label
+                className={`patient-option ${values.patient === p ? 'selected' : ''}`}
+                key={t(p)}
+              >
                 <input
                   type="radio"
                   name="patient"
@@ -187,7 +206,7 @@ export function AppointmentForm() {
                   onChange={() => update('patient', p)}
                 />
                 <span className="radio-circle">{values.patient === p && <span />}</span>
-                {p}
+                {t(p)}
               </label>
             ))}
           </div>
@@ -195,7 +214,8 @@ export function AppointmentForm() {
         </fieldset>
         <div className="field">
           <label htmlFor="direction">
-            Напрям звернення <span>*</span>
+            {t('Напрям звернення ')}
+            <span>*</span>
           </label>
           <select
             id="direction"
@@ -205,37 +225,36 @@ export function AppointmentForm() {
             onChange={(e) => update('direction', e.target.value)}
             {...attrs('direction')}
           >
-            <option value="">Оберіть напрям</option>
-            <option>Первинна консультація</option>
+            <option value="">{t('Оберіть напрям')}</option>
+            <option value="Первинна консультація">{t('Первинна консультація')}</option>
             {services.map((s) => (
-              <option key={s.id}>{s.title}</option>
+              <option key={s.id} value={s.title}>
+                {t(s.title)}
+              </option>
             ))}
-            <option>Потрібна порада лікаря</option>
+            <option value="Потрібна порада лікаря">{t('Потрібна порада лікаря')}</option>
           </select>
           {error('direction')}
         </div>
         <div className="field">
           <label htmlFor="comment">
-            Ваш коментар <span className="optional">необов’язково</span>
+            {t('Ваш коментар ')}
+            <span className="optional">{t('необов’язково')}</span>
           </label>
           <textarea
             id="comment"
             name="comment"
             rows={2}
             maxLength={500}
-            placeholder="Наприклад, зручний час для дзвінка"
             value={values.comment}
             onChange={(e) => update('comment', e.target.value)}
-            aria-describedby={`comment-help${errors.comment ? ' error-comment' : ''}`}
+            aria-describedby={errors.comment ? 'error-comment' : undefined}
             aria-invalid={!!errors.comment}
           />
-          <span id="comment-help" className="field-help">
-            Будь ласка, не вказуйте діагнози та інші медичні дані.
-          </span>
           {error('comment')}
         </div>
         <div className="honeypot" aria-hidden="true">
-          <label htmlFor="website">Вебсайт</label>
+          <label htmlFor="website">{t('Вебсайт')}</label>
           <input
             id="website"
             name="website"
@@ -257,8 +276,8 @@ export function AppointmentForm() {
               {...attrs('consent')}
             />
             <span>
-              Погоджуюся на обробку контактних даних для відповіді на звернення відповідно до{' '}
-              <Link to="/polityka-konfidentsiinosti/">політики конфіденційності</Link>.
+              {t('Погоджуюся на обробку контактних даних для відповіді на звернення відповідно до')}{' '}
+              <Link to="/polityka-konfidentsiinosti/">{t('політики конфіденційності')}</Link>.
             </span>
           </label>
           {error('consent')}
@@ -268,7 +287,7 @@ export function AppointmentForm() {
           type="submit"
           disabled={status === 'sending'}
         >
-          <span>{status === 'sending' ? 'Надсилаємо…' : 'Надіслати заявку'}</span>
+          <span>{status === 'sending' ? t('Надсилаємо…') : t('Надіслати заявку')}</span>
           {status === 'sending' ? (
             <LoaderCircle size={18} className="spinner" aria-hidden="true" />
           ) : (
@@ -285,13 +304,13 @@ export function AppointmentForm() {
             animate={reduced ? { opacity: 1, y: 0 } : { opacity: [0.6, 1], y: [7, 0] }}
             transition={{ duration: reduced ? 0 : 0.36, ease: silk.ease }}
           >
-            {message}
+            {t(message)}
           </motion.p>
         )}
       </div>
       <p className="form-safety">
         <ShieldCheck size={15} aria-hidden="true" />
-        Ваші дані — лише для зв’язку з вами.
+        {t('Ваші дані — лише для зв’язку з вами.')}
       </p>
     </form>
   )

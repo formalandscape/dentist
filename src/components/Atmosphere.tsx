@@ -1,9 +1,10 @@
+import { useI18n } from '../i18n/I18n'
 import { AnimatedHeading } from '../motion/AnimatedHeading'
 import { useEffect } from 'react'
 import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react'
 import { useLocation } from 'react-router-dom'
 import { ArrowUpRight, Sparkles } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from '../i18n/I18n'
 import { revealFrames, silk } from '../motion/presets'
 
 const revealed = new WeakSet<Element>()
@@ -157,13 +158,15 @@ export function Encouragement({
   label?: string
   dark?: boolean
 }) {
+  const { t } = useI18n()
+
   return (
     <div className={`encouragement ${dark ? 'encouragement-dark' : ''}`}>
       <span className="encouragement-icon">
         <Sparkles size={19} strokeWidth={1.2} aria-hidden="true" />
       </span>
       <div>
-        <span className="tiny-caps">{label}</span>
+        <span className="tiny-caps">{t(label)}</span>
         <p>{children}</p>
       </div>
     </div>
@@ -181,6 +184,8 @@ export function Invitation({
   to?: string
   link?: string
 }) {
+  const { t } = useI18n()
+
   return (
     <section className="invitation-section">
       <div className="container invitation-layout">
@@ -190,12 +195,12 @@ export function Invitation({
           <Sparkles strokeWidth={0.8} />
         </span>
         <div>
-          <span className="tiny-caps">Здоров’я. Впевненість. Ви.</span>
-          <AnimatedHeading as="h2">{title}</AnimatedHeading>
-          <p>{text}</p>
+          <span className="tiny-caps">{t('Здоров’я. Впевненість. Ви.')}</span>
+          <AnimatedHeading as="h2">{t(title)}</AnimatedHeading>
+          <p>{t(text)}</p>
         </div>
         <Link className="button button-primary" to={to}>
-          <span>{link}</span>
+          <span>{t(link)}</span>
           <ArrowUpRight size={19} aria-hidden="true" />
         </Link>
       </div>

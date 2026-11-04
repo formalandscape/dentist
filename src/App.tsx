@@ -6,6 +6,8 @@ import { Home } from './Home'
 import { NotFound, PrivacyPage, ServicePage } from './Pages'
 import { JourneyPage } from './Journey'
 import { ReadingProgress, DetailMotion, MotionEnvironment } from './components/Atmosphere'
+import { I18nProvider } from './i18n/I18n'
+import { withoutLanguage } from './lib/locale'
 import { sceneVariants } from './motion/presets'
 
 function SceneLayout() {
@@ -52,7 +54,7 @@ function PageContent() {
             document.getElementById('main-content')?.setAttribute('data-motion-phase', 'steady')
         }}
       >
-        <Routes location={location}>
+        <Routes location={{ ...location, pathname: withoutLanguage(location.pathname) }}>
           <Route element={<SceneLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/poslugy/:id/" element={<ServicePage />} />
@@ -68,19 +70,21 @@ function PageContent() {
 
 export default function App() {
   return (
-    <MotionConfig reducedMotion="user">
-      <RouteEffects />
-      <MotionEnvironment />
-      <ReadingProgress />
-      <Header />
-      <main id="main-content" tabIndex={-1}>
-        <div className="scene-ambience" aria-hidden="true">
-          <span />
-          <span />
-        </div>
-        <PageContent />
-      </main>
-      <Footer />
-    </MotionConfig>
+    <I18nProvider>
+      <MotionConfig reducedMotion="user">
+        <RouteEffects />
+        <MotionEnvironment />
+        <ReadingProgress />
+        <Header />
+        <main id="main-content" tabIndex={-1}>
+          <div className="scene-ambience" aria-hidden="true">
+            <span />
+            <span />
+          </div>
+          <PageContent />
+        </main>
+        <Footer />
+      </MotionConfig>
+    </I18nProvider>
   )
 }

@@ -7,9 +7,19 @@
     <title>Зоряна Тепла — лікар ортодонт у Києві</title>
     <meta
       name="description"
-      content="Зоряна Тепла — стоматолог-ортодонт у Києві. 24 роки практики. Ортодонтичне лікування дітей і дорослих, брекети, елайнери та діагностика прикусу."
+      content="Зоряна Тепла — стоматолог-ортодонт у Києві. 20+ років досвіду. Ортодонтичне лікування дітей і дорослих, брекети, елайнери та діагностика прикусу."
     />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <script>
+      try {
+        var teplaTheme = localStorage.getItem('tepla-theme')
+        var teplaDark =
+          teplaTheme === 'dark' ||
+          (teplaTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.dataset.theme = teplaDark ? 'dark' : 'light'
+        document.documentElement.style.colorScheme = teplaDark ? 'dark' : 'light'
+      } catch (_) {}
+    </script>
     <!--seo-->
   </head>
   <body>

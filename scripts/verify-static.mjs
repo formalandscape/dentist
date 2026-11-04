@@ -6,7 +6,7 @@ const env = { ...loadEnv('production', process.cwd(), ''), ...process.env }
 const base = env.VITE_BASE_PATH || '/'
 const folder = process.argv.includes('--published') ? '.' : 'dist'
 const origin = env.VITE_SITE_URL?.replace(/\/$/, '')
-const paths = [
+const ukrainianPaths = [
   '/',
   '/poslugy/brekety/',
   '/poslugy/elainery/',
@@ -15,6 +15,7 @@ const paths = [
   '/vash-shliakh-do-posmishky/',
   '/polityka-konfidentsiinosti/',
 ]
+const paths = [...ukrainianPaths, ...ukrainianPaths.map((path) => `/en${path}`)]
 const descriptions = new Set()
 const titles = new Set()
 for (const path of paths) {
@@ -49,17 +50,37 @@ for (const path of paths) {
   assert.ok(title && !titles.has(title), `${path}: unique title`)
   descriptions.add(description)
   titles.add(title)
-  assert.ok(html.includes('lang="uk"'), `${path}: Ukrainian document`)
+  assert.ok(
+    html.includes(`lang="${path.startsWith('/en/') ? 'en' : 'uk'}"`),
+    `${path}: correct document language`,
+  )
+  assert.ok(!/24 (?:роки|років)/.test(html), `${path}: current experience claim`)
   assert.ok(html.includes(`src="${base}assets/`), `${path}: script respects base path`)
   assert.ok(html.includes(`href="${base}favicon.svg"`), `${path}: favicon respects base path`)
   if (origin) {
     assert.ok(html.includes(`rel="canonical" href="${origin}${base}${path.slice(1)}"`))
+    const clean = path.replace(/^\/en(?=\/|$)/, '')
+    for (const locale of ['uk', 'en', 'x-default']) {
+      const alternative = locale === 'en' ? `/en${clean}` : clean
+      assert.ok(
+        html.includes(`hreflang="${locale}" href="${origin}${base}${alternative.slice(1)}"`),
+        `${path}: ${locale} alternate`,
+      )
+    }
     assert.ok(html.includes(`property="og:image" content="${origin}${base}images/social-card.png"`))
   } else assert.ok(!html.includes('rel="canonical"'), 'No invented canonical domain')
 }
 const home = await fs.readFile(`${folder}/index.html`, 'utf8')
 assert.ok(home.includes('"@type":"Physician"'))
 assert.ok(home.includes('tel:+380679404225'))
+assert.ok(home.includes('Юлії Здановської'))
+assert.ok(home.includes('Клініка Лукашука'))
+assert.ok(home.includes('https://www.google.com/maps?q='))
+assert.ok(home.includes('20+'))
+assert.ok(
+  (await fs.readFile(`${folder}/images/social-card.svg`, 'utf8')).includes('20+ років досвіду'),
+  'Current experience in social preview',
+)
 assert.ok(home.includes(`href="${base}poslugy/brekety/"`), 'Prerendered links respect base path')
 assert.ok(
   home.includes(`href="${base}#appointment"`),
@@ -82,5 +103,5 @@ if (origin) {
   await assert.rejects(fs.access(`${folder}/sitemap.xml`))
 }
 console.log(
-  `Static checks passed: 7 pages, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
+  `Static checks passed: 14 pages, UK/EN languages, hreflang, clinic address, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
 )

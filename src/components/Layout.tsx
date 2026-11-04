@@ -1,10 +1,14 @@
+import { useI18n } from '../i18n/I18n'
+import { Preferences } from './Preferences'
+import { withoutLanguage, languageForPath, localizedPath } from '../lib/locale'
+import { Link } from '../i18n/I18n'
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowUp, ArrowUpRight, Instagram, Menu, Phone, X } from 'lucide-react'
-import { Link, useLocation, useNavigationType } from 'react-router-dom'
+import { useLocation, useNavigationType } from 'react-router-dom'
 import { site } from '../data/site'
 import { Brand } from './ui'
-import { publicUrl, seoForPath } from '../lib/seo'
+import { publicUrl, seoForPath, schemaForPath } from '../lib/seo'
 import { journeyPath } from '../data/journey'
 import { silk } from '../motion/presets'
 
@@ -55,6 +59,14 @@ export function RouteEffects() {
         }
         element.content = content
       }
+      const language = languageForPath(pathname)
+      document.documentElement.lang = language
+      meta('og:locale', language === 'en' ? 'en_GB' : 'uk_UA', true)
+      meta(
+        'og:site_name',
+        language === 'en' ? 'Zoryana Tepla · Orthodontist' : 'Зоряна Тепла · Ортодонт',
+        true,
+      )
       meta('description', seo.description)
       meta('og:title', seo.title, true)
       meta('og:description', seo.description, true)
@@ -69,6 +81,23 @@ export function RouteEffects() {
         }
         link.href = canonical
         meta('og:url', canonical, true)
+        document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove())
+        if (!seo.noindex)
+          for (const locale of ['uk', 'en', 'x-default']) {
+            const alternate = document.createElement('link')
+            alternate.rel = 'alternate'
+            alternate.hreflang = locale
+            alternate.href = publicUrl(localizedPath(pathname, locale === 'en' ? 'en' : 'uk'))!
+            document.head.appendChild(alternate)
+          }
+        const structured = document.querySelector('script[type="application/ld+json"]')
+        if (structured) structured.remove()
+        if (withoutLanguage(pathname) === '/') {
+          const script = document.createElement('script')
+          script.type = 'application/ld+json'
+          script.textContent = JSON.stringify({ ...schemaForPath(pathname), url: canonical })
+          document.head.appendChild(script)
+        }
       }
       frame = requestAnimationFrame(() => {
         if (navigation === 'POP' && positions.current.has(key)) {
@@ -114,11 +143,17 @@ export function RouteEffects() {
 }
 
 export function Header() {
+  const { t } = useI18n()
+
   const [open, setOpen] = useState(false)
+  // A URL fragment is unavailable to static rendering. Apply its active state after hydration.
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => setHydrated(true), [])
   const [scrolled, setScrolled] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const panel = useRef<HTMLDivElement>(null)
   const location = useLocation()
+  const activeHash = hydrated ? location.hash : ''
   const reduced = useReducedMotion()
   useEffect(() => {
     setOpen(false)
@@ -169,25 +204,26 @@ export function Header() {
   return (
     <>
       <a className="skip-link" href="#main-content">
-        Перейти до вмісту
+        {t('Перейти до вмісту')}
       </a>
       <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container header-inner">
           <Brand />
-          <nav className="desktop-nav" aria-label="Основна навігація">
+          <nav className="desktop-nav" aria-label={t('Основна навігація')}>
             {navItems.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className={
-                  location.hash === item.to.slice(1) || location.pathname === item.to
+                  activeHash === item.to.slice(1) || withoutLanguage(location.pathname) === item.to
                     ? 'active'
                     : ''
                 }
-                aria-current={location.pathname === item.to ? 'page' : undefined}
+                aria-current={withoutLanguage(location.pathname) === item.to ? 'page' : undefined}
               >
-                {item.label}
-                {(location.hash === item.to.slice(1) || location.pathname === item.to) && (
+                {t(item.label)}
+                {(activeHash === item.to.slice(1) ||
+                  withoutLanguage(location.pathname) === item.to) && (
                   <motion.span
                     className="nav-active-line"
                     layoutId="nav-active"
@@ -198,13 +234,15 @@ export function Header() {
               </Link>
             ))}
           </nav>
+          <Preferences />
           <Link className="header-appointment" to="/#appointment">
-            Записатися <ArrowUpRight size={16} aria-hidden="true" />
+            {t('Записатися ')}
+            <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
           <button
             ref={menuButton}
             className="menu-toggle round-button"
-            aria-label={open ? 'Закрити меню' : 'Відкрити меню'}
+            aria-label={open ? t('Закрити меню') : t('Відкрити меню')}
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen(!open)}
@@ -224,9 +262,9 @@ export function Header() {
             exit={{ opacity: 0, y: reduced ? 0 : -15 }}
             transition={{ duration: reduced ? 0 : 0.25 }}
           >
-            <span className="tiny-caps">Ваша посмішка. Моя турбота.</span>
+            <span className="tiny-caps">{t('Ваша посмішка. Моя турбота.')}</span>
             <motion.nav
-              aria-label="Мобільна навігація"
+              aria-label={t('Мобільна навігація')}
               initial="closed"
               animate="open"
               variants={{
@@ -244,14 +282,14 @@ export function Header() {
                 >
                   <Link key={item.to} to={item.to}>
                     <span className="mobile-nav-number">0{i + 1}</span>
-                    {item.label}
+                    {t(item.label)}
                     <ArrowUpRight size={22} />
                   </Link>
                 </motion.div>
               ))}
             </motion.nav>
             <Link className="button button-primary" to="/#appointment">
-              Записатися на консультацію
+              {t('Записатися на консультацію')}
               <ArrowUpRight size={18} />
             </Link>
             {site.contacts.phone && (
@@ -267,6 +305,8 @@ export function Header() {
 }
 
 export function Footer() {
+  const { t } = useI18n()
+
   return (
     <>
       <footer className="site-footer">
@@ -278,24 +318,25 @@ export function Footer() {
                   <ArrowUp size={28} strokeWidth={1.3} aria-hidden="true" />
                 </span>
                 <span>
-                  На початок сайту<small>До першого знайомства</small>
+                  {t('На початок сайту')}
+                  <small>{t('До першого знайомства')}</small>
                 </span>
               </Link>
-              <p className="footer-doctor-name">Зоряна Тепла</p>
-              <span className="footer-doctor-role">Лікар стоматолог-ортодонт</span>
-              <span className="footer-doctor-detail">24 роки досвіду · Київ</span>
+              <p className="footer-doctor-name">{t('Зоряна Тепла')}</p>
+              <span className="footer-doctor-role">{t('Лікар стоматолог-ортодонт')}</span>
+              <span className="footer-doctor-detail">{t('20+ років досвіду · Київ')}</span>
             </div>
             <div className="footer-column footer-voices">
-              <span className="footer-kicker">Слова, у яких — турбота</span>
+              <span className="footer-kicker">{t('Слова, у яких — турбота')}</span>
               <blockquote className="footer-quote">
-                «Ваша посмішка. Моя професійна турбота.»
+                {t('«Ваша посмішка. Моя професійна турбота.»')}
               </blockquote>
               <blockquote className="footer-quote">
-                «Кожна посмішка заслуговує на індивідуальний підхід.»
+                {t('«Кожна посмішка заслуговує на індивідуальний підхід.»')}
               </blockquote>
             </div>
             <div className="footer-column footer-contact">
-              <span className="footer-kicker">Залишаймося на зв’язку</span>
+              <span className="footer-kicker">{t('Залишаймося на зв’язку')}</span>
               {site.contacts.phone && (
                 <a href={`tel:${site.contacts.phone}`} className="footer-contact-link">
                   <Phone size={17} strokeWidth={1.3} aria-hidden="true" />
@@ -315,24 +356,29 @@ export function Footer() {
                   <ArrowUpRight size={15} aria-hidden="true" />
                 </a>
               )}
-              <span className="footer-visit-note">Прийом у Києві за попереднім записом.</span>
+              <div className="footer-visit-note">
+                <strong>{t('Прийом у клініці Лукашука')}</strong>
+                <address>{t(site.contacts.address)}</address>
+              </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>© 2026 Зоряна Тепла. Київ, Україна.</span>
-            <Link to="/polityka-konfidentsiinosti/">Політика конфіденційності</Link>
+            <span>{t('© 2026 Зоряна Тепла. Київ, Україна.')}</span>
+            <Link to="/polityka-konfidentsiinosti/">{t('Політика конфіденційності')}</Link>
             <Link to={journeyPath}>
-              Ваш шлях до посмішки <ArrowUpRight size={12} aria-hidden="true" />
+              {t('Ваш шлях до посмішки ')}
+              <ArrowUpRight size={12} aria-hidden="true" />
             </Link>
           </div>
           <p className="medical-note">
-            Інформація на сайті має ознайомчий характер і не замінює особисту консультацію лікаря.
-            Діагноз і план лікування визначаються індивідуально.
+            {t(
+              'Інформація на сайті має ознайомчий характер і не замінює особисту консультацію лікаря. Діагноз і план лікування визначаються індивідуально.',
+            )}
           </p>
         </div>
       </footer>
       <Link to="/#appointment" className="mobile-booking">
-        Записатися на консультацію
+        {t('Записатися на консультацію')}
         <ArrowUpRight size={17} aria-hidden="true" />
       </Link>
     </>

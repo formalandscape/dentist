@@ -1,8 +1,9 @@
+import { useI18n } from '../i18n/I18n'
 import { motion, useReducedMotion, useScroll, useTransform, useSpring } from 'motion/react'
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
 import { ArrowUpRight, Asterisk } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from '../i18n/I18n'
 import { imageReveal, silk } from '../motion/presets'
 
 export function Reveal({
@@ -53,13 +54,16 @@ export function Action({
 }
 
 export function Brand({ footer = false }: { footer?: boolean }) {
+  const { t } = useI18n()
+
   return (
     <Link to="/" className={`brand ${footer ? 'brand-footer' : ''}`}>
       <span className="brand-symbol" aria-hidden="true">
         З<span>Т</span>
       </span>
       <span className="brand-type">
-        Зоряна Тепла<span>ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ</span>
+        {t('Зоряна Тепла')}
+        <span>{t('ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ')}</span>
       </span>
     </Link>
   )
@@ -76,6 +80,8 @@ export function Photo({
   label?: string
   priority?: boolean
 }) {
+  const { t } = useI18n()
+
   const target = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({ target, offset: ['start end', 'end start'] })
@@ -105,12 +111,12 @@ export function Photo({
       aria-label={
         label ||
         {
-          braces: 'Ілюстративне зображення навчальної моделі з брекетами',
-          aligners: 'Ілюстративне зображення прозорих елайнерів',
-          children: 'Ілюстративний натюрморт: дерев’яна іграшка та шавлієва ваза',
-          balance: 'Ілюстративна скульптура як символ гармонії та балансу',
+          braces: t('Ілюстративне зображення навчальної моделі з брекетами'),
+          aligners: t('Ілюстративне зображення прозорих елайнерів'),
+          children: t('Ілюстративний натюрморт: дерев’яна іграшка та шавлієва ваза'),
+          balance: t('Ілюстративна скульптура як символ гармонії та балансу'),
         }[kind] ||
-        'Декоративне зображення'
+        t('Декоративне зображення')
       }
     >
       <img

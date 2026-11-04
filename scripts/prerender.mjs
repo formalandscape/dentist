@@ -25,45 +25,65 @@ const escape = (s) =>
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
 try {
-  const { render, seoForPath, schema, services, servicePath, journeyPath } =
-    await vite.ssrLoadModule('/entry-server.tsx')
+  const {
+    render,
+    seoForPath,
+    schemaForPath,
+    services,
+    servicePath,
+    journeyPath,
+    localizedPath,
+    languageForPath,
+    withoutLanguage,
+  } = await vite.ssrLoadModule('/entry-server.tsx')
   const template = await fs.readFile('dist/index.html', 'utf8')
   const assetNames = await fs.readdir('dist/assets')
-  const criticalFonts = [
-    'manrope-cyrillic-400-normal-',
-    'cormorant-garamond-cyrillic-400-normal-',
-    'cormorant-garamond-cyrillic-400-italic-',
-  ]
-    .map((prefix) => assetNames.find((name) => name.startsWith(prefix) && name.endsWith('.woff2')))
-    .filter(Boolean)
-  const paths = [
+  const criticalFonts = (language) =>
+    [
+      `manrope-${language === 'en' ? 'latin' : 'cyrillic'}-400-normal-`,
+      `cormorant-garamond-${language === 'en' ? 'latin' : 'cyrillic'}-400-normal-`,
+      `cormorant-garamond-${language === 'en' ? 'latin' : 'cyrillic'}-400-italic-`,
+    ]
+      .map((prefix) =>
+        assetNames.find((name) => name.startsWith(prefix) && name.endsWith('.woff2')),
+      )
+      .filter(Boolean)
+  const ukrainianPaths = [
     '/',
     ...services.map((s) => servicePath(s.id)),
     journeyPath,
     '/polityka-konfidentsiinosti/',
   ]
-  for (const path of [...paths, '/404/']) {
+  const paths = [...ukrainianPaths, ...ukrainianPaths.map((path) => localizedPath(path, 'en'))]
+  for (const path of [...paths, '/404/', '/en/404/']) {
+    const language = languageForPath(path)
     const seo = seoForPath(path)
     const url = canonical(seo.path)
     const metadata = [
-      ...criticalFonts.map(
+      ...criticalFonts(language).map(
         (font) =>
           `<link rel="preload" href="${base}assets/${font}" as="font" type="font/woff2" crossorigin />`,
       ),
       '<meta property="og:type" content="website" />',
-      '<meta property="og:locale" content="uk_UA" />',
-      '<meta property="og:site_name" content="Зоряна Тепла · Ортодонт" />',
+      `<meta property="og:locale" content="${language === 'en' ? 'en_GB' : 'uk_UA'}" />`,
+      `<meta property="og:site_name" content="${language === 'en' ? 'Zoryana Tepla · Orthodontist' : 'Зоряна Тепла · Ортодонт'}" />`,
       `<meta property="og:title" content="${escape(seo.title)}" />`,
       `<meta property="og:description" content="${escape(seo.description)}" />`,
       `<meta name="robots" content="${seo.noindex ? 'noindex, follow' : 'index, follow'}" />`,
       ...(url
         ? [
             `<link rel="canonical" href="${escape(url)}" />`,
+            ...(!seo.noindex
+              ? ['uk', 'en', 'x-default'].map(
+                  (locale) =>
+                    `<link rel="alternate" hreflang="${locale}" href="${escape(canonical(localizedPath(path, locale === 'en' ? 'en' : 'uk')))}" />`,
+                )
+              : []),
             `<meta property="og:url" content="${escape(url)}" />`,
             `<meta property="og:image" content="${escape(canonical('/images/social-card.png'))}" />`,
             '<meta property="og:image:width" content="1200" />',
             '<meta property="og:image:height" content="630" />',
-            '<meta property="og:image:alt" content="Зоряна Тепла — лікар стоматолог-ортодонт у Києві" />',
+            `<meta property="og:image:alt" content="${language === 'en' ? 'Zoryana Tepla — orthodontist in Kyiv' : 'Зоряна Тепла — лікар стоматолог-ортодонт у Києві'}" />`,
           ]
         : []),
       ...(env.VITE_GOOGLE_SITE_VERIFICATION
@@ -71,13 +91,14 @@ try {
             `<meta name="google-site-verification" content="${escape(env.VITE_GOOGLE_SITE_VERIFICATION)}" />`,
           ]
         : []),
-      ...(path === '/'
+      ...(withoutLanguage(path) === '/'
         ? [
-            `<script type="application/ld+json">${JSON.stringify({ ...schema, ...(url ? { url } : {}) }).replaceAll('<', '\\u003c')}</script>`,
+            `<script type="application/ld+json">${JSON.stringify({ ...schemaForPath(path), ...(url ? { url } : {}) }).replaceAll('<', '\\u003c')}</script>`,
           ]
         : []),
     ].join('\n    ')
     const html = template
+      .replace('lang="uk"', `lang="${language}"`)
       .replace(/<title>.*?<\/title>/, `<title>${escape(seo.title)}</title>`)
       .replace(
         /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/,
@@ -103,7 +124,7 @@ try {
     console.warn(
       'VITE_SITE_URL is not set: canonical, absolute Open Graph URLs and sitemap await the real public domain.',
     )
-  console.log(`Prerendered ${paths.length} pages + 404. Base: ${base}`)
+  console.log(`Prerendered ${paths.length} pages + Ukrainian/English 404. Base: ${base}`)
 } finally {
   await vite.close()
 }

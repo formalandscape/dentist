@@ -1,18 +1,9 @@
+import { useI18n } from './i18n/I18n'
 import { AnimatedHeading } from './motion/AnimatedHeading'
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Check,
-  Clock3,
-  Heart,
-  Instagram,
-  MapPin,
-  Phone,
-  Sparkles,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ArrowUpRight, Check, Heart, Instagram, MapPin, Phone, Sparkles } from 'lucide-react'
+import { Link } from './i18n/I18n'
 import { Action, Eyebrow, Flower, Photo, Reveal } from './components/ui'
 import { AppointmentForm } from './components/AppointmentForm'
 import { FAQ, Results, Reviews } from './components/Interactive'
@@ -22,11 +13,13 @@ import { Encouragement, Invitation } from './components/Atmosphere'
 import { journeyPath } from './data/journey'
 
 function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
+  const { t } = useI18n()
+
   if (site.doctor.portrait)
     return (
       <img
         src={site.doctor.portrait}
-        alt={site.doctor.portraitAlt}
+        alt={t(site.doctor.portraitAlt)}
         className="doctor-portrait"
         width="700"
         height="850"
@@ -37,7 +30,7 @@ function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
     <div
       className={`portrait-placeholder ${hero ? 'portrait-hero' : ''}`}
       role="img"
-      aria-label="Елегантна дизайн-заглушка для майбутнього портрета лікаря Зоряни Теплої"
+      aria-label={t('Елегантна дизайн-заглушка для майбутнього портрета лікаря Зоряни Теплої')}
     >
       <div className="portrait-light" />
       <div className="portrait-arch">
@@ -56,17 +49,19 @@ function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
         З<span>Т</span>
       </span>
       <div className="portrait-caption">
-        <span className="tiny-caps">Особисте знайомство — незабаром</span>
-        <span>Місце для портрета лікаря</span>
+        <span className="tiny-caps">{t('Особисте знайомство — незабаром')}</span>
+        <span>{t('Місце для портрета лікаря')}</span>
       </div>
       <span className="portrait-vertical" aria-hidden="true">
-        ІНДИВІДУАЛЬНІСТЬ У КОЖНІЙ ДЕТАЛІ
+        {t('ІНДИВІДУАЛЬНІСТЬ У КОЖНІЙ ДЕТАЛІ')}
       </span>
     </div>
   )
 }
 
 function Hero() {
+  const { t } = useI18n()
+
   const target = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({ target, offset: ['start start', 'end start'] })
@@ -80,30 +75,29 @@ function Hero() {
           animate={reduced ? {} : { opacity: [0.85, 1], y: [16, 0] }}
           transition={{ duration: reduced ? 0 : 0.8 }}
         >
-          <div className="hero-location">
-            <span className="status-dot" />
-            ПЕРСОНАЛЬНА ОРТОДОНТІЯ <span className="location-divider">/</span> КИЇВ
-          </div>
-          <p className="hero-promise">Впевненість починається з усмішки.</p>
+          <p className="hero-promise">{t('Впевненість починається з усмішки.')}</p>
           <AnimatedHeading as="h1">
-            Ваша посмішка.
+            {t('Ваша посмішка.')}
             <br />
-            <span className="hero-indent">Моя професійна</span>
+            <span className="hero-indent">{t('Моя професійна')}</span>
             <br />
-            <em>турбота.</em>
+            <em>{t('турбота.')}</em>
             <Flower />
           </AnimatedHeading>
           <div className="hero-description">
             <span className="hero-description-line" />
             <p>
-              <strong>Зоряна Тепла</strong> — лікар стоматолог-ортодонт у Києві. Понад 20 років
-              досвіду в ортодонтичному лікуванні дітей і дорослих.
+              <strong>{t('Зоряна Тепла')}</strong>
+              {t(
+                ' — лікар стоматолог-ортодонт у Києві. Понад 20 років досвіду в ортодонтичному лікуванні дітей і дорослих.',
+              )}
             </p>
           </div>
           <div className="hero-actions">
-            <Action to="/#appointment">Записатися на консультацію</Action>
+            <Action to="/#appointment">{t('Записатися на консультацію')}</Action>
             <Link to="/#about" className="text-link">
-              Познайомитися з лікарем <ArrowUpRight size={17} aria-hidden="true" />
+              {t('Познайомитися з лікарем ')}
+              <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           </div>
           <div className="hero-bottom">
@@ -111,9 +105,9 @@ function Hero() {
               <Heart size={17} strokeWidth={1.4} aria-hidden="true" />
             </span>
             <span>
-              З увагою до здоров’я.
+              {t('З увагою до здоров’я.')}
               <br />
-              <strong>З повагою до вашої індивідуальності.</strong>
+              <strong>{t('З повагою до вашої індивідуальності.')}</strong>
             </span>
           </div>
         </motion.div>
@@ -129,42 +123,38 @@ function Hero() {
           </div>
           <div className="experience-note">
             <span className="experience-number">
-              24<span>роки</span>
+              {site.doctor.experience}
+              <span>{t('років')}</span>
             </span>
             <span>
-              досвіду, що стає
+              {t('досвіду, що стає')}
               <br />
-              вашою впевненістю
+              {t('вашою впевненістю')}
             </span>
             <Sparkles size={22} strokeWidth={1} aria-hidden="true" />
           </div>
           <div className="hero-photo-footer">
-            <span>ЗОРЯНА ТЕПЛА</span>
-            <span>ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ</span>
+            <span>{t('ЗОРЯНА ТЕПЛА')}</span>
+            <span>{t('ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ')}</span>
           </div>
         </motion.div>
-      </div>
-      <div className="container hero-scroll">
-        <a href="#trust">
-          <ArrowDown size={15} aria-hidden="true" />
-          <span>ЗНАЙОМСТВО ПОЧИНАЄТЬСЯ ТУТ</span>
-        </a>
-        <span>ЕСТЕТИКА. ФУНКЦІЯ. ГАРМОНІЯ.</span>
       </div>
     </section>
   )
 }
 
 function TrustStrip() {
+  const { t } = useI18n()
+
   return (
     <div id="trust" className="trust-strip">
       <div className="container trust-grid">
         <div>
-          <span className="trust-number">24</span>
+          <span className="trust-number">{site.doctor.experience}</span>
           <span>
-            роки професійного
+            {t('років професійного')}
             <br />
-            досвіду
+            {t('досвіду')}
           </span>
         </div>
         <div>
@@ -172,21 +162,21 @@ function TrustStrip() {
             <Heart size={27} strokeWidth={1} />
           </span>
           <span>
-            Делікатна турбота
+            {t('Делікатна турбота')}
             <br />
-            про дітей і дорослих
+            {t('про дітей і дорослих')}
           </span>
         </div>
         <div>
           <span className="trust-abbreviations">
-            АОУ · EOS
+            {t('АОУ · EOS')}
             <br />
             WFO · AAO
           </span>
           <span>
-            Українська та міжнародна
+            {t('Українська та міжнародна')}
             <br />
-            професійна спільнота
+            {t('професійна спільнота')}
           </span>
         </div>
       </div>
@@ -195,6 +185,8 @@ function TrustStrip() {
 }
 
 function About() {
+  const { t } = useI18n()
+
   return (
     <section id="about" className="section about-section">
       <div className="container about-layout">
@@ -203,40 +195,45 @@ function About() {
             <PortraitPlaceholder />
           </div>
           <div className="about-caption">
-            <span>Зоряна Тепла</span>
-            <span>Лікар стоматолог-ортодонт</span>
+            <span>{t('Зоряна Тепла')}</span>
+            <span>{t('Лікар стоматолог-ортодонт')}</span>
           </div>
           <Flower className="about-flower" />
         </Reveal>
         <Reveal className="about-copy">
-          <Eyebrow>Давайте познайомимося</Eyebrow>
+          <Eyebrow>{t('Давайте познайомимося')}</Eyebrow>
           <AnimatedHeading as="h2">
-            Досвід, якому
+            {t('Досвід, якому')}
             <br />
-            <em>можна довіряти.</em>
+            <em>{t('можна довіряти.')}</em>
           </AnimatedHeading>
           <p className="lead">
-            За красивою посмішкою я завжди бачу людину. Її історію, очікування та індивідуальність.
+            {t(
+              'За красивою посмішкою я завжди бачу людину. Її історію, очікування та індивідуальність.',
+            )}
           </p>
           <p className="muted">
-            Мене звати Зоряна Тепла. Я лікар стоматолог-ортодонт, і вже понад 20 років моя
-            професійна діяльність присвячена здоров’ю зубощелепної системи та гармонії посмішок.
+            {t(
+              'Мене звати Зоряна Тепла. Я лікар стоматолог-ортодонт, і вже понад 20 років моя професійна діяльність присвячена здоров’ю зубощелепної системи та гармонії посмішок.',
+            )}
           </p>
           <p className="muted">
-            Працюю з дітьми та дорослими, приділяючи особливу увагу індивідуальній діагностиці та
-            плануванню лікування. Мені важливо, щоб ви розуміли кожен крок і почувалися спокійно на
-            цьому шляху.
+            {t(
+              'Працюю з дітьми та дорослими, приділяючи особливу увагу індивідуальній діагностиці та плануванню лікування. Мені важливо, щоб ви розуміли кожен крок і почувалися спокійно на цьому шляху.',
+            )}
           </p>
-          <Encouragement label="Кожна людина — особлива">
-            Кожна посмішка заслуговує на індивідуальний підхід. Ваші очікування — важлива частина
-            нашої розмови.
+          <Encouragement label={t('Кожна людина — особлива')}>
+            {t(
+              'Кожна посмішка заслуговує на індивідуальний підхід. Ваші очікування — важлива частина нашої розмови.',
+            )}
           </Encouragement>
           <div className="doctor-signature">
-            <span>Зоряна Тепла</span>
-            <span>З турботою про вашу посмішку</span>
+            <span>{t('Зоряна Тепла')}</span>
+            <span>{t('З турботою про вашу посмішку')}</span>
           </div>
           <Link className="text-link" to="/#approach">
-            Більше про мій підхід <ArrowUpRight size={17} aria-hidden="true" />
+            {t('Більше про мій підхід ')}
+            <ArrowUpRight size={17} aria-hidden="true" />
           </Link>
         </Reveal>
       </div>
@@ -245,24 +242,27 @@ function About() {
 }
 
 function Associations() {
+  const { t } = useI18n()
+
   return (
     <section className="associations-section">
       <div className="container">
         <div className="associations-heading">
-          <span className="tiny-caps">У професійній спільноті</span>
-          <span>Спільні цінності. Постійний розвиток.</span>
+          <span className="tiny-caps">{t('У професійній спільноті')}</span>
+          <span>{t('Спільні цінності. Постійний розвиток.')}</span>
         </div>
         <div className="associations-grid">
           {site.associations.map((a) => (
-            <div className="association" key={a.name}>
-              <span>{a.name}</span>
-              <p>{a.description}</p>
+            <div className="association" key={t(a.name)}>
+              <span>{t(a.name)}</span>
+              <p>{t(a.description)}</p>
             </div>
           ))}
         </div>
         <p className="association-note">
-          Професійна спільнота об’єднує навколо спільного прагнення: уважної та обґрунтованої
-          допомоги пацієнтам.
+          {t(
+            'Професійна спільнота об’єднує навколо спільного прагнення: уважної та обґрунтованої допомоги пацієнтам.',
+          )}
         </p>
       </div>
     </section>
@@ -270,20 +270,22 @@ function Associations() {
 }
 
 function Services() {
+  const { t } = useI18n()
+
   return (
     <section id="services" className="section services-section">
       <div className="container">
         <Reveal className="section-heading">
           <div>
-            <Eyebrow>Напрями лікування</Eyebrow>
+            <Eyebrow>{t('Напрями лікування')}</Eyebrow>
             <AnimatedHeading as="h2">
-              Різні шляхи.
+              {t('Різні шляхи.')}
               <br />
-              <em>Одна увага до вас.</em>
+              <em>{t('Одна увага до вас.')}</em>
             </AnimatedHeading>
           </div>
           <p className="muted">
-            Обираємо метод, який відповідає вашій клінічній ситуації, потребам і ритму життя.
+            {t('Обираємо метод, який відповідає вашій клінічній ситуації, потребам і ритму життя.')}
           </p>
         </Reveal>
         <div className="services-grid">
@@ -298,22 +300,26 @@ function Services() {
                   </span>
                 </div>
                 <div className="service-card-copy">
-                  <AnimatedHeading as="h3">{s.title}</AnimatedHeading>
-                  <p>{s.description}</p>
+                  <AnimatedHeading as="h3">{t(s.title)}</AnimatedHeading>
+                  <p>{t(s.description)}</p>
                   <span className="text-link">
-                    Дізнатися більше <ArrowUpRight size={15} aria-hidden="true" />
+                    {t('Дізнатися більше ')}
+                    <ArrowUpRight size={15} aria-hidden="true" />
                   </span>
                 </div>
               </Link>
             </Reveal>
           ))}
         </div>
-        <Encouragement label="Гармонія в деталях">
-          Естетика й здоров’я доповнюють одне одного. Почнімо з розуміння вашого прикусу, а вже
-          потім обиратимемо метод.
+        <Encouragement label={t('Гармонія в деталях')}>
+          {t(
+            'Естетика й здоров’я доповнюють одне одного. Почнімо з розуміння вашого прикусу, а вже потім обиратимемо метод.',
+          )}
         </Encouragement>
         <p className="image-disclosure">
-          Зображення предметів — ілюстративні. Метод лікування визначається після консультації.
+          {t(
+            'Зображення предметів — ілюстративні. Метод лікування визначається після консультації.',
+          )}
         </p>
       </div>
     </section>
@@ -321,8 +327,10 @@ function Services() {
 }
 
 function Approach() {
+  const { t } = useI18n()
+
   const reasons = [
-    '24 роки клінічної практики',
+    '20+ років клінічної практики',
     'Увага до функції прикусу й естетики',
     'Лікування дітей, підлітків і дорослих',
     'Індивідуальна діагностика та планування',
@@ -332,47 +340,50 @@ function Approach() {
     <section id="approach" className="approach-section">
       <div className="container approach-layout">
         <Reveal className="approach-copy">
-          <Eyebrow light>Чому пацієнти обирають мене</Eyebrow>
+          <Eyebrow light>{t('Чому пацієнти обирають мене')}</Eyebrow>
           <AnimatedHeading as="h2">
-            Не просто рівні зуби.
+            {t('Не просто рівні зуби.')}
             <br />
             <em>
-              Гармонія, що має
+              {t('Гармонія, що має')}
               <br />
-              значення.
+              {t('значення.')}
             </em>
           </AnimatedHeading>
           <p>
-            Я дивлюся ширше за естетику посмішки — на здоров’я, функцію та ваше самопочуття. Кожне
-            рішення має бути обґрунтованим, а кожен крок — зрозумілим.
+            {t(
+              'Я дивлюся ширше за естетику посмішки — на здоров’я, функцію та ваше самопочуття. Кожне рішення має бути обґрунтованим, а кожен крок — зрозумілим.',
+            )}
           </p>
           <ul>
             {reasons.map((r) => (
-              <li key={r}>
+              <li key={t(r)}>
                 <Check size={16} strokeWidth={1.5} aria-hidden="true" />
-                {r}
+                {t(r)}
               </li>
             ))}
           </ul>
-          <Encouragement dark label="У центрі уваги — ви">
-            Турбота про посмішку сьогодні — внесок у ваше уважне ставлення до здоров’я в
-            майбутньому.
+          <Encouragement dark label={t('У центрі уваги — ви')}>
+            {t(
+              'Турбота про посмішку сьогодні — внесок у ваше уважне ставлення до здоров’я в майбутньому.',
+            )}
           </Encouragement>
           <Action to="/#appointment" secondary>
-            Почнімо зі знайомства
+            {t('Почнімо зі знайомства')}
           </Action>
         </Reveal>
         <Reveal className="approach-visual">
           <Photo kind="balance" />
           <div className="approach-quote">
-            <span className="tiny-caps">МІЙ ПІДХІД</span>
+            <span className="tiny-caps">{t('МІЙ ПІДХІД')}</span>
             <blockquote>
-              Лікувати людину,
-              <br />а не лише
+              {t('Лікувати людину,')}
               <br />
-              <em>її посмішку.</em>
+              {t('а не лише')}
+              <br />
+              <em>{t('її посмішку.')}</em>
             </blockquote>
-            <span>Зоряна Тепла</span>
+            <span>{t('Зоряна Тепла')}</span>
           </div>
         </Reveal>
       </div>
@@ -381,38 +392,50 @@ function Approach() {
 }
 
 function Consultation() {
+  const { t } = useI18n()
+
   const steps = [
-    { title: 'Знайомство', text: 'Розмовляємо про ваші очікування, скарги та побажання.' },
-    { title: 'Уважний огляд', text: 'Оцінюю положення зубів, прикус і функціональні особливості.' },
-    { title: 'Діагностика', text: 'Визначаю, які обстеження потрібні саме у вашому випадку.' },
-    { title: 'Зрозумілий план', text: 'Обговорюємо можливі методи лікування та наступні кроки.' },
+    { title: t('Знайомство'), text: t('Розмовляємо про ваші очікування, скарги та побажання.') },
+    {
+      title: t('Уважний огляд'),
+      text: t('Оцінюю положення зубів, прикус і функціональні особливості.'),
+    },
+    {
+      title: t('Діагностика'),
+      text: t('Визначаю, які обстеження потрібні саме у вашому випадку.'),
+    },
+    {
+      title: t('Зрозумілий план'),
+      text: t('Обговорюємо можливі методи лікування та наступні кроки.'),
+    },
   ]
   return (
     <section className="section consultation-section">
       <div className="container">
         <Reveal className="section-heading">
           <div>
-            <Eyebrow>Як проходить консультація</Eyebrow>
+            <Eyebrow>{t('Як проходить консультація')}</Eyebrow>
             <AnimatedHeading as="h2">
-              Спокійно. Зрозуміло.
+              {t('Спокійно. Зрозуміло.')}
               <br />
-              <em>У вашому темпі.</em>
+              <em>{t('У вашому темпі.')}</em>
             </AnimatedHeading>
           </div>
           <p className="muted">
-            Перша зустріч — це можливість познайомитися, отримати відповіді та побачити свій
-            наступний крок.
+            {t(
+              'Перша зустріч — це можливість познайомитися, отримати відповіді та побачити свій наступний крок.',
+            )}
           </p>
         </Reveal>
         <div className="steps-grid">
           {steps.map((step, i) => (
-            <Reveal key={step.title} className="step" delay={i * 0.09}>
+            <Reveal key={t(step.title)} className="step" delay={i * 0.09}>
               <div className="step-line">
                 <span>0{i + 1}</span>
                 <span className="step-dot" />
               </div>
-              <AnimatedHeading as="h3">{step.title}</AnimatedHeading>
-              <p>{step.text}</p>
+              <AnimatedHeading as="h3">{t(step.title)}</AnimatedHeading>
+              <p>{t(step.text)}</p>
             </Reveal>
           ))}
         </div>
@@ -422,45 +445,35 @@ function Consultation() {
 }
 
 export function AppointmentSection() {
+  const { t } = useI18n()
+
   return (
     <section id="appointment" className="section appointment-section">
       <div className="container appointment-layout">
         <Reveal className="appointment-copy">
-          <Eyebrow>Ваш новий початок</Eyebrow>
+          <Eyebrow>{t('Ваш новий початок')}</Eyebrow>
           <AnimatedHeading as="h2">
-            Перший крок
+            {t('Перший крок')}
             <br />
-            до здорової
+            {t('до здорової')}
             <br />
             <em>
-              та гармонійної
+              {t('та гармонійної')}
               <br />
-              посмішки.
+              {t('посмішки.')}
             </em>
           </AnimatedHeading>
-          <p className="muted">
-            Почнімо з розмови. Я допоможу розібратися у вашій ситуації та зрозуміти, з чого варто
-            почати.
-          </p>
-          {site.contacts.phone && (
-            <div className="appointment-phone">
-              <span>Зручніше поговорити особисто?</span>
-              <a href={`tel:${site.contacts.phone}`}>
-                {site.contacts.phoneDisplay}
-                <ArrowUpRight size={19} aria-hidden="true" />
-              </a>
-            </div>
-          )}
-          <Encouragement label="Рішення без поспіху">
-            Дозвольте собі поставити запитання. Перша консультація — простір для ясності та
-            спокійного вибору.
+          <Encouragement label={t('Рішення без поспіху')}>
+            {t(
+              'Дозвольте собі поставити запитання. Перша консультація — простір для ясності та спокійного вибору.',
+            )}
           </Encouragement>
           <Flower className="appointment-flower" />
         </Reveal>
         <Reveal className="form-card">
           <div className="form-heading">
-            <AnimatedHeading as="h3">Запис на консультацію</AnimatedHeading>
-            <span>Знайдемо зручний час для знайомства</span>
+            <AnimatedHeading as="h3">{t('Запис на консультацію')}</AnimatedHeading>
+            <span>{t('Знайдемо зручний час для знайомства')}</span>
           </div>
           <AppointmentForm />
         </Reveal>
@@ -470,31 +483,29 @@ export function AppointmentSection() {
 }
 
 function Contacts() {
+  const { t } = useI18n()
+
   return (
     <section id="contacts" className="section contacts-section">
       <div className="container contacts-layout">
         <Reveal>
-          <Eyebrow>Будьмо на зв’язку</Eyebrow>
+          <Eyebrow>{t('Будьмо на зв’язку')}</Eyebrow>
           <AnimatedHeading as="h2">
-            До зустрічі
+            {t('До зустрічі')}
             <br />
-            <em>у Києві.</em>
+            <em>{t('у Києві.')}</em>
           </AnimatedHeading>
-          <p className="muted">
-            Прийом проводиться на базі клініки.
-            {site.contacts.address
-              ? ''
-              : ' Адресу клініки буде додано пізніше. Уточнити місце прийому можна під час запису.'}
-          </p>
-          <Encouragement label="Ми поруч із вашим рішенням">
-            Ваш шлях до гармонійної посмішки може початися з однієї розмови.
+          <p className="muted">{t('Прийом у клініці Лукашука.')}</p>
+          <address className="clinic-address">{t(site.contacts.address)}</address>
+          <Encouragement label={t('Ми поруч із вашим рішенням')}>
+            {t('Ваш шлях до гармонійної посмішки може початися з однієї розмови.')}
           </Encouragement>
           <div className="contact-details">
             {site.contacts.phone && (
               <a href={`tel:${site.contacts.phone}`}>
                 <Phone size={19} strokeWidth={1.3} aria-hidden="true" />
                 <span>
-                  <span className="contact-label">Телефон для запису</span>
+                  <span className="contact-label">{t('Телефон для запису')}</span>
                   {site.contacts.phoneDisplay}
                 </span>
                 <ArrowUpRight size={17} aria-hidden="true" />
@@ -504,62 +515,40 @@ function Contacts() {
               <a href={site.contacts.instagram} target="_blank" rel="noopener noreferrer">
                 <Instagram size={20} strokeWidth={1.3} aria-hidden="true" />
                 <span>
-                  <span className="contact-label">Більше знайомства в Instagram</span>
+                  <span className="contact-label">Instagram</span>
                   @dr.zoryana.tepla
                 </span>
                 <ArrowUpRight size={17} aria-hidden="true" />
               </a>
             )}
-            <div>
-              <Clock3 size={20} strokeWidth={1.3} aria-hidden="true" />
-              <span>
-                <span className="contact-label">Графік прийому</span>
-                {site.contacts.schedule || 'За попереднім записом'}
-              </span>
-            </div>
           </div>
         </Reveal>
         <Reveal className="map-card">
-          {site.contacts.mapsEmbed ? (
+          <div className="map-embed">
             <iframe
-              title="Розташування місця прийому на Google Maps"
+              title={t('Розташування місця прийому на Google Maps')}
               src={site.contacts.mapsEmbed}
               loading="lazy"
-              referrerPolicy="no-referrer"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
             />
-          ) : (
-            <div className="map-placeholder">
-              <div className="map-grid" aria-hidden="true" />
-              <svg
-                viewBox="0 0 600 430"
-                preserveAspectRatio="none"
-                className="map-river"
-                aria-hidden="true"
-              >
-                <path
-                  d="M430-30C245 90 470 145 322 242S320 365 210 465"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="45"
-                />
-                <path
-                  d="M-20 80L620 285M120-20L265 460M470-20L390 460M-30 330L600 70"
-                  fill="none"
-                  stroke="#f8f7f4"
-                  strokeWidth="7"
-                />
-              </svg>
-              <div className="map-location">
-                <span className="map-pin">
-                  <MapPin size={25} strokeWidth={1.3} />
-                </span>
-                <span>Київ</span>
-                <span>Точну адресу буде додано</span>
-              </div>
-              <span className="map-disclosure">Декоративна схема · не карта місця прийому</span>
+          </div>
+          <div className="map-caption">
+            <MapPin size={19} aria-hidden="true" />
+            <div>
+              <strong>{t(site.contacts.clinic)}</strong>
+              <address>{t(site.contacts.address)}</address>
             </div>
-          )}
-          {site.contacts.address && <p>{site.contacts.address}</p>}
+            <a
+              href={site.contacts.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link"
+            >
+              {t('Відкрити Google Maps ')}
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -567,6 +556,8 @@ function Contacts() {
 }
 
 export function Home() {
+  const { t } = useI18n()
+
   return (
     <>
       <Hero />
@@ -577,10 +568,12 @@ export function Home() {
       <Approach />
       <Consultation />
       <Invitation
-        title="Побачте свій шлях цілком."
-        text="Від першого знайомства до ретенції: шість етапів, які допоможуть зрозуміти лікування, підготувати запитання й відчути більше впевненості."
+        title={t('Побачте свій шлях цілком.')}
+        text={t(
+          'Від першого знайомства до ретенції: шість етапів, які допоможуть зрозуміти лікування, підготувати запитання й відчути більше впевненості.',
+        )}
         to={journeyPath}
-        link="Ваш шлях до посмішки"
+        link={t('Ваш шлях до посмішки')}
       />
       <Results />
       <Reviews />

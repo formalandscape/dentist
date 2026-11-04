@@ -8,5 +8,16 @@ export default defineConfig(({ mode }) => ({
   publicDir: '../public',
   base: process.env.VITE_BASE_PATH || loadEnv(mode, process.cwd(), '').VITE_BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
-  build: { outDir: '../dist', emptyOutDir: true },
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        // Keep the framework cached when only copy or translations change.
+        manualChunks(id) {
+          if (id.includes('node_modules/')) return 'vendor'
+        },
+      },
+    },
+  },
 }))

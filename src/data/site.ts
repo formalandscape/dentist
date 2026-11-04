@@ -3,7 +3,7 @@ export const site = {
     name: 'Зоряна Тепла',
     fullName: 'Тепла Зоряна Миколаївна',
     role: 'Лікар стоматолог-ортодонт',
-    experience: 24,
+    experience: '20+',
     city: 'Київ',
     portrait: '',
     portraitAlt: 'Зоряна Тепла — лікар стоматолог-ортодонт',
@@ -12,10 +12,12 @@ export const site = {
   contacts: {
     phone: '+380679404225',
     phoneDisplay: '+38 (067) 940 42 25',
-    address: '',
+    clinic: 'Клініка Лукашука',
+    address: 'вулиця Юлії Здановської, 58А, Київ, 03191',
     schedule: '',
     instagram: 'https://www.instagram.com/dr.zoryana.tepla',
-    mapsEmbed: '',
+    mapsEmbed: `https://www.google.com/maps?q=${encodeURIComponent('вулиця Юлії Здановської, 58А, Київ, 03191')}&z=16&output=embed`,
+    mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('вулиця Юлії Здановської, 58А, Київ, 03191')}`,
   },
   formEndpoint: import.meta.env.VITE_FORMSPREE_ENDPOINT || '',
   associations: [

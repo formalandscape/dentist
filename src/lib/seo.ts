@@ -1,7 +1,8 @@
+import { languageForPath, withoutLanguage, localizedPath, translate } from './locale'
 import { site } from '../data/site'
 import { services, servicePath } from '../data/services'
 
-export function seoForPath(path: string) {
+function ukrainianSeo(path: string) {
   if (path.replace(/\/$/, '') === '/vash-shliakh-do-posmishky')
     return {
       title: 'Ваш шлях до посмішки — етапи лікування | Зоряна Тепла',
@@ -35,22 +36,53 @@ export function seoForPath(path: string) {
   return {
     title: 'Зоряна Тепла — лікар ортодонт у Києві',
     description:
-      'Зоряна Тепла — стоматолог-ортодонт у Києві. 24 роки практики. Ортодонтичне лікування дітей і дорослих, брекети, елайнери та діагностика прикусу.',
+      'Зоряна Тепла — стоматолог-ортодонт у Києві. 20+ років досвіду. Ортодонтичне лікування дітей і дорослих, брекети, елайнери та діагностика прикусу.',
     path: '/',
   }
 }
 
-export const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'Physician',
-  name: site.doctor.fullName,
-  description: site.doctor.role,
-  medicalSpecialty: 'Dentistry',
-  ...(site.contacts.phone ? { telephone: site.contacts.phone } : {}),
-  ...(site.contacts.instagram ? { sameAs: [site.contacts.instagram] } : {}),
-  areaServed: { '@type': 'City', name: 'Київ' },
-  memberOf: site.associations.map((a) => ({ '@type': 'Organization', name: a.description })),
+export function seoForPath(path: string) {
+  const language = languageForPath(path)
+  const clean = withoutLanguage(path)
+  const seo = ukrainianSeo(clean)
+  const service = services.find(
+    (s) => clean.replace(/\/$/, '') === servicePath(s.id).replace(/\/$/, ''),
+  )
+  return {
+    ...seo,
+    title: translate(seo.title, language),
+    description: service
+      ? `${translate(service.description, language)} ${translate('Індивідуальна діагностика та планування лікування дітей і дорослих. Лікар ортодонт Зоряна Тепла, Київ.', language)}`
+      : translate(seo.description, language),
+    path: localizedPath(seo.path, language),
+  }
 }
+
+export function schemaForPath(path: string) {
+  const language = languageForPath(path)
+  const t = (text: string) => translate(text, language)
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: t(site.doctor.fullName),
+    description: t(site.doctor.role),
+    medicalSpecialty: 'Dentistry',
+    telephone: site.contacts.phone,
+    sameAs: [site.contacts.instagram],
+    areaServed: { '@type': 'City', name: t(site.doctor.city) },
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: t('вулиця Юлії Здановської, 58А'),
+      addressLocality: t(site.doctor.city),
+      postalCode: '03191',
+      addressCountry: 'UA',
+    },
+    location: { '@type': 'MedicalClinic', name: t(site.contacts.clinic) },
+    hasMap: site.contacts.mapsUrl,
+    memberOf: site.associations.map((a) => ({ '@type': 'Organization', name: t(a.description) })),
+  }
+}
+export const schema = schemaForPath('/')
 
 export function publicUrl(path: string) {
   const origin = import.meta.env.VITE_SITE_URL?.replace(/\/$/, '')

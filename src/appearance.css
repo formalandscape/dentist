@@ -1,0 +1,642 @@
+/* A quieter finish and shared surfaces for both themes. */
+:root {
+  --surface: #fdfbf6;
+  --surface-soft: #eef0e7;
+  --surface-strong: #e2e7da;
+  --error: #923f31;
+  --error-surface: #f5e6df;
+}
+body::after,
+.scene-ambience > span,
+.page-content .section::before,
+.flower,
+.invitation-orbit,
+.journey-art-orbit,
+.service-card::after,
+.preparation-card::after,
+.journey-summary::after {
+  display: none;
+}
+.scene-ambience {
+  background: var(--paper);
+}
+.hero,
+.service-hero,
+.journey-hero {
+  background: var(--paper);
+}
+.hero {
+  padding-bottom: 52px;
+}
+.hero-layout {
+  padding-block: 12px;
+}
+.hero-promise {
+  margin-top: 0;
+}
+.hero-visual,
+.hero-photo-frame,
+.about-photo-frame,
+.service-page-photo,
+.editorial-photo,
+.map-card,
+.form-card {
+  box-shadow: none;
+}
+.portrait-placeholder {
+  background: linear-gradient(150deg, #e8ecdf, #c7d7c1);
+}
+.portrait-light,
+.portrait-arch-inner,
+.portrait-vertical {
+  display: none;
+}
+.portrait-caption .tiny-caps {
+  display: none;
+}
+.hero-photo-footer {
+  opacity: 1;
+  color: var(--muted);
+}
+.encouragement {
+  background: transparent;
+}
+.encouragement-icon {
+  background: transparent;
+}
+.appointment-section,
+.invitation-section,
+.journey-support {
+  background: var(--surface-soft);
+}
+.form-card,
+.journey-panel,
+.preparation-card,
+.journey-summary {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.service-note,
+.form-availability,
+.patient-option.selected {
+  background: var(--surface-strong);
+}
+.site-footer {
+  background: var(--surface-soft);
+}
+.site-preferences,
+.language-switch {
+  display: flex;
+  align-items: center;
+}
+.site-preferences {
+  gap: 8px;
+  flex-shrink: 0;
+}
+.language-switch {
+  border-right: 1px solid var(--line);
+  padding-right: 7px;
+  gap: 1px;
+}
+.language-switch a {
+  min-width: 29px;
+  min-height: 36px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  border-bottom: 1px solid transparent;
+}
+.language-switch a[aria-current='true'] {
+  color: var(--ink);
+  border-bottom-color: var(--sage);
+}
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--sage);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transition:
+    background-color 200ms,
+    border-color 200ms;
+}
+.theme-toggle:hover,
+.language-switch a:hover {
+  background: var(--surface-strong);
+}
+.theme-toggle:hover {
+  border-color: var(--line);
+}
+.header-inner {
+  gap: 18px;
+}
+.desktop-nav {
+  gap: 18px;
+}
+.clinic-address,
+.map-caption address,
+.footer-visit-note address {
+  font-style: normal;
+  line-height: 1.8;
+}
+.clinic-address {
+  max-width: 390px;
+  margin-top: 13px;
+  font-size: 16px;
+  color: var(--ink);
+}
+.map-card {
+  height: auto;
+  background: var(--surface);
+  border-color: var(--line);
+}
+.map-embed {
+  height: 360px;
+  background: var(--surface-strong);
+}
+.map-card .map-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.map-caption {
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 22px;
+  color: var(--ink);
+}
+.map-caption > svg {
+  margin-top: 3px;
+  color: var(--sage);
+}
+.map-caption strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.map-caption address {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+.map-caption > a {
+  margin: 8px 0 0 29px;
+  font-size: 12px;
+}
+.footer-visit-note strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  color: #e9eee7;
+  background: #14201a;
+  --paper: #14201a;
+  --surface: #1b2a22;
+  --surface-soft: #19271f;
+  --surface-strong: #293d2f;
+  --ink: #e9eee7;
+  --sage: #b3d4bc;
+  --soft-sage: #9db9a2;
+  --muted: #b7c4b9;
+  --gold: #d2b584;
+  --beige: #26372b;
+  --line: #405646;
+  --error: #ffc2ad;
+  --error-surface: #422c25;
+}
+[data-theme='dark'] body {
+  color: var(--ink);
+}
+[data-theme='dark'] .site-header,
+[data-theme='dark'] .site-header.scrolled,
+[data-theme='dark'] .mobile-menu {
+  background: #14201af5;
+  border-color: var(--line);
+  box-shadow: none;
+}
+[data-theme='dark']
+  :is(
+    .brand-symbol,
+    .desktop-nav a:hover,
+    .footer-bottom a:hover,
+    .eyebrow,
+    .tiny-caps,
+    .hero-promise,
+    .back-link,
+    .text-link,
+    .brand-type
+  ) {
+  color: var(--sage);
+}
+[data-theme='dark'] .header-appointment {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--surface);
+}
+[data-theme='dark']
+  :is(
+    .header-appointment:hover,
+    .mobile-menu nav a:hover,
+    .round-button:hover,
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus
+  ) {
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+[data-theme='dark'] :is(.button-primary, .mobile-booking) {
+  background: #b3d4bc;
+  border-color: #b3d4bc;
+  color: #15291c;
+  box-shadow: none;
+}
+[data-theme='dark'] .button-primary:hover {
+  background: #c6e1cc;
+}
+[data-theme='dark'] .button-outline {
+  color: var(--ink);
+  border-color: var(--sage);
+}
+[data-theme='dark'] :is(.button-outline:hover, .success-icon, .journey-panel-footer .round-button) {
+  color: var(--ink);
+  background: var(--surface-strong);
+  border-color: var(--line);
+}
+[data-theme='dark']
+  :is(
+    .trust-strip,
+    .associations-section,
+    .services-section,
+    .consultation-section,
+    .results-section,
+    .reviews-section,
+    .faq-section,
+    .journey-stages,
+    .preparation-section,
+    .more-services
+  ) {
+  background: var(--paper);
+  border-color: var(--line);
+}
+[data-theme='dark'] :is(.approach-section, .service-note) {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+[data-theme='dark']
+  :is(
+    .hero-description p,
+    .hero-bottom,
+    .lead,
+    .muted,
+    .association p,
+    .association-note,
+    .service-card-copy p,
+    .step p,
+    .review-content .muted,
+    .faq-intro,
+    .faq-answer p,
+    .small-note,
+    .image-disclosure,
+    .journey-lead,
+    .journey-panel-intro,
+    .journey-roles p,
+    .journey-summary p,
+    .journey-disclaimer,
+    .preparation-card p,
+    .legal-content p,
+    .not-found p,
+    .invitation-layout p,
+    .approach-copy p
+  ) {
+  color: var(--muted);
+}
+[data-theme='dark']
+  :is(
+    .hero-description strong,
+    .contact-details,
+    .field label,
+    .patient-options legend,
+    .service-subtitle,
+    .service-note h3,
+    .preparation-card h3,
+    .journey-panel h3,
+    .journey-summary h3,
+    .more-service-links a,
+    .faq-item h3 button,
+    .approach-copy h2,
+    .approach-copy h2 em,
+    .legal-content h2
+  ) {
+  color: var(--ink);
+}
+[data-theme='dark']
+  :is(
+    .hero-photo-footer,
+    .about-caption,
+    .doctor-signature,
+    .experience-note,
+    .trust-number,
+    .trust-symbol,
+    .trust-abbreviations,
+    .associations-heading,
+    .association > span,
+    .step-line > span,
+    .step h3,
+    .review-content blockquote,
+    .review-author,
+    .review-empty-label,
+    .contact-label,
+    .contact-details svg,
+    .service-note,
+    .preparation-card > span,
+    .journey-progress-row > span,
+    .journey-tab-number,
+    .journey-tabs button svg,
+    .journey-panel > .tiny-caps,
+    .journey-roles svg,
+    .journey-takeaway,
+    .journey-panel-footer p,
+    .journey-summary > svg,
+    .form-heading span
+  ) {
+  color: var(--sage);
+}
+[data-theme='dark']
+  :is(
+    .experience-note,
+    .association,
+    .service-card-copy,
+    .comparison-caption,
+    .journey-tabs button,
+    .journey-progress-row,
+    .round-button,
+    .form-availability,
+    .patient-option,
+    .form-success,
+    .map-caption
+  ) {
+  color: var(--ink);
+  border-color: var(--line);
+}
+[data-theme='dark'] .experience-note {
+  background: var(--surface);
+}
+[data-theme='dark'] .portrait-placeholder {
+  background: linear-gradient(155deg, #334b39, #1e3327);
+  color: #9dbd9f;
+}
+[data-theme='dark'] :is(.portrait-wordmark, .portrait-caption, .about-caption, .hero-bottom-icon) {
+  color: #c5d8c4;
+}
+[data-theme='dark'] .portrait-arch {
+  border-color: #7d987555;
+}
+[data-theme='dark'] .approach-quote {
+  background: #14201ae8;
+  color: var(--ink);
+}
+[data-theme='dark']
+  :is(
+    .approach-quote blockquote em,
+    .approach-quote > span,
+    .encouragement p,
+    .encouragement-dark p,
+    .encouragement .tiny-caps,
+    .encouragement-dark .tiny-caps
+  ) {
+  color: var(--sage);
+}
+[data-theme='dark']
+  :is(
+    .encouragement,
+    .encouragement-dark,
+    .associations-heading,
+    .association,
+    .service-card,
+    .service-card-copy,
+    .steps-grid,
+    .step-line,
+    .contact-details > *,
+    .journey-roles,
+    .journey-tabs,
+    .journey-tabs button,
+    .preparation-card,
+    .form-fields,
+    .patient-option,
+    .field input,
+    .field select,
+    .field textarea,
+    .faq-item,
+    .more-service-links a,
+    .site-footer,
+    .footer-column + .footer-column,
+    .footer-quote + .footer-quote,
+    .footer-contact-link,
+    .site-footer .footer-bottom
+  ) {
+  border-color: var(--line);
+}
+[data-theme='dark'] .encouragement-icon {
+  color: var(--sage);
+}
+[data-theme='dark'] .journey-tabs button[aria-selected='true'],
+[data-theme='dark'] .journey-tabs button:hover {
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+[data-theme='dark'] .journey-progress-row progress::-webkit-progress-bar {
+  background: var(--line);
+}
+[data-theme='dark'] .journey-progress-row progress::-webkit-progress-value {
+  background: var(--sage);
+}
+[data-theme='dark'] .journey-progress-row progress::-moz-progress-bar {
+  background: var(--sage);
+}
+[data-theme='dark'] :is(.journey-rail, .step-dot) {
+  background: var(--line);
+}
+[data-theme='dark'] .journey-rail > span {
+  background: var(--sage);
+}
+[data-theme='dark']
+  :is(
+    .consent > span,
+    .field label > span,
+    .field label > .optional,
+    .form-safety,
+    .journey-progress-row > span:first-child span
+  ) {
+  color: var(--muted);
+}
+[data-theme='dark'] :is(input, textarea, select) {
+  color: var(--ink);
+  accent-color: var(--sage);
+}
+[data-theme='dark'] select option {
+  background: var(--surface);
+  color: var(--ink);
+}
+[data-theme='dark'] :is(input, textarea)::placeholder {
+  color: var(--muted);
+}
+[data-theme='dark'] .radio-circle {
+  border-color: var(--sage);
+}
+[data-theme='dark'] :is(.field-error, .form-error) {
+  color: var(--error);
+}
+[data-theme='dark'] .form-error {
+  background: var(--error-surface);
+}
+[data-theme='dark'] :is(.comparison-placeholder, .comparison-monogram, .comparison-label) {
+  color: #254832;
+}
+[data-theme='dark']
+  :is(
+    .footer-to-top,
+    .footer-doctor-name,
+    .footer-quote,
+    .footer-contact-link,
+    .footer-contact-link > svg
+  ) {
+  color: var(--ink);
+}
+[data-theme='dark']
+  :is(
+    .footer-to-top small,
+    .footer-doctor-role,
+    .footer-doctor-detail,
+    .footer-kicker,
+    .footer-visit-note,
+    .site-footer .footer-bottom,
+    .site-footer .medical-note
+  ) {
+  color: var(--muted);
+}
+[data-theme='dark'] .footer-up-icon {
+  background: var(--sage);
+  color: #15291c;
+  border-color: var(--sage);
+  box-shadow: none;
+}
+@media (max-width: 1250px) and (min-width: 1051px) {
+  .header-inner {
+    gap: 12px;
+  }
+  .desktop-nav {
+    gap: 12px;
+  }
+  .brand-type {
+    font-size: 16px;
+  }
+  .header-appointment {
+    padding-inline: 12px;
+    gap: 9px;
+  }
+}
+@media (max-width: 700px) {
+  .header-inner {
+    gap: 10px;
+    min-height: 78px;
+  }
+  .header-appointment {
+    display: none;
+  }
+  .site-preferences {
+    margin-left: auto;
+    gap: 3px;
+  }
+  .language-switch {
+    padding-right: 3px;
+  }
+  .language-switch a {
+    min-width: 25px;
+  }
+  .theme-toggle {
+    width: 32px;
+  }
+  .brand-symbol {
+    display: none;
+  }
+  .brand-type {
+    font-size: 15px;
+  }
+  .brand-type > span {
+    font-size: 6px;
+    letter-spacing: 0.04em;
+  }
+  .mobile-menu {
+    top: 78px;
+  }
+  .scene-ambience {
+    top: 78px;
+  }
+  .hero {
+    padding-bottom: 36px;
+  }
+  .map-embed {
+    height: 320px;
+  }
+  .map-caption {
+    padding: 18px;
+  }
+  .clinic-address {
+    font-size: 15px;
+  }
+}
+.invitation-layout {
+  grid-template-columns: 1fr auto;
+}
+.service-card,
+.service-card-copy,
+.review-content {
+  background: var(--surface);
+}
+.review-content {
+  box-shadow: none;
+}
+[data-theme='dark']
+  :is(
+    .hero h1 em,
+    .hero-bottom strong,
+    .trust-grid > div > span:last-child,
+    .service-card h3,
+    .invitation-layout h2
+  ) {
+  color: var(--ink);
+}
+[data-theme='dark'] .hero-bottom-icon {
+  background: var(--surface-strong);
+}
+[data-theme='dark'] .faq-item.is-open {
+  background: var(--surface);
+}
+@media (max-width: 700px) {
+  .invitation-layout {
+    grid-template-columns: 1fr;
+  }
+}
+[data-theme='dark'] :is(.more-service-links a > span, .mobile-nav-number) {
+  color: var(--muted);
+}
+[data-theme='dark'] .hero h1 em {
+  color: var(--sage);
+}
+.mobile-nav-number {
+  color: var(--muted);
+}
+[data-theme='dark'] .comparison .comparison-placeholder > .tiny-caps {
+  color: #254832;
+}
