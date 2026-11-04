@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, ChevronsLeftRight, Plus, Quote } from 'lucide-re
 import { faq, reviews, treatmentResults } from '../data/site'
 import { Eyebrow, Reveal } from './ui'
 import { Encouragement } from './Atmosphere'
+import { Monogram } from './Monogram'
 
 export function FAQ() {
   const { t } = useI18n()
@@ -153,7 +154,7 @@ export function Results() {
                 />
                 <div className="comparison-placeholder">
                   <span className="tiny-caps">{t('Простір для справжніх змін')}</span>
-                  <span className="comparison-monogram">ЗТ</span>
+                  <Monogram className="comparison-monogram" />
                   <span>{t('Фотографії незабаром')}</span>
                 </div>
               </>

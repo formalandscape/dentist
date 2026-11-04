@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { ArrowUpRight, Asterisk } from 'lucide-react'
 import { Link } from '../i18n/I18n'
 import { imageReveal, silk } from '../motion/presets'
+import { Monogram } from './Monogram'
 
 export function Reveal({
   children,
@@ -58,9 +59,7 @@ export function Brand({ footer = false }: { footer?: boolean }) {
 
   return (
     <Link to="/" className={`brand ${footer ? 'brand-footer' : ''}`}>
-      <span className="brand-symbol" aria-hidden="true">
-        З<span>Т</span>
-      </span>
+      <Monogram className="brand-symbol" />
       <span className="brand-type">
         {t('Зоряна Тепла')}
         <span>{t('ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ')}</span>

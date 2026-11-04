@@ -11,6 +11,7 @@ import { site } from './data/site'
 import { services, servicePath } from './data/services'
 import { Encouragement, Invitation } from './components/Atmosphere'
 import { journeyPath } from './data/journey'
+import { Monogram } from './components/Monogram'
 
 function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
   const { t } = useI18n()
@@ -30,31 +31,31 @@ function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
     <div
       className={`portrait-placeholder ${hero ? 'portrait-hero' : ''}`}
       role="img"
-      aria-label={t('Елегантна дизайн-заглушка для майбутнього портрета лікаря Зоряни Теплої')}
+      aria-label={t('Декоративна лінія усмішки — місце для майбутнього портрета лікаря')}
     >
-      <div className="portrait-light" />
-      <div className="portrait-arch">
-        <div className="portrait-arch-inner" />
-      </div>
-      <div className="portrait-line-art">
-        <svg viewBox="0 0 400 540" fill="none" aria-hidden="true">
-          <path
-            d="M-40 505C80 492 138 378 198 275S288 98 405 55M78 445C58 407 43 367 72 346c26 32 30 59 6 99ZM130 385c-18-48-16-82 14-103 17 39 14 74-14 103ZM183 301c-10-49-5-82 27-100 11 38 7 72-27 100ZM233 219c-3-47 11-80 46-93 3 36-9 69-46 93ZM276 153c9-40 34-66 69-70-5 36-29 60-69 70ZM105 420c36-15 77-15 97 10-34 22-70 20-97-10ZM156 346c38-18 77-18 98 9-34 23-72 20-98-9ZM204 266c35-20 75-23 99 1-32 26-70 27-99-1ZM252 189c38-19 74-14 93 9-35 24-70 20-93-9Z"
-            stroke="currentColor"
-            strokeWidth="0.9"
-          />
-        </svg>
-      </div>
-      <span className="portrait-wordmark" aria-hidden="true">
-        З<span>Т</span>
-      </span>
+      <svg className="smile-illustration" viewBox="0 0 480 480" fill="none" aria-hidden="true">
+        <circle cx="240" cy="240" r="222" stroke="currentColor" strokeOpacity="0.18" />
+        <path
+          d="M105 256C162 330 318 330 375 256"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+        />
+        <path
+          d="M131 267C180 311 300 311 349 267"
+          stroke="currentColor"
+          strokeOpacity="0.45"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+        <circle cx="105" cy="256" r="3" fill="currentColor" />
+        <circle cx="375" cy="256" r="3" fill="currentColor" />
+      </svg>
+      <Monogram className="portrait-wordmark" />
       <div className="portrait-caption">
-        <span className="tiny-caps">{t('Особисте знайомство — незабаром')}</span>
+        <span className="portrait-theme">{t('Гармонія усмішки')}</span>
         <span>{t('Місце для портрета лікаря')}</span>
       </div>
-      <span className="portrait-vertical" aria-hidden="true">
-        {t('ІНДИВІДУАЛЬНІСТЬ У КОЖНІЙ ДЕТАЛІ')}
-      </span>
     </div>
   )
 }
