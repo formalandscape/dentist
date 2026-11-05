@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowRight, ChevronsLeftRight, Plus, Quote } from 'lucide-react'
 import { faq, reviews, treatmentResults } from '../data/site'
 import { Eyebrow, Reveal } from './ui'
+import { silk } from '../motion/presets'
 import { Encouragement } from './Atmosphere'
 import { Monogram } from './Monogram'
 
@@ -57,7 +58,7 @@ export function FAQ() {
                   gridTemplateRows: open === i ? '1fr' : '0fr',
                   visibility: open === i ? 'visible' : 'hidden',
                 }}
-                transition={{ duration: reduced ? 0 : 0.3 }}
+                transition={{ duration: reduced ? 0 : 0.55, ease: silk.ease }}
                 className="faq-answer"
               >
                 <div>

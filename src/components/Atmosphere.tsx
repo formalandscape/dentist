@@ -85,11 +85,28 @@ export function DetailMotion() {
             const el = target as HTMLElement
             revealed.add(el)
             const group = el.hasAttribute('data-motion-reveal')
-            const line = el.matches('.eyebrow-line, .hero-description-line')
+            const line = el.matches(
+              '.eyebrow-line, .hero-description-line, .mentorship-visual-rule',
+            )
             if (el.matches('.step-line')) el.dataset.silkLine = 'true'
             const image = el.matches('.hero-photo-frame, .about-photo-frame')
             const icon = el.tagName.toLowerCase() === 'svg'
+            const card = el.matches(
+              '.service-card, .preparation-card, .journey-summary, .mentorship-card',
+            )
+            const row = el.matches('.step, .mentorship-topic, .mentorship-stage, .faq-item')
             const surface = el.matches('.encouragement, .service-card-copy, .association')
+            el.dataset.revealKind = image
+              ? 'image'
+              : line
+                ? 'line'
+                : card
+                  ? 'card'
+                  : row
+                    ? 'sequence'
+                    : group
+                      ? 'section'
+                      : 'text'
             const frames = image
               ? [
                   { opacity: 0.65, clipPath: 'inset(14% 0 0 0)' },
@@ -105,22 +122,32 @@ export function DetailMotion() {
                       { opacity: 0.6, transform: 'translateY(4px) rotate(-6deg)' },
                       { opacity: 1, transform: 'translateY(0) rotate(0)' },
                     ]
-                  : group
+                  : card
                     ? [
-                        { opacity: 0.88, transform: 'translateY(8px)' },
-                        { opacity: 1, transform: 'translateY(0)' },
+                        { opacity: 0.62, transform: 'translateY(24px) scale(.985)' },
+                        { opacity: 1, transform: 'translateY(0) scale(1)' },
                       ]
-                    : surface
-                      ? [{ opacity: 0.65 }, { opacity: 1 }]
-                      : revealFrames
+                    : row
+                      ? [
+                          { opacity: 0.6, transform: 'translateX(-12px)' },
+                          { opacity: 1, transform: 'translateX(0)' },
+                        ]
+                      : group
+                        ? [
+                            { opacity: 0.88, transform: 'translateY(8px)' },
+                            { opacity: 1, transform: 'translateY(0)' },
+                          ]
+                        : surface
+                          ? [{ opacity: 0.65 }, { opacity: 1 }]
+                          : revealFrames
             const order = Array.from(el.parentElement?.children || []).indexOf(el)
             const heroButton = !!el.closest('.hero-actions')
             const delay =
               Number(el.dataset.delay || 0) * 1000 +
               (heroButton ? 180 : 0) +
-              Math.min(Math.max(order, 0) * 32, 128)
+              Math.min(Math.max(order, 0) * (card || row ? 65 : 26), 195)
             const animation = target.animate(frames, {
-              duration: (icon ? silk.micro * 2 : silk.section) * 1000,
+              duration: (icon ? silk.micro * 2 : card || image ? 1.15 : silk.section) * 1000,
               delay,
               easing: silk.cssEase,
             })
@@ -133,7 +160,7 @@ export function DetailMotion() {
       )
       document
         .querySelectorAll(
-          '.page-content [data-motion-reveal], .page-content p, .page-content blockquote, .page-content .eyebrow, .page-content .eyebrow-line, .page-content .button, .page-content .text-link, .page-content .association, .page-content .encouragement, .page-content .service-card-copy, .page-content .field, .page-content .patient-options, .page-content .consent-field, .page-content .hero-location, .page-content .hero-photo-frame, .page-content .about-photo-frame, .page-content .experience-note, .page-content .step-line, .page-content .hero-description-line, .page-content .journey-tabs button, .page-content .contact-details > *, .page-content .success-icon, .page-content .round-button, .page-content .button svg, .page-content .encouragement-icon svg, .page-content .journey-summary > svg, .page-content .journey-roles svg, .page-content .trust-grid > div, .page-content .trust-grid svg, .page-content .doctor-signature, .site-footer p, .site-footer .footer-quote, .site-footer .footer-to-top, .site-footer .footer-contact-link, .site-footer .footer-bottom > *',
+          '.page-content .service-card, .page-content .preparation-card, .page-content .journey-summary, .page-content .step, .page-content .faq-item, .page-content .mentorship-visual-rule, .page-content [data-motion-reveal], .page-content p, .page-content blockquote, .page-content .eyebrow, .page-content .eyebrow-line, .page-content .button, .page-content .text-link, .page-content .association, .page-content .encouragement, .page-content .service-card-copy, .page-content .field, .page-content .patient-options, .page-content .consent-field, .page-content .hero-location, .page-content .hero-photo-frame, .page-content .about-photo-frame, .page-content .experience-note, .page-content .step-line, .page-content .hero-description-line, .page-content .journey-tabs button, .page-content .contact-details > *, .page-content .success-icon, .page-content .round-button, .page-content .button svg, .page-content .encouragement-icon svg, .page-content .journey-summary > svg, .page-content .journey-roles svg, .page-content .trust-grid > div, .page-content .trust-grid svg, .page-content .doctor-signature, .site-footer p, .site-footer .footer-quote, .site-footer .footer-to-top, .site-footer .footer-contact-link, .site-footer .footer-bottom > *',
         )
         .forEach((el) => {
           if (!revealed.has(el)) observer?.observe(el)

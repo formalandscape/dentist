@@ -22,3 +22,5 @@ const currentPath = window.location.pathname.slice(base.length) || '/'
 if (root.querySelector('main') && normalize(root.dataset.page || '') === normalize(currentPath))
   hydrateRoot(root, app)
 else createRoot(root).render(app)
+
+import './premium.css'

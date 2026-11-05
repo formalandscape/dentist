@@ -7,7 +7,7 @@ import { ArrowDown, ArrowLeft, ArrowRight, Check, Heart, ListChecks, Sparkles } 
 import { Link } from './i18n/I18n'
 import { journeySteps } from './data/journey'
 import { Action, Eyebrow, Photo, Reveal } from './components/ui'
-import { Encouragement, Invitation } from './components/Atmosphere'
+import { Invitation } from './components/Atmosphere'
 import { AppointmentSection } from './Home'
 import { usePanelTransition } from './motion/usePanelTransition'
 
@@ -68,11 +68,6 @@ export function JourneyPage() {
                   <ArrowDown size={16} aria-hidden="true" />
                 </a>
               </div>
-              <Encouragement label={t('Ваш темп — важливий')}>
-                {t(
-                  'Ви не зобов’язані знати всі відповіді заздалегідь. Саме для цього є перша консультація.',
-                )}
-              </Encouragement>
             </Reveal>
             <div className="journey-art">
               <Photo kind="balance" priority />

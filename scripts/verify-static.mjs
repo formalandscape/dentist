@@ -13,6 +13,7 @@ const ukrainianPaths = [
   '/poslugy/dytiacha-ortodontiia/',
   '/poslugy/hnatolohiia/',
   '/vash-shliakh-do-posmishky/',
+  '/mentorstvo/',
   '/polityka-konfidentsiinosti/',
 ]
 const paths = [...ukrainianPaths, ...ukrainianPaths.map((path) => `/en${path}`)]
@@ -70,6 +71,19 @@ for (const path of paths) {
     assert.ok(html.includes(`property="og:image" content="${origin}${base}images/social-card.png"`))
   } else assert.ok(!html.includes('rel="canonical"'), 'No invented canonical domain')
 }
+const mentoring = await fs.readFile(`${folder}/mentorstvo/index.html`, 'utf8')
+assert.ok(mentoring.includes('id="mentorship-about"'), 'Mentorship about section is static')
+assert.ok(mentoring.includes('id="mentorship-request"'), 'Mentorship enquiry is static')
+assert.ok(
+  mentoring.includes('проведення програм чи навчальних курсів наразі не заявлено'),
+  'No unconfirmed training claims',
+)
+assert.ok(
+  mentoring.includes('href="https://www.instagram.com/dr.zoryana.tepla"'),
+  'Mentorship uses the existing contact',
+)
+const journey = await fs.readFile(`${folder}/vash-shliakh-do-posmishky/index.html`, 'utf8')
+assert.ok(!journey.includes('Ви не зобов’язані знати'), 'Requested journey text removed')
 const home = await fs.readFile(`${folder}/index.html`, 'utf8')
 assert.ok(home.includes('"@type":"Physician"'))
 assert.ok(home.includes('tel:+380679404225'))
@@ -103,5 +117,5 @@ if (origin) {
   await assert.rejects(fs.access(`${folder}/sitemap.xml`))
 }
 console.log(
-  `Static checks passed: 14 pages, UK/EN languages, hreflang, clinic address, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
+  `Static checks passed: 16 pages, UK/EN languages, hreflang, clinic address, SEO, schema, 404, assets, robots${origin ? ', canonical, sitemap' : ' (domain pending)'}. Base: ${base}`,
 )

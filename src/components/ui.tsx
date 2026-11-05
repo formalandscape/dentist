@@ -84,7 +84,7 @@ export function Photo({
   const target = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
   const { scrollYProgress } = useScroll({ target, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [0, -12])
+  const y = useTransform(scrollYProgress, [0, 1], [8, -18])
   const smoothY = useSpring(y, { stiffness: 70, damping: 24, mass: 0.4 })
   return (
     <motion.div

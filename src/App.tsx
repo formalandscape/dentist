@@ -5,6 +5,7 @@ import { Header, Footer, RouteEffects } from './components/Layout'
 import { Home } from './Home'
 import { NotFound, PrivacyPage, ServicePage } from './Pages'
 import { JourneyPage } from './Journey'
+import { MentorshipPage } from './Mentorship'
 import { ReadingProgress, DetailMotion, MotionEnvironment } from './components/Atmosphere'
 import { I18nProvider } from './i18n/I18n'
 import { withoutLanguage } from './lib/locale'
@@ -58,6 +59,7 @@ function PageContent() {
           <Route element={<SceneLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/poslugy/:id/" element={<ServicePage />} />
+            <Route path="/mentorstvo/" element={<MentorshipPage />} />
             <Route path="/vash-shliakh-do-posmishky/" element={<JourneyPage />} />
             <Route path="/polityka-konfidentsiinosti/" element={<PrivacyPage />} />
             <Route path="*" element={<NotFound />} />

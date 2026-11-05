@@ -1,0 +1,598 @@
+/* Shared palette interpolation. Registered colours also blend gradients. */
+@property --ambient-glow {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c8d7bc;
+}
+@property --portrait-start {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e8ecdf;
+}
+@property --portrait-end {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c7d7c1;
+}
+:root {
+  --theme-duration: 800ms;
+  --theme-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ambient-glow: #c8d7bc;
+  --header-surface: #f8f5eef5;
+  --soft-shadow: 0 16px 42px #2949320c;
+}
+:root[data-theme='dark'] {
+  --ambient-glow: #35543d;
+  --portrait-start: #334b39;
+  --portrait-end: #1e3327;
+  --header-surface: #14201af5;
+  --soft-shadow: 0 16px 42px #00000024;
+}
+html,
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+/* Only active for a palette change, never while rendering the initial page. */
+html[data-theme-transition],
+html[data-theme-transition] body,
+html[data-theme-transition] body *,
+html[data-theme-transition] body *::before,
+html[data-theme-transition] body *::after {
+  transition-property:
+    background-color, color, border-color, outline-color, box-shadow, fill, stroke,
+    text-decoration-color !important;
+  transition-duration: var(--theme-duration) !important;
+  transition-timing-function: var(--theme-ease) !important;
+  transition-delay: 0s !important;
+}
+.site-header,
+.site-header.scrolled,
+[data-theme='dark'] .site-header,
+[data-theme='dark'] .site-header.scrolled,
+.mobile-menu,
+[data-theme='dark'] .mobile-menu {
+  background-color: var(--header-surface);
+}
+.theme-toggle {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.theme-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 650ms;
+}
+.theme-icon-sun {
+  opacity: 0;
+  transform: rotate(-100deg) scale(0.55);
+}
+.theme-icon-moon {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+[data-theme='dark'] .theme-icon-sun {
+  opacity: 1;
+  transform: rotate(0) scale(1);
+}
+[data-theme='dark'] .theme-icon-moon {
+  opacity: 0;
+  transform: rotate(100deg) scale(0.55);
+}
+html[data-theme-transition] .theme-icon {
+  transition-property: transform, opacity, color !important;
+}
+html[data-theme-transition] {
+  transition-property:
+    background-color, color, --ambient-glow, --portrait-start, --portrait-end !important;
+}
+/* A small glow, with no full-screen overlays or constantly moving layers. */
+.mentorship-hero,
+.journey-hero {
+  background-color: var(--paper);
+  background-image: radial-gradient(
+    ellipse at 88% 12%,
+    color-mix(in srgb, var(--ambient-glow) 32%, transparent),
+    transparent 62%
+  );
+}
+.mentorship-request,
+.invitation-section {
+  background-color: var(--surface-soft);
+  background-image: radial-gradient(
+    ellipse at 12% 100%,
+    color-mix(in srgb, var(--ambient-glow) 27%, transparent),
+    transparent 70%
+  );
+}
+.journey-hero-layout {
+  row-gap: 30px;
+}
+.journey-hero-actions {
+  margin-bottom: 0;
+}
+.mentorship-hero {
+  padding-block: 65px 90px;
+  overflow: clip;
+}
+.mentorship-hero-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  align-items: center;
+  gap: 7%;
+}
+.mentorship-intro h1 {
+  font-size: clamp(48px, 5.5vw, 82px);
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+}
+.mentorship-intro h1 em {
+  color: var(--sage);
+}
+.mentorship-lead {
+  font-size: 17px;
+  line-height: 1.85;
+  max-width: 560px;
+}
+.mentorship-intro > p {
+  margin-block: 27px;
+}
+.mentorship-intro .button {
+  margin-top: 4px;
+}
+.mentorship-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.mentorship-status > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+  flex-shrink: 0;
+}
+.mentorship-visual {
+  position: relative;
+  height: 570px;
+  border-radius: 48% 48% 2px 2px;
+  overflow: clip;
+  background: #526044;
+}
+.mentorship-visual .editorial-photo {
+  height: 106%;
+}
+.mentorship-visual::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border: 1px solid #ffffff66;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.mentorship-visual-rule {
+  position: absolute;
+  left: 32px;
+  bottom: 130px;
+  width: calc(100% - 64px);
+  height: 1px;
+  background: #ffffff80;
+  transform-origin: left;
+}
+.mentorship-visual-caption {
+  position: absolute;
+  inset: auto 32px 30px;
+  color: #fff9e7;
+}
+.mentorship-visual-caption > span {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+.mentorship-visual-caption p {
+  font:
+    400 36px/1.08 'Cormorant Garamond',
+    Georgia,
+    serif;
+  margin-top: 15px;
+}
+.mentorship-split {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 10%;
+}
+.mentorship-split h2,
+.mentorship-request h2 {
+  font-size: clamp(38px, 4.4vw, 62px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+.mentorship-prose > p + p {
+  margin-top: 22px;
+}
+.mentorship-prose > p:not(.mentorship-lead),
+.mentorship-split .muted {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.95;
+}
+.mentorship-signature {
+  border-top: 1px solid var(--line);
+  margin-top: 32px;
+  padding-top: 22px;
+}
+.mentorship-signature span {
+  font:
+    400 30px 'Cormorant Garamond',
+    Georgia,
+    serif;
+  display: block;
+}
+.mentorship-signature small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 5px;
+}
+.mentorship-audience,
+.mentorship-format {
+  background: var(--surface-soft);
+}
+.mentorship-audience-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.mentorship-card {
+  padding: 30px 23px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--soft-shadow);
+}
+.mentorship-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--sage);
+  margin-bottom: 35px;
+}
+.mentorship-card-top span,
+.mentorship-index {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.mentorship-card h3 {
+  font-size: 29px;
+  line-height: 1.15;
+  margin-bottom: 15px;
+}
+.mentorship-card p,
+.mentorship-topic p,
+.mentorship-stage p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.mentorship-topic {
+  display: grid;
+  grid-template-columns: 22px 1fr 20px;
+  gap: 15px;
+  padding-block: 26px;
+  border-top: 1px solid var(--line);
+}
+.mentorship-topic:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.mentorship-topic h3 {
+  font-size: 30px;
+  line-height: 1.15;
+  margin-bottom: 13px;
+}
+.mentorship-topic > svg {
+  color: var(--sage);
+}
+.mentorship-index {
+  padding-top: 7px;
+}
+.mentorship-timeline {
+  position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0;
+  max-width: 940px;
+  margin-inline: auto;
+}
+.mentorship-timeline > li:not(.mentorship-rail) {
+  border-bottom: 1px solid var(--line);
+}
+.mentorship-stage {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  padding-block: 32px;
+  gap: 30px;
+}
+.mentorship-stage-number {
+  font:
+    400 52px/1 'Cormorant Garamond',
+    Georgia,
+    serif;
+  color: var(--sage);
+  background: var(--surface-soft);
+  align-self: start;
+  z-index: 1;
+  padding-block: 6px;
+}
+.mentorship-stage h3 {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+.mentorship-stage p {
+  max-width: 620px;
+}
+.mentorship-rail {
+  position: absolute;
+  width: 1px;
+  inset: 50px auto 55px 22px;
+  background: var(--line);
+  pointer-events: none;
+}
+.mentorship-rail > span {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: var(--sage);
+}
+.mentorship-request-inner {
+  text-align: center;
+  max-width: 920px;
+}
+.mentorship-request .eyebrow {
+  justify-content: center;
+}
+.mentorship-request-inner > p {
+  max-width: 600px;
+  margin: 25px auto;
+  color: var(--muted);
+  font-size: 14px;
+}
+.mentorship-request-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 30px;
+}
+.mentorship-request-inner > .mentorship-request-note {
+  font-size: 11px;
+  max-width: 490px;
+  margin-bottom: 0;
+}
+/* Keep the patient's booking bar off the professional mentoring page. */
+body:has(.mentorship-hero) .mobile-booking {
+  display: none;
+}
+@media (min-width: 1051px) and (max-width: 1400px) {
+  .header-inner {
+    gap: 11px;
+  }
+  .desktop-nav {
+    gap: 11px;
+  }
+  .desktop-nav a {
+    font-size: 10px;
+  }
+  .header-appointment {
+    padding-inline: 10px;
+    gap: 7px;
+  }
+  .brand-type {
+    font-size: 16px;
+  }
+}
+@media (max-width: 1050px) {
+  .mentorship-audience-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mentorship-visual {
+    height: 470px;
+  }
+  .mentorship-hero-grid,
+  .mentorship-split {
+    gap: 6%;
+  }
+  .mentorship-intro h1 {
+    font-size: 57px;
+  }
+}
+@media (max-width: 700px) {
+  .mentorship-hero {
+    padding-block: 30px 48px;
+  }
+  .mentorship-hero-grid,
+  .mentorship-split {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .mentorship-intro h1 {
+    font-size: clamp(44px, 11.5vw, 70px);
+  }
+  .mentorship-lead {
+    font-size: 15px;
+  }
+  .mentorship-visual {
+    width: 100%;
+    height: 430px;
+    max-width: 470px;
+    margin-inline: auto;
+  }
+  .mentorship-intro > .mentorship-status {
+    font-size: 10px;
+    margin-bottom: 0;
+  }
+  .mentorship-audience-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .mentorship-card {
+    padding: 25px;
+  }
+  .mentorship-card-top {
+    margin-bottom: 22px;
+  }
+  .mentorship-stage {
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    padding-block: 27px;
+  }
+  .mentorship-stage-number {
+    font-size: 40px;
+  }
+  .mentorship-rail {
+    left: 17px;
+  }
+  .mentorship-stage h3 {
+    font-size: 29px;
+  }
+  .mentorship-topic h3 {
+    font-size: 28px;
+  }
+  .mentorship-topic {
+    gap: 10px;
+    grid-template-columns: 18px 1fr 16px;
+  }
+  .mentorship-request-actions {
+    flex-direction: column;
+  }
+  .mentorship-request .eyebrow {
+    font-size: 9px;
+  }
+  .mobile-menu nav a {
+    font-size: 30px;
+    padding-block: 15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme-transition],
+  html[data-theme-transition] body *,
+  html[data-theme-transition] body *::before,
+  html[data-theme-transition] body *::after {
+    transition: none !important;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .mentorship-card {
+    transition:
+      transform 500ms var(--motion-ease),
+      box-shadow 500ms,
+      border-color 500ms;
+  }
+  .mentorship-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--sage);
+    box-shadow: 0 20px 40px #29493216;
+  }
+  .mentorship-topic > svg {
+    transition: transform 500ms var(--motion-ease);
+  }
+  .mentorship-topic:hover > svg {
+    transform: translate(3px, -3px);
+  }
+}
+/* Progressive scroll-linked accents run in CSS; scrolling does not set React state. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .page-content .section:not(.hero):not(.journey-hero):not(.mentorship-hero)::before {
+      display: block;
+      background: radial-gradient(
+        ellipse at 95% 8%,
+        color-mix(in srgb, var(--ambient-glow) 17%, transparent),
+        transparent 62%
+      );
+      animation: section-light linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+    .mentorship-topic::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      inset-inline: 0;
+      height: 1px;
+      background: var(--sage);
+      transform-origin: left;
+      animation: section-rule linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+  }
+}
+@keyframes section-light {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  45%,
+  65% {
+    opacity: 0.8;
+  }
+}
+@keyframes section-rule {
+  from {
+    transform: scaleX(0.05);
+    opacity: 0.2;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 0.6;
+  }
+}
+.mentorship-split > *,
+.mentorship-topic > div {
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .mentorship-topic {
+    grid-template-columns: 16px minmax(0, 1fr) 16px;
+    gap: 8px;
+  }
+  .mentorship-topic > svg {
+    width: 16px;
+  }
+  .mentorship-topic h3 {
+    font-size: clamp(23px, 7vw, 28px);
+  }
+}
+.mentorship-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(transparent 45%, #14291ad9);
+  pointer-events: none;
+}
+.mentorship-visual-caption,
+.mentorship-visual-rule {
+  z-index: 2;
+}
+.mentorship-visual::after {
+  z-index: 3;
+}
+.mobile-menu nav a[aria-current='page'] {
+  color: var(--sage);
+  background-color: var(--surface-strong);
+  padding-inline: 12px;
+  border-bottom-color: var(--sage);
+}
+
+.portrait-placeholder,
+[data-theme='dark'] .portrait-placeholder {
+  background-image: linear-gradient(150deg, var(--portrait-start), var(--portrait-end));
+}

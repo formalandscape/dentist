@@ -26,6 +26,7 @@ const allowed = new Set([
   'poslugy',
   'polityka-konfidentsiinosti',
   'vash-shliakh-do-posmishky',
+  'mentorstvo',
   'en',
 ])
 const entries = await fs.readdir('dist')
@@ -38,9 +39,14 @@ for (const entry of entries) {
 for (const entry of entries) {
   // Keep old hashed JS/CSS for cached HTML and tabs opened before a release.
   if (
-    ['images', 'poslugy', 'polityka-konfidentsiinosti', 'vash-shliakh-do-posmishky', 'en'].includes(
-      entry,
-    )
+    [
+      'images',
+      'poslugy',
+      'polityka-konfidentsiinosti',
+      'vash-shliakh-do-posmishky',
+      'mentorstvo',
+      'en',
+    ].includes(entry)
   ) {
     await fs.rm(entry, { recursive: true, force: true })
   }

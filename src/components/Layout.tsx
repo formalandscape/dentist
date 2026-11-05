@@ -17,6 +17,7 @@ const navItems = [
   { label: 'Напрями лікування', to: '/#services' },
   { label: 'Мій підхід', to: '/#approach' },
   { label: 'Ваш шлях', to: journeyPath },
+  { label: 'Менторство', to: '/mentorstvo/' },
   { label: 'Запитання', to: '/#faq' },
   { label: 'Контакти', to: '/#contacts' },
 ]
@@ -260,7 +261,7 @@ export function Header() {
             initial={{ opacity: 0, y: reduced ? 0 : -15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reduced ? 0 : -15 }}
-            transition={{ duration: reduced ? 0 : 0.25 }}
+            transition={{ duration: reduced ? 0 : 0.48, ease: silk.ease }}
           >
             <span className="tiny-caps">{t('Ваша посмішка. Моя турбота.')}</span>
             <motion.nav
@@ -280,7 +281,12 @@ export function Header() {
                     open: { opacity: 1, y: 0, transition: { duration: 0.48, ease: silk.ease } },
                   }}
                 >
-                  <Link key={item.to} to={item.to}>
+                  <Link
+                    to={item.to}
+                    aria-current={
+                      withoutLanguage(location.pathname) === item.to ? 'page' : undefined
+                    }
+                  >
                     {t(item.label)}
                     <ArrowUpRight size={22} />
                   </Link>
@@ -362,6 +368,7 @@ export function Footer() {
             </div>
           </div>
           <div className="footer-bottom">
+            <Link to="/mentorstvo/">{t('Менторство')}</Link>
             <span>{t('© 2026 Зоряна Тепла. Київ, Україна.')}</span>
             <Link to="/polityka-konfidentsiinosti/">{t('Політика конфіденційності')}</Link>
             <Link to={journeyPath}>

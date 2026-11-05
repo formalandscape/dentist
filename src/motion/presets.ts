@@ -4,17 +4,17 @@ export const silk = {
   micro: 0.26,
   text: 0.72,
   section: 0.9,
-  pageOut: 0.32,
-  pageIn: 0.58,
+  pageOut: 0.38,
+  pageIn: 0.72,
   panelOut: 0.22,
   panelIn: 0.48,
   stagger: 0.038,
 }
 
 export const sceneVariants = {
-  enter: { opacity: 0.32, y: 20 },
+  enter: { opacity: 0.42, y: 14 },
   visible: { opacity: 1, y: 0, transition: { duration: silk.pageIn, ease: silk.ease } },
-  leave: { opacity: 0.12, y: -16, transition: { duration: silk.pageOut, ease: silk.ease } },
+  leave: { opacity: 0.22, y: -8, transition: { duration: silk.pageOut, ease: silk.ease } },
 }
 
 export const revealFrames = [

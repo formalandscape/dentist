@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Moon, Sun } from 'lucide-react'
 import { useI18n } from '../i18n/I18n'
@@ -9,40 +9,75 @@ export function Preferences() {
   const { language, t } = useI18n()
   const location = useLocation()
   const [theme, setTheme] = useState<Theme>('light')
+  const transitionTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const applyTheme = useCallback((selected: Theme, animate: boolean) => {
+    const root = document.documentElement
+    clearTimeout(transitionTimer.current)
+    if (
+      animate &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      root.dataset.theme !== selected
+    ) {
+      root.dataset.themeTransition = 'true'
+      // Resolve the previous palette before changing it; one style flush per toggle.
+      getComputedStyle(root).backgroundColor
+      transitionTimer.current = setTimeout(() => {
+        delete root.dataset.themeTransition
+      }, 850)
+    } else {
+      delete root.dataset.themeTransition
+    }
+    root.dataset.theme = selected
+    root.style.colorScheme = selected
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', selected === 'dark' ? '#14201a' : '#f8f5ee')
+    setTheme(selected)
+  }, [])
   useEffect(() => {
     const preference = matchMedia('(prefers-color-scheme: dark)')
-    function sync() {
+    const motion = matchMedia('(prefers-reduced-motion: reduce)')
+    function sync(animate = true) {
       let stored: string | null = null
       try {
         stored = localStorage.getItem('tepla-theme')
       } catch {
-        /* Storage may be disabled. */
+        /* Optional storage. */
       }
-      const selected =
-        stored === 'light' || stored === 'dark' ? stored : preference.matches ? 'dark' : 'light'
-      document.documentElement.dataset.theme = selected
-      document.documentElement.style.colorScheme = selected
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute('content', selected === 'dark' ? '#14201a' : '#f8f5ee')
-      setTheme(selected)
+      applyTheme(
+        stored === 'light' || stored === 'dark' ? stored : preference.matches ? 'dark' : 'light',
+        animate,
+      )
     }
-    sync()
-    preference.addEventListener('change', sync)
-    return () => preference.removeEventListener('change', sync)
-  }, [])
+    const changed = () => sync()
+    const storage = (event: StorageEvent) => {
+      if (event.key === 'tepla-theme' || event.key === null) sync()
+    }
+    const reduce = () => {
+      if (motion.matches) {
+        clearTimeout(transitionTimer.current)
+        delete document.documentElement.dataset.themeTransition
+      }
+    }
+    sync(false)
+    preference.addEventListener('change', changed)
+    motion.addEventListener('change', reduce)
+    window.addEventListener('storage', storage)
+    return () => {
+      clearTimeout(transitionTimer.current)
+      delete document.documentElement.dataset.themeTransition
+      preference.removeEventListener('change', changed)
+      motion.removeEventListener('change', reduce)
+      window.removeEventListener('storage', storage)
+    }
+  }, [applyTheme])
   function toggleTheme() {
     const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    document.documentElement.dataset.theme = next
-    document.documentElement.style.colorScheme = next
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', next === 'dark' ? '#14201a' : '#f8f5ee')
+    applyTheme(next, true)
     try {
       localStorage.setItem('tepla-theme', next)
     } catch {
-      /* Keep working without storage. */
+      /* Optional storage. */
     }
   }
   return (
@@ -68,11 +103,12 @@ export function Preferences() {
         aria-label={t(theme === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему')}
         aria-pressed={theme === 'dark'}
       >
-        {theme === 'dark' ? (
-          <Sun size={17} aria-hidden="true" />
-        ) : (
-          <Moon size={17} aria-hidden="true" />
-        )}
+        <span className="theme-icon theme-icon-sun" aria-hidden="true">
+          <Sun size={18} />
+        </span>
+        <span className="theme-icon theme-icon-moon" aria-hidden="true">
+          <Moon size={18} />
+        </span>
       </button>
     </div>
   )

@@ -3,6 +3,13 @@ import { site } from '../data/site'
 import { services, servicePath } from '../data/services'
 
 function ukrainianSeo(path: string) {
+  if (path.replace(/\/$/, '') === '/mentorstvo')
+    return {
+      title: 'Менторство для стоматологів та ортодонтів | Зоряна Тепла',
+      description:
+        'Можливості професійного менторства із Зоряною Теплою: клінічне мислення, діагностика та планування ортодонтичного лікування. Формат і доступність — за погодженням.',
+      path: '/mentorstvo/',
+    }
   if (path.replace(/\/$/, '') === '/vash-shliakh-do-posmishky')
     return {
       title: 'Ваш шлях до посмішки — етапи лікування | Зоряна Тепла',

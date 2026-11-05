@@ -11,14 +11,16 @@
     />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <script>
+      var teplaTheme = null
       try {
-        var teplaTheme = localStorage.getItem('tepla-theme')
-        var teplaDark =
-          teplaTheme === 'dark' ||
-          (teplaTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
-        document.documentElement.dataset.theme = teplaDark ? 'dark' : 'light'
-        document.documentElement.style.colorScheme = teplaDark ? 'dark' : 'light'
+        teplaTheme = localStorage.getItem('tepla-theme')
       } catch (_) {}
+      var teplaDark =
+        teplaTheme === 'dark' ||
+        (teplaTheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches)
+      document.documentElement.dataset.theme = teplaDark ? 'dark' : 'light'
+      document.documentElement.style.colorScheme = teplaDark ? 'dark' : 'light'
+      document.querySelector('meta[name="theme-color"]').content = teplaDark ? '#14201a' : '#f8f5ee'
     </script>
     <!--seo-->
   </head>
