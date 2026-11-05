@@ -493,3 +493,29 @@ body:has(.mentorship-hero) .mobile-booking {
 [data-theme='dark'] .portrait-placeholder {
   background-image: linear-gradient(150deg, var(--portrait-start), var(--portrait-end));
 }
+/* Observe a stationary slot while the complete visual surface moves inside it. */
+.motion-anchor {
+  display: grid;
+  min-width: 0;
+  align-self: stretch;
+}
+.motion-anchor > [data-motion-reveal] {
+  min-width: 0;
+}
+.motion-image-anchor {
+  width: 100%;
+  height: 100%;
+}
+.approach-visual > .motion-image-anchor {
+  position: absolute;
+  inset: 0;
+}
+.approach-visual > .motion-image-anchor > .editorial-photo {
+  position: absolute;
+  inset: 0;
+  opacity: 0.65;
+}
+.motion-service-anchor {
+  height: auto;
+  align-self: center;
+}

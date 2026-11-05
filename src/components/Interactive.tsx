@@ -209,7 +209,7 @@ export function Reviews() {
             <br />
             <em>{t('ваша довіра.')}</em>
           </AnimatedHeading>
-          <div className="review-content">
+          <Reveal className="review-content">
             <Quote className="quote-icon" size={38} strokeWidth={1} aria-hidden="true" />
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -274,7 +274,7 @@ export function Reviews() {
                 </button>
               </div>
             )}
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

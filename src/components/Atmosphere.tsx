@@ -5,6 +5,7 @@ import { motion, useScroll, useSpring, useReducedMotion } from 'motion/react'
 import { useLocation } from 'react-router-dom'
 import { ArrowUpRight, Sparkles } from 'lucide-react'
 import { Link } from '../i18n/I18n'
+import { Reveal } from './ui'
 import { revealFrames, silk } from '../motion/presets'
 
 export function MotionEnvironment() {
@@ -45,6 +46,9 @@ export function ReadingProgress() {
 // Atomic text/image units: repeat on viewport entry without moving a container
 // and its text together. Server HTML stays complete and readable without JS.
 const images = '.hero-photo-frame, .about-photo-frame, .editorial-photo'
+const surfaces =
+  '.service-card, .form-card, .map-card, .mentorship-card, .mentorship-topic, .mentorship-stage, .preparation-card, .journey-summary, .comparison-wrap, .review-content, .service-note, .association, .encouragement, .step, .journey-explorer, .mentorship-visual, .journey-art, .approach-visual'
+
 const text = [
   '[data-motion-heading]',
   'p',
@@ -79,6 +83,7 @@ const intro =
 
 type MotionUnit = {
   el: HTMLElement
+  anchor: HTMLElement
   opacity: number
   inside: boolean
   intro: boolean
@@ -106,7 +111,10 @@ export function DetailMotion() {
     }
     function animate(unit: MotionUnit, target: HTMLElement, frames: Keyframe[], delay = 0) {
       const animation = target.animate(frames, {
-        duration: (unit.el.dataset.revealKind === 'image' ? silk.section : silk.text) * 1000,
+        duration:
+          (unit.el.dataset.revealKind === 'image' || unit.el.dataset.revealKind === 'surface'
+            ? silk.section
+            : silk.text) * 1000,
         delay,
         easing: silk.scrollEase,
         fill: 'backwards',
@@ -140,8 +148,14 @@ export function DetailMotion() {
           )
         })
       } else {
-        const image = unit.el.dataset.revealKind === 'image'
-        const frames = image ? [{ opacity: 0.12 }, { opacity: 1 }] : revealFrames
+        const visual =
+          unit.el.dataset.revealKind === 'image' || unit.el.dataset.revealKind === 'surface'
+        const frames: Keyframe[] = visual
+          ? [
+              { opacity: 0.08, transform: 'translateY(30px) scale(.985)' },
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+            ]
+          : revealFrames
         animate(
           unit,
           unit.el,
@@ -163,10 +177,13 @@ export function DetailMotion() {
       if (preference.matches || !('IntersectionObserver' in window)) return
       const scope = document.querySelector('.page-content')
       const candidates = [
-        ...Array.from(scope?.querySelectorAll<HTMLElement>(`${images}, ${text}`) || []),
+        ...Array.from(
+          scope?.querySelectorAll<HTMLElement>(`${surfaces}, ${images}, ${text}`) || [],
+        ),
         ...Array.from(document.querySelectorAll<HTMLElement>(`.site-footer :is(${text})`)),
       ]
       const selected = new Set(candidates)
+      const anchored = new Map<HTMLElement, MotionUnit>()
       // A heading owns its words; a paragraph owns its links. These units have
       // no animated ancestor, so strong entrances do not compound or crop text.
       for (const el of candidates) {
@@ -183,18 +200,29 @@ export function DetailMotion() {
         const isIntro = el.matches(intro)
         const unit: MotionUnit = {
           el,
+          anchor:
+            el.closest<HTMLElement>('[data-motion-anchor]') ||
+            (el.matches('.service-card, .association')
+              ? el.closest<HTMLElement>('[data-motion-reveal]')
+              : null) ||
+            (el.matches('.hero-photo-frame') ? el.closest<HTMLElement>('.hero-visual') : null) ||
+            (el.matches('.about-photo-frame') ? el.parentElement : null) ||
+            el,
           opacity: isIntro ? 1 : Number(getComputedStyle(el).opacity),
           inside: false,
           intro: isIntro,
           animations: new Set(),
         }
         units.set(el, unit)
+        anchored.set(unit.anchor, unit)
         el.dataset.motionUnit = 'true'
-        el.dataset.revealKind = el.matches(images)
-          ? 'image'
-          : el.matches('[data-motion-heading]')
-            ? 'heading'
-            : 'text'
+        el.dataset.revealKind = el.matches(surfaces)
+          ? 'surface'
+          : el.matches(images)
+            ? 'image'
+            : el.matches('[data-motion-heading]')
+              ? 'heading'
+              : 'text'
         el.style.setProperty('--reveal-opacity', String(unit.opacity))
         const rect = el.getBoundingClientRect()
         const visible = rect.bottom > 0 && rect.top < innerHeight && rect.height > 0
@@ -231,7 +259,7 @@ export function DetailMotion() {
       observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            const unit = units.get(entry.target as HTMLElement)
+            const unit = anchored.get(entry.target as HTMLElement)
             if (!unit) continue
             if (entry.isIntersecting && entry.boundingClientRect.height > 0) {
               if (unit.inside) continue
@@ -253,7 +281,7 @@ export function DetailMotion() {
         },
         { threshold: 0 },
       )
-      units.forEach((unit) => observer?.observe(unit.el))
+      units.forEach((unit) => observer?.observe(unit.anchor))
     }
     function focus(event: FocusEvent) {
       const target = event.target as Node
@@ -290,7 +318,7 @@ export function Encouragement({
   const { t } = useI18n()
 
   return (
-    <div className={`encouragement ${dark ? 'encouragement-dark' : ''}`}>
+    <Reveal className={`encouragement ${dark ? 'encouragement-dark' : ''}`}>
       <span className="encouragement-icon">
         <Sparkles size={19} strokeWidth={1.2} aria-hidden="true" />
       </span>
@@ -298,7 +326,7 @@ export function Encouragement({
         <span className="tiny-caps">{t(label)}</span>
         <p>{children}</p>
       </div>
-    </div>
+    </Reveal>
   )
 }
 

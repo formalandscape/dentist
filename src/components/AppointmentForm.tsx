@@ -117,6 +117,7 @@ export function AppointmentForm() {
     <form
       ref={form}
       method="post"
+      action={site.formEndpoint || undefined}
       className="appointment-form"
       onSubmit={submit}
       noValidate

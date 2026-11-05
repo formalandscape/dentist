@@ -170,14 +170,14 @@ test('scroll reveals use distinct motions and reduced motion cancels theme and s
 }) => {
   await page.goto('/dentist/mentorstvo/')
   await page.locator('.mentorship-card').first().scrollIntoViewIfNeeded()
-  await expect(page.locator('.mentorship-card h3').first()).toHaveAttribute(
+  await expect(page.locator('.mentorship-card').first()).toHaveAttribute(
     'data-reveal-kind',
-    'heading',
+    'surface',
   )
   await page.locator('.mentorship-topic').first().scrollIntoViewIfNeeded()
-  await expect(page.locator('.mentorship-topic p').first()).toHaveAttribute(
+  await expect(page.locator('.mentorship-topic').first()).toHaveAttribute(
     'data-reveal-kind',
-    'text',
+    'surface',
   )
   await page.locator('.theme-toggle').click()
   await page.emulateMedia({ reducedMotion: 'reduce' })

@@ -69,7 +69,7 @@ export function JourneyPage() {
                 </a>
               </div>
             </Reveal>
-            <div className="journey-art">
+            <Reveal className="journey-art">
               <Photo kind="balance" priority />
               <div className="journey-art-orbit" aria-hidden="true">
                 <span />
@@ -84,7 +84,7 @@ export function JourneyPage() {
                   {t('побачити цілісну картину')}
                 </p>
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -113,7 +113,7 @@ export function JourneyPage() {
             <progress max="6" value={selected + 1} aria-label={t('Обраний етап лікування')} />
             <span className="tiny-caps">{t(step.short)}</span>
           </div>
-          <div className="journey-explorer">
+          <Reveal className="journey-explorer">
             <div
               className="journey-tabs"
               role="tablist"
@@ -198,7 +198,7 @@ export function JourneyPage() {
                 </div>
               ))}
             </motion.div>
-          </div>
+          </Reveal>
           <p className="journey-disclaimer">
             {t(
               'Це загальна схема для знайомства. Послідовність, обсяг діагностики, методи та тривалість визначаються індивідуально. Жоден етап не гарантує конкретного результату.',

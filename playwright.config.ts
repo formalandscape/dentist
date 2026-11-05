@@ -18,6 +18,11 @@ export default defineConfig({
   },
   webServer: [
     {
+      command: 'VITE_FORMSPREE_ENDPOINT= npm run dev -- --port 4175 --strictPort',
+      port: 4175,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
       command: 'npm run preview -- --port 4173 --strictPort',
       port: 4173,
       reuseExistingServer: !process.env.CI,

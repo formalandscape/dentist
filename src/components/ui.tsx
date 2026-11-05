@@ -13,10 +13,21 @@ export function Reveal({
   className?: string
   delay?: number
 }) {
-  return (
+  const content = (
     <div className={`reveal-block ${className}`} data-motion-reveal="true" data-delay={delay}>
       {children}
     </div>
+  )
+  const surface =
+    /(?:^|\s)(form-card|map-card|mentorship-card|mentorship-topic|mentorship-stage|journey-summary|preparation-card|comparison-wrap|review-content|service-note|encouragement|step|journey-explorer|association|mentorship-visual|journey-art|approach-visual)(?:\s|$)/.test(
+      className,
+    )
+  return surface ? (
+    <div className="motion-anchor" data-motion-anchor="true">
+      {content}
+    </div>
+  ) : (
+    content
   )
 }
 
@@ -53,7 +64,6 @@ export function Action({
 
 export function Brand({ footer = false }: { footer?: boolean }) {
   const { t } = useI18n()
-
   return (
     <Link to="/" className={`brand ${footer ? 'brand-footer' : ''}`}>
       <Monogram className="brand-symbol" />
@@ -77,31 +87,35 @@ export function Photo({
   priority?: boolean
 }) {
   const { t } = useI18n()
-
   return (
     <div
-      className={`editorial-photo photo-${kind} ${className}`}
-      role="img"
-      aria-label={
-        label ||
-        {
-          braces: t('Ілюстративне зображення навчальної моделі з брекетами'),
-          aligners: t('Ілюстративне зображення прозорих елайнерів'),
-          children: t('Ілюстративний натюрморт: дерев’яна іграшка та шавлієва ваза'),
-          balance: t('Ілюстративна скульптура як символ гармонії та балансу'),
-        }[kind] ||
-        t('Декоративне зображення')
-      }
+      className={`motion-anchor motion-image-anchor ${className.includes('service-page-photo') ? 'motion-service-anchor' : ''}`}
+      data-motion-anchor="true"
     >
-      <img
-        src={`${import.meta.env.BASE_URL}images/editorial-still-life.webp`}
-        alt=""
-        aria-hidden="true"
-        width="1774"
-        height="887"
-        loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
-      />
+      <div
+        className={`editorial-photo photo-${kind} ${className}`}
+        role="img"
+        aria-label={
+          label ||
+          {
+            braces: t('Ілюстративне зображення навчальної моделі з брекетами'),
+            aligners: t('Ілюстративне зображення прозорих елайнерів'),
+            children: t('Ілюстративний натюрморт: дерев’яна іграшка та шавлієва ваза'),
+            balance: t('Ілюстративна скульптура як символ гармонії та балансу'),
+          }[kind] ||
+          t('Декоративне зображення')
+        }
+      >
+        <img
+          src={`${import.meta.env.BASE_URL}images/editorial-still-life.webp`}
+          alt=""
+          aria-hidden="true"
+          width="1774"
+          height="887"
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      </div>
     </div>
   )
 }

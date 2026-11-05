@@ -268,8 +268,8 @@ test('paragraphs and words have visible entrances, with no clipping or nested mo
   page,
 }) => {
   await page.goto('/dentist/mentorstvo/')
-  const paragraph = page.locator('.mentorship-topic p').first()
-  const heading = page.locator('.mentorship-topic h3').first()
+  const paragraph = page.locator('.mentorship-prose > p').last()
+  const heading = page.locator('.mentorship-about h2').first()
   await expect(paragraph).toHaveAttribute('data-motion-unit', 'true')
   await paragraph.evaluate((el) =>
     scrollTo({
@@ -392,4 +392,63 @@ test('rapid scrolling still reveals text and finishes without replaying while it
     )
     .toBe(0)
   expect(await heading.evaluate((el) => getComputedStyle(el).opacity)).toBe('1')
+})
+
+test('cards, images, forms and maps reveal as complete surfaces using stationary anchors', async ({
+  page,
+}) => {
+  await page.goto('/dentist/')
+  for (const selector of ['.service-card', '.form-card', '.map-card', '.review-content']) {
+    const surface = page.locator(selector).first()
+    await expect(surface).toHaveAttribute('data-reveal-kind', 'surface')
+    await surface.evaluate((el) => {
+      const anchor = el.closest('[data-motion-anchor]') || el.closest('[data-motion-reveal]')!
+      scrollTo({
+        top: anchor.getBoundingClientRect().top + scrollY - innerHeight - 80,
+        behavior: 'instant',
+      })
+    })
+    await expect(surface).toHaveAttribute('data-scroll-state', 'ready')
+    await surface.evaluate((el) => {
+      const anchor = el.closest('[data-motion-anchor]') || el.closest('[data-motion-reveal]')!
+      scrollTo({
+        top: anchor.getBoundingClientRect().top + scrollY - innerHeight + 180,
+        behavior: 'instant',
+      })
+    })
+    await expect(surface).toHaveAttribute('data-scroll-state', 'running')
+    const frames = await surface.evaluate(async (el) => {
+      const anchor = el.closest('[data-motion-anchor]') || el.closest('[data-motion-reveal]')!
+      const read = () => ({
+        anchor: anchor.getBoundingClientRect().top,
+        y: new DOMMatrixReadOnly(getComputedStyle(el).transform).f,
+        opacity: +getComputedStyle(el).opacity,
+      })
+      const first = read()
+      await new Promise((resolve) => setTimeout(resolve, 160))
+      return {
+        first,
+        next: read(),
+        childrenAnimate: [...el.querySelectorAll('p,h3,input')].some((child) =>
+          child.getAnimations({ subtree: true }).some((a) => a.id === 'scroll-reveal'),
+        ),
+      }
+    })
+    expect(frames.first.opacity).toBeLessThan(0.9)
+    expect(frames.first.y).toBeGreaterThan(5)
+    expect(Math.abs(frames.next.anchor - frames.first.anchor)).toBeLessThan(0.1)
+    expect(frames.next.y).toBeLessThan(frames.first.y)
+    expect(frames.childrenAnimate).toBe(false)
+    if (selector === '.form-card') {
+      await page.locator('#name').focus()
+      await expect(surface).toHaveAttribute('data-scroll-state', 'settled')
+      await page.locator('#name').fill('Збережені дані')
+      await expect(page.locator('#name')).toHaveValue('Збережені дані')
+    }
+  }
+  await page.goto('/dentist/poslugy/brekety/')
+  await expect(page.locator('.service-page-photo')).toHaveAttribute('data-reveal-kind', 'image')
+  await page.goto('/dentist/mentorstvo/')
+  await expect(page.locator('.mentorship-request')).toContainText('Напишіть мені в Instagram')
+  await expect(page.locator('.mentorship-request')).not.toContainText('Напишіть Зоряні Теплій')
 })

@@ -110,7 +110,9 @@ test('English routes, metadata and navigation remain in English after direct ent
   await page.getByLabel('Reason for your visit').selectOption({ label: 'First consultation' })
   await page.getByRole('checkbox').check()
   await page.getByRole('button', { name: 'Send request', exact: true }).click()
-  await expect(page.getByRole('alert')).toContainText('Online booking is currently unavailable')
+  await expect(page.getByRole('alert')).toContainText(
+    'Receipt of your request could not be confirmed',
+  )
   expect(errors).toEqual([])
 })
 

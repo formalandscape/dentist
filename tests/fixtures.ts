@@ -11,6 +11,13 @@ export const test = base.extend({
         body: '<!doctype html><html lang="en"><head><title>Map test fixture</title></head><body></body></html>',
       }),
     )
+    await context.route('https://formspree.io/**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: false, error: 'Offline test fixture' }),
+      }),
+    )
     await use(context)
   },
 })

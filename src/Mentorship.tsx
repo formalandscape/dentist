@@ -96,7 +96,7 @@ export function MentorshipPage() {
               {t('Можливе професійне партнерство · за погодженням')}
             </p>
           </Reveal>
-          <div className="mentorship-visual">
+          <Reveal className="mentorship-visual">
             <Photo kind="balance" priority />
             <div className="mentorship-visual-caption">
               <p>
@@ -105,7 +105,7 @@ export function MentorshipPage() {
                 <em>{t('до розуміння')}</em>
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
       <section id="mentorship-about" className="section mentorship-about">
@@ -238,7 +238,7 @@ export function MentorshipPage() {
           </AnimatedHeading>
           <p>
             {t(
-              'Напишіть Зоряні Теплій в Instagram: коротко розкажіть про свій досвід і тему, яку хотіли б обговорити. Актуальні можливості, формат та вартість уточнюються особисто.',
+              'Напишіть мені в Instagram: коротко розкажіть про свій досвід і тему, яку хотіли б обговорити. Актуальні можливості, формат та вартість уточнюються особисто.',
             )}
           </p>
           <div className="mentorship-request-actions">

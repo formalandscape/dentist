@@ -11,6 +11,7 @@ export const site = {
   // Populate only with confirmed, public contact details. Empty values are never rendered as links.
   contacts: {
     phone: '+380679404225',
+    email: 'orthodentua@gmail.com',
     phoneDisplay: '+38 (067) 940 42 25',
     clinic: 'Клініка Лукашука',
     address: 'вулиця Юлії Здановської, 58А, Київ, 03191',
@@ -19,7 +20,8 @@ export const site = {
     mapsEmbed: `https://www.google.com/maps?q=${encodeURIComponent('вулиця Юлії Здановської, 58А, Київ, 03191')}&z=16&output=embed`,
     mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('вулиця Юлії Здановської, 58А, Київ, 03191')}`,
   },
-  formEndpoint: import.meta.env.VITE_FORMSPREE_ENDPOINT || '',
+  // Public Formspree address. An explicit empty override disables online booking.
+  formEndpoint: import.meta.env.VITE_FORMSPREE_ENDPOINT ?? 'https://formspree.io/f/xwllyzab',
   associations: [
     { name: 'АОУ', description: 'Асоціація ортодонтів України' },
     { name: 'EOS', description: 'European Orthodontic Society' },

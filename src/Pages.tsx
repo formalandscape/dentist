@@ -59,10 +59,10 @@ export function ServicePage() {
                 </li>
               ))}
             </ul>
-            <div className="service-note">
+            <Reveal className="service-note">
               <AnimatedHeading as="h3">{t('Важливі деталі')}</AnimatedHeading>
               <p>{t(service.note)}</p>
-            </div>
+            </Reveal>
             <p className="muted">
               {t(
                 'Тривалість і вартість лікування можна визначити після діагностики та узгодження індивідуального плану. Інформація на сторінці не замінює особистої консультації.',
@@ -158,7 +158,7 @@ export function PrivacyPage() {
           <br />
           <em>{t('конфіденційності.')}</em>
         </AnimatedHeading>
-        <p className="muted">{t('Оновлено 4 листопада 2026 року')}</p>
+        <p className="muted">{t('Оновлено 5 листопада 2026 року')}</p>
         <div className="legal-content">
           <p>
             {t(
@@ -203,7 +203,7 @@ export function PrivacyPage() {
           <AnimatedHeading as="h2">{t('Зберігання і захист')}</AnimatedHeading>
           <p>
             {t(
-              'Сайт не записує вміст форми в URL, localStorage, cookies чи публічні файли. Дані введення існують у пам’яті сторінки до її закриття або перезавантаження. Після підключення сервісу заявки оброблятимуться одержувачем і сервісом доставки; доступ до них має бути обмежений, а дані видалятимуться, щойно потреба у відповіді та узгодженні консультації відпаде, з урахуванням законних вимог зберігання.',
+              'Сайт не записує вміст форми в URL, localStorage, cookies чи публічні файли. Дані введення існують у пам’яті сторінки до її закриття або перезавантаження. Надіслані заявки обробляються одержувачем і сервісом доставки; доступ до них має бути обмежений, а дані видалятимуться, щойно потреба у відповіді та узгодженні консультації відпаде, з урахуванням законних вимог зберігання.',
             )}
           </p>
           <AnimatedHeading as="h2">{t('Cookies та зовнішні сервіси')}</AnimatedHeading>
@@ -236,6 +236,11 @@ export function PrivacyPage() {
               {site.contacts.phoneDisplay}
             </a>
           )}
+          <p>
+            <a className="text-link" href={`mailto:${site.contacts.email}`}>
+              {site.contacts.email}
+            </a>
+          </p>
           <AnimatedHeading as="h2">{t('Медична інформація')}</AnimatedHeading>
           <p>
             {t(

@@ -69,14 +69,14 @@ async function fillForm(page: import('@playwright/test').Page) {
   await page.getByRole('checkbox').check()
 }
 
-test('default form validates, does not transmit data, and never invents success', async ({
+test('disabled form validates, does not transmit data, and never invents success', async ({
   page,
 }) => {
   let submissions = 0
   page.on('request', (r) => {
     if (r.method() === 'POST') submissions++
   })
-  await page.goto('/#appointment')
+  await page.goto('http://localhost:4175/#appointment')
   await page.getByRole('button', { name: 'Надіслати заявку' }).click()
   await expect(page.locator('#error-name')).toBeVisible()
   await expect(page.locator('#name')).toBeFocused()
@@ -207,3 +207,41 @@ test('WCAG 2.2 AA automated checks on desktop, mobile, form and service', async 
     ).toEqual([])
   }
 })
+
+for (const outcome of ['accepted', 'network'] as const) {
+  test(`production Formspree address handles ${outcome} without sending real mail`, async ({
+    page,
+  }) => {
+    let count = 0
+    await page.route('https://formspree.io/f/xwllyzab', async (route) => {
+      count++
+      const data = route.request().postDataJSON()
+      expect(data.name).toBe('Тестова заявка')
+      expect(data.phone).toBe('+380670000000')
+      expect(data.direction).toBe('Первинна консультація')
+      expect(data.consent).toBe(true)
+      expect(data._gotcha).toBe('')
+      if (outcome === 'network') return route.abort()
+      return route.fulfill({ status: 200, json: { ok: true } })
+    })
+    await page.goto('/#appointment')
+    await expect(page.locator('form.appointment-form')).toHaveAttribute(
+      'action',
+      'https://formspree.io/f/xwllyzab',
+    )
+    await expect(page.locator('form .form-availability')).toHaveCount(0)
+    await fillForm(page)
+    await page.getByRole('button', { name: 'Надіслати заявку' }).click()
+    if (outcome === 'accepted')
+      await expect(page.locator('.form-success')).toContainText('Сервіс прийняв вашу заявку')
+    else {
+      await expect(page.getByRole('alert')).toBeVisible()
+      await expect(page.getByLabel('Ваше ім’я')).toHaveValue('Тестова заявка')
+      await expect(page.locator('.form-success')).toHaveCount(0)
+    }
+    expect(count).toBe(1)
+    await expect(page.locator('#contacts a[href="mailto:orthodentua@gmail.com"]')).toHaveText(
+      'Електронна поштаorthodentua@gmail.com',
+    )
+  })
+}

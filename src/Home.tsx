@@ -1,6 +1,6 @@
 import { useI18n } from './i18n/I18n'
 import { AnimatedHeading } from './motion/AnimatedHeading'
-import { ArrowUpRight, Check, Heart, Instagram, MapPin, Phone, Sparkles } from 'lucide-react'
+import { ArrowUpRight, Check, Heart, Instagram, Mail, MapPin, Phone, Sparkles } from 'lucide-react'
 import { Link } from './i18n/I18n'
 import { Action, Eyebrow, Flower, Photo, Reveal } from './components/ui'
 import { AppointmentForm } from './components/AppointmentForm'
@@ -237,10 +237,10 @@ function Associations() {
         </div>
         <div className="associations-grid">
           {site.associations.map((a) => (
-            <div className="association" key={t(a.name)}>
+            <Reveal className="association" key={t(a.name)}>
               <span>{t(a.name)}</span>
               <p>{t(a.description)}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
         <p className="association-note">
@@ -504,6 +504,14 @@ function Contacts() {
                 <ArrowUpRight size={17} aria-hidden="true" />
               </a>
             )}
+            <a href={`mailto:${site.contacts.email}`}>
+              <Mail size={19} strokeWidth={1.3} aria-hidden="true" />
+              <span>
+                <span className="contact-label">{t('Електронна пошта')}</span>
+                {site.contacts.email}
+              </span>
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
           </div>
         </Reveal>
         <Reveal className="map-card">
