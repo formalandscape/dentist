@@ -51,11 +51,20 @@ test('cold entry, reload, slash redirect and new tabs work on the actual publish
 test('journey supports all six steps, keyboard navigation and progress', async ({ page }) => {
   await page.goto('/dentist/vash-shliakh-do-posmishky/')
   const tabs = page.getByRole('tab')
+  const portrait = page.locator('.journey-art .doctor-portrait')
+  await expect(portrait).toHaveAttribute('src', '/dentist/images/zoryana-tepla-journey.webp')
+  await expect
+    .poll(() => portrait.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+    .toBe(true)
+  await expect(page.locator('.journey-tab-number, .journey-art-caption > span')).toHaveCount(0)
+  expect(await page.locator('.journey-progress-row').innerText()).not.toMatch(/\d/)
+  for (const tab of await tabs.all()) expect(await tab.innerText()).not.toMatch(/\d/)
   await expect(tabs).toHaveCount(6)
   for (let i = 0; i < 6; i++) {
     await tabs.nth(i).click()
     await expect(tabs.nth(i)).toHaveAttribute('aria-selected', 'true')
     await expect(page.locator(`#journey-panel-${i}`)).toBeVisible()
+    expect(await page.locator(`#journey-panel-${i} > .tiny-caps`).innerText()).not.toMatch(/\d/)
     await expect(page.getByRole('progressbar')).toHaveAttribute('value', `${i + 1}`)
   }
   await tabs.last().press('Home')

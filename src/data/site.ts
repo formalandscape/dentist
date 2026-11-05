@@ -6,6 +6,11 @@ export const site = {
     experience: '20+',
     city: 'Київ',
     portraits: {
+      journey: {
+        src: `${import.meta.env.BASE_URL}images/zoryana-tepla-journey.webp`,
+        width: 942,
+        height: 1280,
+      },
       hero: {
         src: `${import.meta.env.BASE_URL}images/zoryana-tepla-hero.webp`,
         width: 960,

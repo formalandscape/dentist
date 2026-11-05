@@ -82,7 +82,7 @@ test('mentorship has complete static content, correct metadata and working reque
   expect(sitemap).toContain('https://formalandscape.github.io/dentist/en/mentorstvo/')
   await page.goto('/dentist/vash-shliakh-do-posmishky/')
   await expect(page.locator('.journey-hero .encouragement')).toHaveCount(0)
-  await expect(page.locator('.journey-art .editorial-photo')).toBeVisible()
+  await expect(page.locator('.journey-art .doctor-portrait')).toBeVisible()
   await page.goto('/dentist/#faq')
   await page
     .getByRole('button', { name: 'Коли потрібна консультація з питань роботи щелепного суглоба?' })

@@ -6,7 +6,8 @@ import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
 import { ArrowDown, ArrowLeft, ArrowRight, Check, Heart, ListChecks, Sparkles } from 'lucide-react'
 import { Link } from './i18n/I18n'
 import { journeySteps } from './data/journey'
-import { Action, Eyebrow, Photo, Reveal } from './components/ui'
+import { Action, Eyebrow, Reveal } from './components/ui'
+import { DoctorPortrait } from './components/DoctorPortrait'
 import { Invitation } from './components/Atmosphere'
 import { AppointmentSection } from './Home'
 import { usePanelTransition } from './motion/usePanelTransition'
@@ -70,19 +71,9 @@ export function JourneyPage() {
               </div>
             </Reveal>
             <Reveal className="journey-art">
-              <Photo kind="balance" priority />
-              <div className="journey-art-orbit" aria-hidden="true">
-                <span />
-                <span />
-                <Sparkles size={36} strokeWidth={0.7} />
-              </div>
+              <DoctorPortrait slot="journey" priority />
               <div className="journey-art-caption">
-                <span>06</span>
-                <p>
-                  {t('етапів, щоб')}
-                  <br />
-                  {t('побачити цілісну картину')}
-                </p>
+                <p>{t('Ваш шлях до посмішки')}</p>
               </div>
             </Reveal>
           </div>
@@ -106,10 +97,7 @@ export function JourneyPage() {
             </p>
           </Reveal>
           <div className="journey-progress-row">
-            <span>
-              {t('Крок 0')}
-              {selected + 1} <span>{t('з 06')}</span>
-            </span>
+            <span>{t('Ваш шлях до посмішки')}</span>
             <progress max="6" value={selected + 1} aria-label={t('Обраний етап лікування')} />
             <span className="tiny-caps">{t(step.short)}</span>
           </div>
@@ -137,7 +125,6 @@ export function JourneyPage() {
                   onClick={() => setSelected(i)}
                   onKeyDown={(e) => keyboard(e, i)}
                 >
-                  <span className="journey-tab-number">0{i + 1}</span>
                   <span>{t(s.title)}</span>
                   <ArrowRight size={17} aria-hidden="true" />
                 </button>
@@ -159,10 +146,7 @@ export function JourneyPage() {
                   hidden={shown !== i}
                   className="journey-panel"
                 >
-                  <span className="tiny-caps">
-                    {t('Етап 0')}
-                    {i + 1} · {t(s.short)}
-                  </span>
+                  <span className="tiny-caps">{t(s.short)}</span>
                   <AnimatedHeading as="h3">{t(s.title)}</AnimatedHeading>
                   <p className="journey-panel-intro">{t(s.text)}</p>
                   <div className="journey-roles">

@@ -685,6 +685,16 @@ body:has(.mentorship-hero) .mobile-booking {
   }
 }
 /* Separate portrait slots keep the three original photographs distinct. */
+[data-theme='dark'] .journey-tabs button {
+  background: var(--surface);
+}
+.journey-art > .doctor-portrait--journey {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 .hero-photo-frame > .doctor-portrait--hero {
   display: block;
   object-position: center 30%;
@@ -723,6 +733,7 @@ body:has(.mentorship-hero) .mobile-booking {
   }
   .hero-visual:hover .doctor-portrait,
   .about-visual:hover .doctor-portrait,
+  .journey-art:hover .doctor-portrait,
   .mentorship-visual:hover .doctor-portrait {
     scale: 1.045;
   }
