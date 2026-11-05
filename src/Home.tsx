@@ -295,7 +295,6 @@ function Services() {
               <Link className="service-card" to={servicePath(s.id)}>
                 <div className="service-image">
                   <Photo kind={s.image} />
-                  <span className="service-number">{s.number}</span>
                   <span className="service-image-arrow">
                     <ArrowUpRight size={21} strokeWidth={1.3} aria-hidden="true" />
                   </span>

@@ -282,7 +282,7 @@ body::after {
     border-color 0.4s;
 }
 .service-card:hover {
-  transform: translateY(-9px);
+  transform: none;
   box-shadow: 0 18px 35px #28472a13;
   border-color: #a7bd94;
 }
@@ -295,20 +295,6 @@ body::after {
 .service-card p {
   min-height: 90px;
 }
-.service-number {
-  background: #f8f6e8ed;
-  border-radius: 50%;
-  width: 33px;
-  height: 33px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: #3b5635;
-}
-.services-grid > div:nth-child(4) .service-number {
-  color: #3b5635;
-}
 .service-image .editorial-photo {
   height: calc(100% + 24px);
   margin-top: -12px;
@@ -316,7 +302,7 @@ body::after {
   transition: scale 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .service-card:hover .editorial-photo {
-  scale: 1.04;
+  scale: 1;
 }
 .service-image-arrow {
   background: #f9f8eaf0;

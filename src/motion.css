@@ -55,7 +55,7 @@
 }
 .motion-word-mask {
   display: inline-block;
-  overflow: clip;
+  overflow: visible;
   vertical-align: bottom;
   padding: 0.02em 0.035em 0.14em;
   margin: -0.02em -0.035em -0.14em;
@@ -141,7 +141,7 @@
 }
 .preparation-card:hover,
 .journey-summary:hover {
-  transform: translateY(-5px);
+  transform: none;
   box-shadow: 0 15px 35px #37523213;
   border-color: #8fa977;
 }

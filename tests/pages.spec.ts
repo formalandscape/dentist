@@ -143,7 +143,10 @@ test('new design is accessible, responsive and honours reduced motion', async ({
   await card.hover()
   await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1')
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1.04')
+  // Passing cards must stay still under the pointer while scrolling.
+  await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1')
+  await expect(card.locator('.editorial-photo')).toHaveCSS('transform', 'none')
+  await expect(card).toHaveCSS('transform', 'none')
   await page.emulateMedia({ reducedMotion: 'reduce' })
   for (const path of ['', 'vash-shliakh-do-posmishky/', 'poslugy/elainery/']) {
     await page.goto(`/dentist/${path}`)

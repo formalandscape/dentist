@@ -1,5 +1,3 @@
-import { useRef } from 'react'
-import { motion, useReducedMotion, useScroll, useSpring } from 'motion/react'
 import {
   ArrowDown,
   ArrowUpRight,
@@ -75,13 +73,6 @@ const steps = [
 
 export function MentorshipPage() {
   const { t } = useI18n()
-  const timeline = useRef<HTMLOListElement>(null)
-  const reduced = useReducedMotion()
-  const { scrollYProgress } = useScroll({
-    target: timeline,
-    offset: ['start center', 'end center'],
-  })
-  const progress = useSpring(scrollYProgress, { stiffness: 70, damping: 26 })
   return (
     <>
       <section className="section mentorship-hero">
@@ -107,9 +98,7 @@ export function MentorshipPage() {
           </Reveal>
           <div className="mentorship-visual">
             <Photo kind="balance" priority />
-            <span className="mentorship-visual-rule" aria-hidden="true" />
             <div className="mentorship-visual-caption">
-              <span>01 — 04</span>
               <p>
                 {t('Від запитання')}
                 <br />
@@ -171,7 +160,6 @@ export function MentorshipPage() {
                 <Reveal className="mentorship-card" delay={i * 0.07} key={title}>
                   <div className="mentorship-card-top">
                     <Icon size={24} strokeWidth={1.25} aria-hidden="true" />
-                    <span>0{i + 1}</span>
                   </div>
                   <AnimatedHeading as="h3">{t(title)}</AnimatedHeading>
                   <p>{t(text)}</p>
@@ -199,7 +187,6 @@ export function MentorshipPage() {
           <div className="mentorship-topics">
             {directions.map(([title, text], i) => (
               <Reveal className="mentorship-topic" key={title} delay={i * 0.04}>
-                <span className="mentorship-index">0{i + 1}</span>
                 <div>
                   <AnimatedHeading as="h3">{t(title)}</AnimatedHeading>
                   <p>{t(text)}</p>
@@ -227,14 +214,10 @@ export function MentorshipPage() {
               )}
             </p>
           </Reveal>
-          <ol className="mentorship-timeline" ref={timeline}>
-            <li className="mentorship-rail" aria-hidden="true" role="presentation">
-              <motion.span style={{ scaleY: reduced ? scrollYProgress : progress }} />
-            </li>
+          <ol className="mentorship-timeline">
             {steps.map(([title, text], i) => (
               <li key={title}>
                 <Reveal className="mentorship-stage" delay={i * 0.05}>
-                  <span className="mentorship-stage-number">0{i + 1}</span>
                   <div>
                     <AnimatedHeading as="h3">{t(title)}</AnimatedHeading>
                     <p>{t(text)}</p>

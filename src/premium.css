@@ -177,23 +177,10 @@ html[data-theme-transition] {
   border-radius: inherit;
   pointer-events: none;
 }
-.mentorship-visual-rule {
-  position: absolute;
-  left: 32px;
-  bottom: 130px;
-  width: calc(100% - 64px);
-  height: 1px;
-  background: #ffffff80;
-  transform-origin: left;
-}
 .mentorship-visual-caption {
   position: absolute;
   inset: auto 32px 30px;
   color: #fff9e7;
-}
-.mentorship-visual-caption > span {
-  font-size: 10px;
-  letter-spacing: 0.18em;
 }
 .mentorship-visual-caption p {
   font:
@@ -262,12 +249,6 @@ html[data-theme-transition] {
   color: var(--sage);
   margin-bottom: 35px;
 }
-.mentorship-card-top span,
-.mentorship-index {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-}
 .mentorship-card h3 {
   font-size: 29px;
   line-height: 1.15;
@@ -282,7 +263,7 @@ html[data-theme-transition] {
 }
 .mentorship-topic {
   display: grid;
-  grid-template-columns: 22px 1fr 20px;
+  grid-template-columns: minmax(0, 1fr) 20px;
   gap: 15px;
   padding-block: 26px;
   border-top: 1px solid var(--line);
@@ -298,9 +279,6 @@ html[data-theme-transition] {
 .mentorship-topic > svg {
   color: var(--sage);
 }
-.mentorship-index {
-  padding-top: 7px;
-}
 .mentorship-timeline {
   position: relative;
   list-style: none;
@@ -309,25 +287,14 @@ html[data-theme-transition] {
   max-width: 940px;
   margin-inline: auto;
 }
-.mentorship-timeline > li:not(.mentorship-rail) {
+.mentorship-timeline > li {
   border-bottom: 1px solid var(--line);
 }
 .mentorship-stage {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: minmax(0, 1fr);
   padding-block: 32px;
   gap: 30px;
-}
-.mentorship-stage-number {
-  font:
-    400 52px/1 'Cormorant Garamond',
-    Georgia,
-    serif;
-  color: var(--sage);
-  background: var(--surface-soft);
-  align-self: start;
-  z-index: 1;
-  padding-block: 6px;
 }
 .mentorship-stage h3 {
   font-size: 34px;
@@ -335,19 +302,6 @@ html[data-theme-transition] {
 }
 .mentorship-stage p {
   max-width: 620px;
-}
-.mentorship-rail {
-  position: absolute;
-  width: 1px;
-  inset: 50px auto 55px 22px;
-  background: var(--line);
-  pointer-events: none;
-}
-.mentorship-rail > span {
-  position: absolute;
-  inset: 0;
-  transform-origin: top;
-  background: var(--sage);
 }
 .mentorship-request-inner {
   text-align: center;
@@ -448,15 +402,9 @@ body:has(.mentorship-hero) .mobile-booking {
     margin-bottom: 22px;
   }
   .mentorship-stage {
-    grid-template-columns: 48px 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
     padding-block: 27px;
-  }
-  .mentorship-stage-number {
-    font-size: 40px;
-  }
-  .mentorship-rail {
-    left: 17px;
   }
   .mentorship-stage h3 {
     font-size: 29px;
@@ -466,7 +414,7 @@ body:has(.mentorship-hero) .mobile-booking {
   }
   .mentorship-topic {
     gap: 10px;
-    grid-template-columns: 18px 1fr 16px;
+    grid-template-columns: minmax(0, 1fr) 16px;
   }
   .mentorship-request-actions {
     flex-direction: column;
@@ -495,7 +443,7 @@ body:has(.mentorship-hero) .mobile-booking {
       border-color 500ms;
   }
   .mentorship-card:hover {
-    transform: translateY(-5px);
+    transform: none;
     border-color: var(--sage);
     box-shadow: 0 20px 40px #29493216;
   }
@@ -506,61 +454,13 @@ body:has(.mentorship-hero) .mobile-booking {
     transform: translate(3px, -3px);
   }
 }
-/* Progressive scroll-linked accents run in CSS; scrolling does not set React state. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .page-content .section:not(.hero):not(.journey-hero):not(.mentorship-hero)::before {
-      display: block;
-      background: radial-gradient(
-        ellipse at 95% 8%,
-        color-mix(in srgb, var(--ambient-glow) 17%, transparent),
-        transparent 62%
-      );
-      animation: section-light linear both;
-      animation-timeline: view();
-      animation-range: entry 0% exit 100%;
-    }
-    .mentorship-topic::after {
-      content: '';
-      position: absolute;
-      top: -1px;
-      inset-inline: 0;
-      height: 1px;
-      background: var(--sage);
-      transform-origin: left;
-      animation: section-rule linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 100%;
-    }
-  }
-}
-@keyframes section-light {
-  0%,
-  100% {
-    opacity: 0.12;
-  }
-  45%,
-  65% {
-    opacity: 0.8;
-  }
-}
-@keyframes section-rule {
-  from {
-    transform: scaleX(0.05);
-    opacity: 0.2;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 0.6;
-  }
-}
 .mentorship-split > *,
 .mentorship-topic > div {
   min-width: 0;
 }
 @media (max-width: 700px) {
   .mentorship-topic {
-    grid-template-columns: 16px minmax(0, 1fr) 16px;
+    grid-template-columns: minmax(0, 1fr) 16px;
     gap: 8px;
   }
   .mentorship-topic > svg {
@@ -579,9 +479,6 @@ body:has(.mentorship-hero) .mobile-booking {
   pointer-events: none;
 }
 .mentorship-visual-caption,
-.mentorship-visual-rule {
-  z-index: 2;
-}
 .mentorship-visual::after {
   z-index: 3;
 }

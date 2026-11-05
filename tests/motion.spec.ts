@@ -186,3 +186,163 @@ test('animated typography fits every page on mobile, tablet and desktop', async 
     }
   }
 })
+
+test('decorative numbering is absent in service cards and every mentorship block', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/dentist/')
+  await expect(page.locator('.service-card')).toHaveCount(4)
+  await expect(page.locator('.service-number')).toHaveCount(0)
+  for (const language of ['', 'en/']) {
+    await page.goto(`/dentist/${language}mentorstvo/`)
+    await expect(
+      page.locator(
+        '.mentorship-index, .mentorship-stage-number, .mentorship-rail, .mentorship-visual-rule',
+      ),
+    ).toHaveCount(0)
+    await expect(
+      page.locator('.mentorship-visual-caption > span, .mentorship-card-top > span'),
+    ).toHaveCount(0)
+    await expect(page.locator('.mentorship-card')).toHaveCount(4)
+    await expect(page.locator('.mentorship-topic')).toHaveCount(5)
+    await expect(page.locator('.mentorship-stage')).toHaveCount(4)
+    await expect(page.locator('.mentorship-visual .editorial-photo')).toBeVisible()
+    for (const width of [320, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 })
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      )
+      for (const selector of ['.mentorship-topic', '.mentorship-stage']) {
+        const inset = await page
+          .locator(selector)
+          .first()
+          .evaluate(
+            (el) =>
+              el.querySelector('h3')!.getBoundingClientRect().left -
+              el.getBoundingClientRect().left,
+          )
+        expect(inset).toBeLessThan(3)
+      }
+    }
+  }
+})
+
+test('slow scroll starts a single smooth entrance before the unit is visible, without clipping', async ({
+  page,
+}) => {
+  await page.goto('/dentist/mentorstvo/')
+  const topic = page.locator('.mentorship-topic').first()
+  await expect(topic).toHaveAttribute('data-motion-unit', 'true')
+  await topic.evaluate((el) => {
+    scrollTo({
+      top: el.getBoundingClientRect().top + scrollY - innerHeight - 185,
+      behavior: 'instant',
+    })
+  })
+  // Let the deliberate positioning jump finish; subsequent input models a slow wheel gesture.
+  await page.waitForTimeout(280)
+  await page.evaluate(() => scrollBy({ top: 40, behavior: 'instant' }))
+  await expect(topic).toHaveAttribute('data-scroll-state', 'running')
+  const evidence = await topic.evaluate(async (el) => {
+    const read = () => {
+      const style = getComputedStyle(el)
+      const matrix = new DOMMatrixReadOnly(style.transform)
+      return { y: matrix.f, opacity: +style.opacity, scale: matrix.a, clip: style.clipPath }
+    }
+    const animations = el.getAnimations().filter((a) => a.id === 'scroll-reveal')
+    const duration = animations[0]?.effect?.getTiming().duration
+    const samples = [read()]
+    for (let i = 0; i < 5; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 80))
+      samples.push(read())
+    }
+    const targets = document
+      .getAnimations()
+      .filter((a) => a.id === 'scroll-reveal')
+      .map((a) => (a.effect as KeyframeEffect).target as Element)
+    return {
+      duration,
+      samples,
+      nested: targets.some((a) => targets.some((b) => a !== b && a.contains(b))),
+      masks: [...document.querySelectorAll('.motion-word-mask')].every(
+        (word) => getComputedStyle(word).overflow === 'visible',
+      ),
+    }
+  })
+  expect(Number(evidence.duration)).toBeGreaterThanOrEqual(1300)
+  expect(
+    evidence.samples.every(
+      (s) => s.y >= 0 && s.y <= 6.1 && s.opacity >= 0.95 && s.scale === 1 && s.clip === 'none',
+    ),
+  ).toBe(true)
+  for (let i = 1; i < evidence.samples.length; i++) {
+    expect(evidence.samples[i].y).toBeLessThanOrEqual(evidence.samples[i - 1].y + 0.01)
+    expect(evidence.samples[i].opacity).toBeGreaterThanOrEqual(
+      evidence.samples[i - 1].opacity - 0.001,
+    )
+  }
+  expect(evidence.nested).toBe(false)
+  expect(evidence.masks).toBe(true)
+})
+
+test('rapid scrolling keeps content readable, settles promptly and never replays completed reveals', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/dentist/')
+  const result = await page.evaluate(async () => {
+    const samples: number[] = []
+    for (const id of ['services', 'faq', 'appointment', 'services', 'about', 'contacts', 'faq']) {
+      const el = document.getElementById(id)!
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 110, behavior: 'instant' })
+      await new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      )
+      for (const target of document.querySelectorAll<HTMLElement>('[data-motion-unit]')) {
+        const rect = target.getBoundingClientRect()
+        if (rect.top < innerHeight && rect.bottom > 100)
+          samples.push(+getComputedStyle(target).opacity)
+      }
+    }
+    return { samples, skipped: document.querySelectorAll('[data-scroll-state="skipped"]').length }
+  })
+  expect(result.samples.length).toBeGreaterThan(0)
+  expect(Math.min(...result.samples)).toBeGreaterThanOrEqual(0.9)
+  expect(result.skipped).toBeGreaterThan(0)
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          () =>
+            document
+              .getAnimations()
+              .filter((a) => a.id === 'scroll-reveal' && a.playState === 'running').length,
+        ),
+      { timeout: 1000 },
+    )
+    .toBe(0)
+  await page
+    .locator('#services')
+    .evaluate((el) =>
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 110, behavior: 'instant' }),
+    )
+  await page.waitForTimeout(150)
+  expect(
+    await page
+      .locator('.service-card')
+      .evaluateAll((els) =>
+        els.every((el) => el.getAnimations().filter((a) => a.id === 'scroll-reveal').length === 0),
+      ),
+  ).toBe(true)
+  expect(
+    await page
+      .locator('.editorial-photo')
+      .evaluateAll((els) =>
+        els.every(
+          (el) =>
+            getComputedStyle(el).clipPath === 'none' && getComputedStyle(el).transform === 'none',
+        ),
+      ),
+  ).toBe(true)
+})
