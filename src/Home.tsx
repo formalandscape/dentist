@@ -357,17 +357,6 @@ function Approach() {
         </Reveal>
         <Reveal className="approach-visual">
           <Photo kind="balance" />
-          <div className="approach-quote">
-            <span className="tiny-caps">{t('МІЙ ПІДХІД')}</span>
-            <blockquote>
-              {t('Лікувати людину,')}
-              <br />
-              {t('а не лише')}
-              <br />
-              <em>{t('її посмішку.')}</em>
-            </blockquote>
-            <span>{t('Зоряна Тепла')}</span>
-          </div>
         </Reveal>
       </div>
     </section>

@@ -452,3 +452,80 @@ test('cards, images, forms and maps reveal as complete surfaces using stationary
   await expect(page.locator('.mentorship-request')).toContainText('Напишіть мені в Instagram')
   await expect(page.locator('.mentorship-request')).not.toContainText('Напишіть Зоряні Теплій')
 })
+
+test('map card is compact, the photo has no quote plaque, and pointer hover is large and smooth', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/dentist/')
+  await expect(page.locator('.approach-quote')).toHaveCount(0)
+  await expect(page.locator('.approach-visual .editorial-photo')).toBeVisible()
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 })
+    const gap = await page
+      .locator('.map-card')
+      .evaluate(
+        (el) =>
+          el.getBoundingClientRect().bottom -
+          el.querySelector('.map-caption')!.getBoundingClientRect().bottom,
+      )
+    expect(gap).toBeLessThan(3)
+    expect(gap).toBeGreaterThanOrEqual(0)
+  }
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  const card = page.locator('.service-card').first()
+  await card.hover()
+  await expect(card).toHaveAttribute('data-scroll-state', 'settled')
+  await expect
+    .poll(() => card.evaluate((el) => parseFloat(getComputedStyle(el).scale)))
+    .toBeGreaterThan(1.03)
+  const enlarged = await card.evaluate((el) => ({
+    lift: getComputedStyle(el).translate,
+    duration: getComputedStyle(el).transitionDuration,
+    imageScale: parseFloat(getComputedStyle(el.querySelector('.editorial-photo')!).scale),
+    anchorTop: el.parentElement!.getBoundingClientRect().top,
+  }))
+  expect(parseFloat(enlarged.lift.split(' ')[1])).toBeLessThan(-15)
+  expect(enlarged.duration).toContain('1s')
+  await expect
+    .poll(() =>
+      card.locator('.editorial-photo').evaluate((el) => parseFloat(getComputedStyle(el).scale)),
+    )
+    .toBeGreaterThan(1.09)
+  await page.mouse.move(0, 100)
+  await expect
+    .poll(() => card.evaluate((el) => parseFloat(getComputedStyle(el).scale)))
+    .toBeLessThan(1.001)
+  await page.locator('.header-appointment').hover()
+  await expect
+    .poll(() =>
+      page.locator('.header-appointment').evaluate((el) => parseFloat(getComputedStyle(el).scale)),
+    )
+    .toBeGreaterThan(1.05)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await card.hover()
+  await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1')
+})
+
+test('home refresh clears the section fragment and returns to the hero, while direct routes still work', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const locale of ['', 'en/']) {
+    await page.goto(`/dentist/${locale}?view=refresh#about`)
+    await expect(page.locator('#about')).toBeInViewport()
+    await page.reload()
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(3)
+    expect(new URL(page.url()).hash).toBe('')
+    expect(new URL(page.url()).searchParams.get('view')).toBe('refresh')
+    await expect(page.locator('.hero h1')).toBeInViewport()
+    await page.locator('.desktop-nav a[href$="#services"]').click()
+    await expect(page.locator('#services')).toBeInViewport()
+    await page.reload()
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(3)
+  }
+  await page.goto('/dentist/mentorstvo/')
+  await page.reload()
+  await expect(page).toHaveURL(/\/mentorstvo\/$/)
+  await expect(page.locator('h1')).toContainText('Менторство')
+})

@@ -41,7 +41,7 @@ html[data-theme-transition] body *::before,
 html[data-theme-transition] body *::after {
   transition-property:
     background-color, color, border-color, outline-color, box-shadow, fill, stroke,
-    text-decoration-color !important;
+    text-decoration-color, translate, scale !important;
   transition-duration: var(--theme-duration) !important;
   transition-timing-function: var(--theme-ease) !important;
   transition-delay: 0s !important;
@@ -518,4 +518,169 @@ body:has(.mentorship-hero) .mobile-booking {
 .motion-service-anchor {
   height: auto;
   align-self: center;
+}
+/* The map ends after its caption instead of stretching to the contacts column. */
+.motion-map-anchor {
+  align-self: start;
+}
+.motion-map-anchor > .map-card {
+  height: auto;
+  align-self: start;
+}
+.approach-visual::after {
+  display: none;
+}
+.approach-visual > .motion-image-anchor > .editorial-photo {
+  opacity: 1;
+}
+
+/* Hover uses individual properties, independent of the scroll entrance transform. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root {
+    --hover-duration: 1000ms;
+    --hover-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .service-card,
+  .mentorship-card,
+  .preparation-card,
+  .journey-summary,
+  .review-content,
+  .association,
+  .service-note {
+    translate: 0 0;
+    scale: 1;
+    transition:
+      translate var(--hover-duration) var(--hover-ease),
+      scale var(--hover-duration) var(--hover-ease),
+      box-shadow var(--hover-duration) var(--hover-ease),
+      border-color 800ms,
+      background-color 800ms;
+    transform-origin: center;
+  }
+  .services-grid > [data-motion-reveal]:is(:hover, :focus-within) > .service-card {
+    translate: 0 -18px;
+    scale: 1.035;
+    border-color: var(--sage);
+    box-shadow: 0 28px 58px color-mix(in srgb, var(--ink) 20%, transparent);
+    z-index: 2;
+  }
+  [data-motion-anchor]:is(:hover, :focus-within)
+    > :is(
+      .mentorship-card,
+      .preparation-card,
+      .journey-summary,
+      .review-content,
+      .association,
+      .service-note
+    ) {
+    translate: 0 -12px;
+    scale: 1.025;
+    border-color: var(--sage);
+    box-shadow: 0 22px 48px color-mix(in srgb, var(--ink) 16%, transparent);
+  }
+  .editorial-photo {
+    scale: 1;
+    transition: scale 1400ms var(--hover-ease);
+  }
+  .services-grid > [data-motion-reveal]:is(:hover, :focus-within) .editorial-photo {
+    scale: 1.1;
+  }
+  [data-motion-anchor]:is(:hover, :focus-within)
+    > :is(.mentorship-visual, .journey-art, .approach-visual)
+    .editorial-photo,
+  .motion-image-anchor:is(:hover, :focus-within) > .editorial-photo {
+    scale: 1.075;
+  }
+  .service-image-arrow {
+    transition:
+      translate 1000ms var(--hover-ease),
+      scale 1000ms var(--hover-ease),
+      background-color 800ms;
+  }
+  .services-grid > [data-motion-reveal]:is(:hover, :focus-within) .service-image-arrow {
+    translate: 4px -4px;
+    scale: 1.16;
+    transform: none;
+  }
+  .button,
+  .header-appointment,
+  .text-link,
+  .round-button,
+  .theme-toggle,
+  .footer-contact-link,
+  .contact-details > a,
+  .desktop-nav a,
+  .language-switch a {
+    scale: 1;
+    transition:
+      scale 900ms var(--hover-ease),
+      box-shadow 1000ms var(--hover-ease),
+      background-color 800ms,
+      border-color 800ms,
+      color 800ms;
+  }
+  .button:is(:hover, :focus-visible),
+  .header-appointment:is(:hover, :focus-visible) {
+    scale: 1.055;
+    transform: none;
+    box-shadow: 0 16px 34px color-mix(in srgb, var(--sage) 26%, transparent);
+  }
+  .text-link:is(:hover, :focus-visible) {
+    scale: 1.06;
+    transform-origin: left center;
+  }
+  .round-button:is(:hover, :focus-visible),
+  .theme-toggle:is(:hover, :focus-visible) {
+    scale: 1.16;
+  }
+  .desktop-nav a:is(:hover, :focus-visible),
+  .language-switch a:is(:hover, :focus-visible) {
+    scale: 1.09;
+  }
+  .button > svg,
+  .text-link > svg,
+  .header-appointment > svg {
+    transition: transform 1000ms var(--hover-ease);
+  }
+  .button:is(:hover, :focus-visible) > svg,
+  .text-link:is(:hover, :focus-visible) > svg,
+  .header-appointment:is(:hover, :focus-visible) > svg {
+    transform: translate(5px, -5px);
+  }
+  .text-link::after,
+  .desktop-nav a::after {
+    transition-duration: 900ms;
+    transition-timing-function: var(--hover-ease);
+  }
+  .footer-contact-link:is(:hover, :focus-visible),
+  .contact-details > a:is(:hover, :focus-visible) {
+    scale: 1.025;
+    padding-inline: 0;
+    background-color: var(--surface-strong);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--ink) 9%, transparent);
+  }
+  .form-card,
+  .map-card,
+  .journey-explorer {
+    transition:
+      border-color 800ms,
+      box-shadow 1000ms var(--hover-ease);
+  }
+  [data-motion-anchor]:is(:hover, :focus-within) > :is(.form-card, .map-card, .journey-explorer) {
+    border-color: var(--sage);
+    box-shadow: 0 18px 42px color-mix(in srgb, var(--ink) 14%, transparent);
+  }
+  .field input,
+  .field textarea,
+  .field select {
+    transition:
+      background-color 800ms,
+      border-color 800ms,
+      box-shadow 900ms var(--hover-ease);
+  }
+  .field:is(:hover, :focus-within) :is(input, textarea, select) {
+    border-color: var(--sage);
+    background-color: var(--surface-soft);
+    box-shadow: 0 4px 0 color-mix(in srgb, var(--sage) 16%, transparent);
+  }
 }

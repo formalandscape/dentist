@@ -11,6 +11,29 @@
     />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <script>
+      // A browser refresh of the home page starts from its opening screen.
+      // Preserve deep links on normal navigation and reloads of standalone pages.
+      var teplaNavigation = performance.getEntriesByType('navigation')[0]
+      var teplaBase = new URL('%BASE_URL%', location.href).pathname.replace(/\/$/, '')
+      var teplaPath = location.pathname.replace(/\/$/, '')
+      var teplaReload = teplaNavigation
+        ? teplaNavigation.type === 'reload'
+        : performance.navigation && performance.navigation.type === 1
+      if (teplaReload && (teplaPath === teplaBase || teplaPath === teplaBase + '/en')) {
+        history.scrollRestoration = 'manual'
+        if (location.hash)
+          history.replaceState(history.state, '', location.pathname + location.search)
+        window.scrollTo({ top: 0, behavior: 'instant' })
+        window.addEventListener(
+          'pageshow',
+          function () {
+            var currentPath = location.pathname.replace(/\/$/, '')
+            if (!location.hash && (currentPath === teplaBase || currentPath === teplaBase + '/en'))
+              window.scrollTo({ top: 0, behavior: 'instant' })
+          },
+          { once: true },
+        )
+      }
       var teplaTheme = null
       try {
         teplaTheme = localStorage.getItem('tepla-theme')

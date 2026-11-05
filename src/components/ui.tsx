@@ -23,7 +23,10 @@ export function Reveal({
       className,
     )
   return surface ? (
-    <div className="motion-anchor" data-motion-anchor="true">
+    <div
+      className={`motion-anchor ${className.split(/\s+/).includes('map-card') ? 'motion-map-anchor' : ''}`}
+      data-motion-anchor="true"
+    >
       {content}
     </div>
   ) : (

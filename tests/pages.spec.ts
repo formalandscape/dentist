@@ -68,8 +68,9 @@ test('journey supports all six steps, keyboard navigation and progress', async (
   await expect(page).toHaveURL(/\/dentist\/#appointment$/)
   await expect(page.locator('#appointment')).toBeInViewport()
   await page.reload()
-  await expect(page).toHaveURL(/\/dentist\/#appointment$/)
-  await expect(page.locator('#appointment')).toBeInViewport()
+  await expect(page).toHaveURL(/\/dentist\/$/)
+  await expect(page.locator('.hero h1')).toBeInViewport()
+  expect(await page.evaluate(() => scrollY)).toBeLessThan(3)
 })
 
 test('no JavaScript or a failed script never produces an empty document', async ({ browser }) => {
@@ -143,8 +144,9 @@ test('new design is accessible, responsive and honours reduced motion', async ({
   await card.hover()
   await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1')
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  // Passing cards must stay still under the pointer while scrolling.
-  await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1')
+  // Hover deliberately lifts the full card and zooms the image smoothly.
+  await expect(card.locator('.editorial-photo')).toHaveCSS('scale', '1.1')
+  await expect(card).toHaveCSS('scale', '1.035')
   await expect(card.locator('.editorial-photo')).toHaveCSS('transform', 'none')
   await expect(card).toHaveCSS('transform', 'none')
   await page.emulateMedia({ reducedMotion: 'reduce' })
