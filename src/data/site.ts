@@ -5,7 +5,23 @@ export const site = {
     role: 'Лікар стоматолог-ортодонт',
     experience: '20+',
     city: 'Київ',
-    portrait: '',
+    portraits: {
+      hero: {
+        src: `${import.meta.env.BASE_URL}images/zoryana-tepla-hero.webp`,
+        width: 960,
+        height: 1826,
+      },
+      about: {
+        src: `${import.meta.env.BASE_URL}images/zoryana-tepla-about.webp`,
+        width: 960,
+        height: 1202,
+      },
+      mentorship: {
+        src: `${import.meta.env.BASE_URL}images/zoryana-tepla-mentorship.webp`,
+        width: 957,
+        height: 1280,
+      },
+    },
     portraitAlt: 'Зоряна Тепла — лікар стоматолог-ортодонт',
   },
   // Populate only with confirmed, public contact details. Empty values are never rendered as links.

@@ -9,54 +9,7 @@ import { site } from './data/site'
 import { services, servicePath } from './data/services'
 import { Encouragement, Invitation } from './components/Atmosphere'
 import { journeyPath } from './data/journey'
-import { Monogram } from './components/Monogram'
-
-function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
-  const { t } = useI18n()
-
-  if (site.doctor.portrait)
-    return (
-      <img
-        src={site.doctor.portrait}
-        alt={t(site.doctor.portraitAlt)}
-        className="doctor-portrait"
-        width="700"
-        height="850"
-        loading={hero ? 'eager' : 'lazy'}
-      />
-    )
-  return (
-    <div
-      className={`portrait-placeholder ${hero ? 'portrait-hero' : ''}`}
-      role="img"
-      aria-label={t('Декоративна лінія усмішки — місце для майбутнього портрета лікаря')}
-    >
-      <svg className="smile-illustration" viewBox="0 0 480 480" fill="none" aria-hidden="true">
-        <circle cx="240" cy="240" r="222" stroke="currentColor" strokeOpacity="0.18" />
-        <path
-          d="M105 256C162 330 318 330 375 256"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M131 267C180 311 300 311 349 267"
-          stroke="currentColor"
-          strokeOpacity="0.45"
-          strokeWidth="1"
-          strokeLinecap="round"
-        />
-        <circle cx="105" cy="256" r="3" fill="currentColor" />
-        <circle cx="375" cy="256" r="3" fill="currentColor" />
-      </svg>
-      <Monogram className="portrait-wordmark" />
-      <div className="portrait-caption">
-        <span className="portrait-theme">{t('Гармонія усмішки')}</span>
-        <span>{t('Місце для портрета лікаря')}</span>
-      </div>
-    </div>
-  )
-}
+import { DoctorPortrait } from './components/DoctorPortrait'
 
 function Hero() {
   const { t } = useI18n()
@@ -103,7 +56,7 @@ function Hero() {
         </div>
         <div className="hero-visual">
           <div className="hero-photo-frame">
-            <PortraitPlaceholder hero />
+            <DoctorPortrait slot="hero" priority />
           </div>
           <div className="experience-note">
             <span className="experience-number">
@@ -176,7 +129,7 @@ function About() {
       <div className="container about-layout">
         <Reveal className="about-visual">
           <div className="about-photo-frame">
-            <PortraitPlaceholder />
+            <DoctorPortrait slot="about" />
           </div>
           <div className="about-caption">
             <span>{t('Зоряна Тепла')}</span>

@@ -8,9 +8,10 @@ import {
   Phone,
 } from 'lucide-react'
 import { AnimatedHeading } from './motion/AnimatedHeading'
-import { Eyebrow, Photo, Reveal } from './components/ui'
+import { Eyebrow, Reveal } from './components/ui'
 import { useI18n } from './i18n/I18n'
 import { site } from './data/site'
+import { DoctorPortrait } from './components/DoctorPortrait'
 
 const audience = [
   [
@@ -97,7 +98,7 @@ export function MentorshipPage() {
             </p>
           </Reveal>
           <Reveal className="mentorship-visual">
-            <Photo kind="balance" priority />
+            <DoctorPortrait slot="mentorship" priority />
             <div className="mentorship-visual-caption">
               <p>
                 {t('Від запитання')}

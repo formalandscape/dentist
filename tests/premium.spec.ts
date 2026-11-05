@@ -1,6 +1,52 @@
 import { test, expect } from './fixtures'
 import AxeBuilder from '@axe-core/playwright'
 
+test('three distinct original portraits load on mobile and desktop while service illustrations stay in place', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 1000 })
+    const sources = new Set<string>()
+    for (const language of ['', 'en/']) {
+      await page.goto(`/dentist/${language}`)
+      await expect(page.locator('.portrait-placeholder')).toHaveCount(0)
+      for (const slot of ['hero', 'about']) {
+        const image = page.locator(`.doctor-portrait--${slot}`)
+        await image.scrollIntoViewIfNeeded()
+        await expect(image).toBeVisible()
+        await expect(image).toHaveAttribute('src', `/dentist/images/zoryana-tepla-${slot}.webp`)
+        await expect(image).toHaveAttribute('loading', slot === 'hero' ? 'eager' : 'lazy')
+        await expect(image).toHaveAttribute(
+          'alt',
+          language ? 'Zoryana Tepla — orthodontist' : 'Зоряна Тепла — лікар стоматолог-ортодонт',
+        )
+        await expect
+          .poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+          .toBe(true)
+        sources.add((await image.getAttribute('src'))!)
+      }
+      await expect(page.locator('.service-card .editorial-photo img')).toHaveCount(4)
+      for (const image of await page.locator('.service-card .editorial-photo img').all()) {
+        await expect(image).toHaveAttribute('src', '/dentist/images/editorial-still-life.webp')
+      }
+      await page.goto(`/dentist/${language}mentorstvo/`)
+      const image = page.locator('.mentorship-visual .doctor-portrait')
+      await image.scrollIntoViewIfNeeded()
+      await expect(image).toBeVisible()
+      await expect(image).toHaveAttribute('src', '/dentist/images/zoryana-tepla-mentorship.webp')
+      await expect
+        .poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0))
+        .toBe(true)
+      sources.add((await image.getAttribute('src'))!)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+        true,
+      )
+    }
+    expect(sources.size).toBe(3)
+  }
+})
+
 test('mentorship has complete static content, correct metadata and working request links', async ({
   page,
   request,
@@ -55,11 +101,11 @@ test('palette blends through intermediate colours and rapid changes settle witho
   await page.goto('/dentist/#appointment')
   await page.locator('#name').fill('Перевірка теми')
   const samples = await page.evaluate(async () => {
-    const selectors = ['body', '.site-header', '.form-card', '.portrait-placeholder']
+    const selectors = ['body', '.site-header', '.form-card', '.invitation-section']
     const read = () =>
       selectors.map((s) => {
         const style = getComputedStyle(document.querySelector(s)!)
-        return s === '.portrait-placeholder' ? style.backgroundImage : style.backgroundColor
+        return s === '.invitation-section' ? style.backgroundImage : style.backgroundColor
       })
     const initial = read()
     ;(document.querySelector('.theme-toggle') as HTMLButtonElement).click()
