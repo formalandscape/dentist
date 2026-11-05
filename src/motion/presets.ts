@@ -9,7 +9,7 @@ export const silk = {
   pageIn: 0.72,
   panelOut: 0.22,
   panelIn: 0.48,
-  stagger: 0.022,
+  stagger: 0.045,
 }
 
 export const sceneVariants = {
@@ -19,7 +19,4 @@ export const sceneVariants = {
 }
 
 // Scroll entrances stay close to their final position and never crop content.
-export const revealFrames: Keyframe[] = [
-  { opacity: 0.96, transform: 'translateY(6px)' },
-  { opacity: 1, transform: 'translateY(0)' },
-]
+export const revealFrames: Keyframe[] = [{ opacity: 0.12 }, { opacity: 1 }]

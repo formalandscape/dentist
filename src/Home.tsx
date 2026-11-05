@@ -1,7 +1,5 @@
 import { useI18n } from './i18n/I18n'
 import { AnimatedHeading } from './motion/AnimatedHeading'
-import { useRef } from 'react'
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { ArrowUpRight, Check, Heart, Instagram, MapPin, Phone, Sparkles } from 'lucide-react'
 import { Link } from './i18n/I18n'
 import { Action, Eyebrow, Flower, Photo, Reveal } from './components/ui'
@@ -63,19 +61,10 @@ function PortraitPlaceholder({ hero = false }: { hero?: boolean }) {
 function Hero() {
   const { t } = useI18n()
 
-  const target = useRef<HTMLElement>(null)
-  const reduced = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target, offset: ['start start', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], [0, 36])
   return (
-    <section className="hero" ref={target}>
+    <section className="hero">
       <div className="container hero-layout">
-        <motion.div
-          className="hero-copy"
-          initial={false}
-          animate={reduced ? {} : { opacity: [0.85, 1], y: [16, 0] }}
-          transition={{ duration: reduced ? 0 : 0.8 }}
-        >
+        <div className="hero-copy">
           <p className="hero-promise">{t('Впевненість починається з усмішки.')}</p>
           <AnimatedHeading as="h1">
             {t('Ваша посмішка.')}
@@ -111,14 +100,8 @@ function Hero() {
               <strong>{t('З повагою до вашої індивідуальності.')}</strong>
             </span>
           </div>
-        </motion.div>
-        <motion.div
-          className="hero-visual"
-          style={{ y: reduced ? 0 : y }}
-          initial={false}
-          animate={reduced ? {} : { opacity: [0.85, 1] }}
-          transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : 0.15 }}
-        >
+        </div>
+        <div className="hero-visual">
           <div className="hero-photo-frame">
             <PortraitPlaceholder hero />
           </div>
@@ -138,7 +121,7 @@ function Hero() {
             <span>{t('ЗОРЯНА ТЕПЛА')}</span>
             <span>{t('ЛІКАР СТОМАТОЛОГ-ОРТОДОНТ')}</span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

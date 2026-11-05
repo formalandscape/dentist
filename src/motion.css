@@ -441,3 +441,102 @@
     transform: none;
   }
 }
+/* A visible opening sequence, beginning at the first screen before hydration. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero .hero-promise,
+  .hero .hero-description p,
+  .hero .hero-actions > *,
+  .hero .hero-bottom,
+  .hero .experience-note,
+  .hero .hero-photo-footer {
+    animation: hero-intro-copy 1400ms cubic-bezier(0.22, 0.45, 0.32, 1) backwards;
+  }
+  .hero h1 .motion-word {
+    animation: hero-intro-word 1500ms cubic-bezier(0.22, 0.45, 0.32, 1) backwards;
+    animation-delay: calc(90ms + min(var(--word-index, 0) * 70ms, 420ms));
+  }
+  .hero .hero-photo-frame {
+    animation: hero-intro-image 1750ms cubic-bezier(0.22, 0.45, 0.32, 1) 160ms backwards;
+  }
+  .hero .hero-description p {
+    animation-delay: 300ms;
+  }
+  .hero .hero-actions > :first-child {
+    animation-delay: 420ms;
+  }
+  .hero .hero-actions > :last-child {
+    animation-delay: 520ms;
+  }
+  .hero .hero-bottom {
+    animation-delay: 600ms;
+  }
+  .hero .experience-note {
+    animation-delay: 650ms;
+  }
+  .hero .hero-photo-footer {
+    animation-delay: 700ms;
+  }
+  html[data-motion='full'] [data-motion-unit][data-scroll-state='ready'] {
+    opacity: 0;
+  }
+  html[data-motion='full'] [data-motion-unit][data-scroll-state='ready']:focus-within {
+    opacity: var(--reveal-opacity, 1);
+    transform: none;
+  }
+}
+@keyframes hero-intro-word {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-intro-copy {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes hero-intro-image {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero .hero-description-line {
+    transform-origin: top;
+    animation: hero-intro-rule 1600ms cubic-bezier(0.22, 0.45, 0.32, 1) 300ms backwards;
+  }
+  .hero .smile-illustration path {
+    stroke-dasharray: 420;
+    animation: hero-intro-smile 2200ms cubic-bezier(0.22, 0.45, 0.32, 1) 300ms backwards;
+  }
+}
+@keyframes hero-intro-rule {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes hero-intro-smile {
+  from {
+    stroke-dashoffset: 420;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

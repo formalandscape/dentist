@@ -1,5 +1,5 @@
 import { Children, cloneElement, isValidElement } from 'react'
-import type { ReactNode, ReactElement } from 'react'
+import type { ReactNode, ReactElement, CSSProperties } from 'react'
 
 type Props = {
   as?: 'h1' | 'h2' | 'h3' | 'h4'
@@ -20,8 +20,10 @@ export function AnimatedHeading({ as: Heading = 'h2', children, ...props }: Prop
           .map((part) => {
             if (!part.trim()) return part
             return (
-              <span className="motion-word-mask" key={index++}>
-                <span className="motion-word">{part}</span>
+              <span className="motion-word-mask" key={index}>
+                <span className="motion-word" style={{ '--word-index': index++ } as CSSProperties}>
+                  {part}
+                </span>
               </span>
             )
           })

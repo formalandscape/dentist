@@ -228,121 +228,168 @@ test('decorative numbering is absent in service cards and every mentorship block
   }
 })
 
-test('slow scroll starts a single smooth entrance before the unit is visible, without clipping', async ({
+test('the first screen animates from the main headline before any scrolling', async ({ page }) => {
+  await page.goto('/dentist/', { waitUntil: 'domcontentloaded' })
+  const hero = await page.locator('.hero h1').evaluate((el) => {
+    const words = [...el.querySelectorAll<HTMLElement>('.motion-word')]
+    return {
+      y: scrollY,
+      css: words.map((word) => getComputedStyle(word).animationName),
+      delays: words.map((word) => getComputedStyle(word).animationDelay),
+      frames: words.map((word) => +getComputedStyle(word).opacity),
+      active: el.getAnimations({ subtree: true }).filter((a) => a.playState === 'running').length,
+      initialPromise: getComputedStyle(document.querySelector('.hero-promise')!).animationName,
+      initialDescription: getComputedStyle(document.querySelector('.hero-description p')!)
+        .animationName,
+      initialAction: getComputedStyle(document.querySelector('.hero-actions .button')!)
+        .animationName,
+      image: getComputedStyle(document.querySelector('.hero-photo-frame')!).animationName,
+    }
+  })
+  expect(hero.y).toBe(0)
+  expect(hero.active).toBeGreaterThan(0)
+  expect(hero.css.every((name) => name === 'hero-intro-word')).toBe(true)
+  expect(new Set(hero.delays).size).toBeGreaterThan(1)
+  expect(Math.min(...hero.frames)).toBeLessThan(0.8)
+  expect(hero.initialPromise).toBe('hero-intro-copy')
+  expect(hero.initialDescription).toBe('hero-intro-copy')
+  expect(hero.initialAction).toBe('hero-intro-copy')
+  expect(hero.image).toBe('hero-intro-image')
+  await expect
+    .poll(() =>
+      page
+        .locator('.hero h1 .motion-word')
+        .evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === '1')),
+    )
+    .toBe(true)
+})
+
+test('paragraphs and words have visible entrances, with no clipping or nested movement', async ({
   page,
 }) => {
   await page.goto('/dentist/mentorstvo/')
-  const topic = page.locator('.mentorship-topic').first()
-  await expect(topic).toHaveAttribute('data-motion-unit', 'true')
-  await topic.evaluate((el) => {
+  const paragraph = page.locator('.mentorship-topic p').first()
+  const heading = page.locator('.mentorship-topic h3').first()
+  await expect(paragraph).toHaveAttribute('data-motion-unit', 'true')
+  await paragraph.evaluate((el) =>
     scrollTo({
-      top: el.getBoundingClientRect().top + scrollY - innerHeight - 185,
+      top: el.getBoundingClientRect().top + scrollY - innerHeight - 80,
       behavior: 'instant',
-    })
-  })
-  // Let the deliberate positioning jump finish; subsequent input models a slow wheel gesture.
-  await page.waitForTimeout(280)
-  await page.evaluate(() => scrollBy({ top: 40, behavior: 'instant' }))
-  await expect(topic).toHaveAttribute('data-scroll-state', 'running')
-  const evidence = await topic.evaluate(async (el) => {
+    }),
+  )
+  await expect(paragraph).toHaveAttribute('data-scroll-state', 'ready')
+  await paragraph.evaluate((el) =>
+    scrollTo({
+      top: el.getBoundingClientRect().top + scrollY - innerHeight + 180,
+      behavior: 'instant',
+    }),
+  )
+  await expect(paragraph).toHaveAttribute('data-scroll-state', 'running')
+  const evidence = await paragraph.evaluate(async (el) => {
     const read = () => {
       const style = getComputedStyle(el)
-      const matrix = new DOMMatrixReadOnly(style.transform)
-      return { y: matrix.f, opacity: +style.opacity, scale: matrix.a, clip: style.clipPath }
+      return {
+        opacity: +style.opacity,
+        y: new DOMMatrixReadOnly(style.transform).f,
+        clip: style.clipPath,
+      }
     }
-    const animations = el.getAnimations().filter((a) => a.id === 'scroll-reveal')
-    const duration = animations[0]?.effect?.getTiming().duration
     const samples = [read()]
-    for (let i = 0; i < 5; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 80))
+    for (let i = 0; i < 4; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 90))
       samples.push(read())
     }
     const targets = document
       .getAnimations()
       .filter((a) => a.id === 'scroll-reveal')
       .map((a) => (a.effect as KeyframeEffect).target as Element)
-    return {
-      duration,
-      samples,
-      nested: targets.some((a) => targets.some((b) => a !== b && a.contains(b))),
-      masks: [...document.querySelectorAll('.motion-word-mask')].every(
-        (word) => getComputedStyle(word).overflow === 'visible',
-      ),
-    }
+    return { samples, nested: targets.some((a) => targets.some((b) => a !== b && a.contains(b))) }
   })
-  expect(Number(evidence.duration)).toBeGreaterThanOrEqual(1300)
-  expect(
-    evidence.samples.every(
-      (s) => s.y >= 0 && s.y <= 6.1 && s.opacity >= 0.95 && s.scale === 1 && s.clip === 'none',
-    ),
-  ).toBe(true)
-  for (let i = 1; i < evidence.samples.length; i++) {
-    expect(evidence.samples[i].y).toBeLessThanOrEqual(evidence.samples[i - 1].y + 0.01)
-    expect(evidence.samples[i].opacity).toBeGreaterThanOrEqual(
-      evidence.samples[i - 1].opacity - 0.001,
-    )
-  }
+  expect(evidence.samples[0].opacity).toBeLessThan(0.7)
+  expect(evidence.samples[0].y).toBe(0)
+  expect(evidence.samples.every((s) => s.y <= 24 && s.clip === 'none')).toBe(true)
+  expect(evidence.samples.at(-1)!.opacity).toBeGreaterThan(evidence.samples[0].opacity)
+  expect(evidence.samples.at(-1)!.y).toBe(0)
   expect(evidence.nested).toBe(false)
-  expect(evidence.masks).toBe(true)
+  await expect(heading).toHaveAttribute('data-reveal-kind', 'heading')
+  expect(
+    await heading
+      .locator('.motion-word-mask')
+      .evaluateAll((els) => els.every((el) => getComputedStyle(el).overflow === 'visible')),
+  ).toBe(true)
 })
 
-test('rapid scrolling keeps content readable, settles promptly and never replays completed reveals', async ({
+test('text replays when scrolling back, including the very first headline', async ({ page }) => {
+  await page.goto('/dentist/')
+  const headline = page.locator('.hero h1')
+  await expect(headline).toHaveAttribute('data-reveal-count', '1')
+  await page
+    .locator('#about')
+    .evaluate((el) =>
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 100, behavior: 'instant' }),
+    )
+  await expect(headline).toHaveAttribute('data-scroll-state', 'ready')
+  const about = page.locator('#about h2')
+  await expect(about).toHaveAttribute('data-scroll-state', 'running')
+  const count = Number(await about.getAttribute('data-reveal-count'))
+  await page
+    .locator('#faq')
+    .evaluate((el) =>
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 100, behavior: 'instant' }),
+    )
+  await expect(about).toHaveAttribute('data-scroll-state', 'ready')
+  await page
+    .locator('#about')
+    .evaluate((el) =>
+      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 100, behavior: 'instant' }),
+    )
+  await expect(about).toHaveAttribute('data-reveal-count', String(count + 1))
+  await expect(about).toHaveAttribute('data-scroll-state', 'running')
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }))
+  await expect(headline).toHaveAttribute('data-reveal-count', '2')
+  expect(
+    await headline.evaluate((el) =>
+      el
+        .getAnimations({ subtree: true })
+        .some((a) => a.id === 'scroll-reveal' && a.playState === 'running'),
+    ),
+  ).toBe(true)
+})
+
+test('rapid scrolling still reveals text and finishes without replaying while it remains visible', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/dentist/')
-  const result = await page.evaluate(async () => {
-    const samples: number[] = []
-    for (const id of ['services', 'faq', 'appointment', 'services', 'about', 'contacts', 'faq']) {
-      const el = document.getElementById(id)!
-      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 110, behavior: 'instant' })
-      await new Promise<void>((resolve) =>
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+  for (const id of ['services', 'faq', 'contacts', 'about', 'services']) {
+    await page
+      .locator(`#${id}`)
+      .evaluate((el) =>
+        scrollTo({ top: el.getBoundingClientRect().top + scrollY - 110, behavior: 'instant' }),
       )
-      for (const target of document.querySelectorAll<HTMLElement>('[data-motion-unit]')) {
-        const rect = target.getBoundingClientRect()
-        if (rect.top < innerHeight && rect.bottom > 100)
-          samples.push(+getComputedStyle(target).opacity)
-      }
-    }
-    return { samples, skipped: document.querySelectorAll('[data-scroll-state="skipped"]').length }
-  })
-  expect(result.samples.length).toBeGreaterThan(0)
-  expect(Math.min(...result.samples)).toBeGreaterThanOrEqual(0.9)
-  expect(result.skipped).toBeGreaterThan(0)
-  await expect
-    .poll(
+    await page.evaluate(
       () =>
-        page.evaluate(
-          () =>
-            document
-              .getAnimations()
-              .filter((a) => a.id === 'scroll-reveal' && a.playState === 'running').length,
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
         ),
-      { timeout: 1000 },
+    )
+  }
+  const heading = page.locator('#services h2')
+  await expect(heading).toHaveAttribute('data-scroll-state', 'running')
+  const count = await heading.getAttribute('data-reveal-count')
+  expect(Number(count)).toBeGreaterThanOrEqual(2)
+  await expect(heading).toHaveAttribute('data-scroll-state', 'settled')
+  expect(await heading.getAttribute('data-reveal-count')).toBe(count)
+  expect(
+    await heading
+      .locator('.motion-word')
+      .evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === '1')),
+  ).toBe(true)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.getAnimations().filter((a) => a.playState === 'running').length),
     )
     .toBe(0)
-  await page
-    .locator('#services')
-    .evaluate((el) =>
-      scrollTo({ top: el.getBoundingClientRect().top + scrollY - 110, behavior: 'instant' }),
-    )
-  await page.waitForTimeout(150)
-  expect(
-    await page
-      .locator('.service-card')
-      .evaluateAll((els) =>
-        els.every((el) => el.getAnimations().filter((a) => a.id === 'scroll-reveal').length === 0),
-      ),
-  ).toBe(true)
-  expect(
-    await page
-      .locator('.editorial-photo')
-      .evaluateAll((els) =>
-        els.every(
-          (el) =>
-            getComputedStyle(el).clipPath === 'none' && getComputedStyle(el).transform === 'none',
-        ),
-      ),
-  ).toBe(true)
+  expect(await heading.evaluate((el) => getComputedStyle(el).opacity)).toBe('1')
 })
